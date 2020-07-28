@@ -1,0 +1,84 @@
+{# templates/admin/campoCount.html.twig #}
+{% extends 'admin_base.html.twig' %}
+{% block title %}Emprendum admin{% endblock %}
+{% block body %}
+<div class="content-wrapper">
+  <div class="container-fluid">
+    <!-- Breadcrumbs-->
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="#">Admin</a>
+      </li>
+      <li class="breadcrumb-item active">Estado de cuenta</li>
+      <li class="breadcrumb-item active">Campo</li>
+    </ol>
+    <script>
+      $(function() {
+        $( "#ini" ).datepicker({ dateFormat: 'yy-mm-dd' });
+        $( "#fin" ).datepicker({ dateFormat: 'yy-mm-dd' });
+      });
+    </script>
+    <!-- code area-->
+    <div style="height: auto; width: 100%; margin: auto; text-align: left;">
+      <form method="POST" action="{{ path('campoResult') }}" style="height: 50px; width: 100%; margin: auto; background-color: #343A40; color: #fff; border-radius: 5px 5px 0px 0px;">
+        <a style="color: #fff; margin-left: 20px; top: 25%; position: relative;">Campo:</a> 
+        <select style="top: 25%; position: relative;" name="campo">
+        {% if campos %}
+          {% for campo in campos %}
+            <option value="{{ campo.id }}">{{ campo.name }}</option>
+          {% endfor %}
+        {% endif %}
+        </select>
+        <a style="color: #fff; margin-left: 20px; top: 25%; position: relative;">Fecha inicial:</a>
+        <input type="date" id="ini" name="ini" placeholder="fecha inicio" style="width: auto; top: 25%; position: relative; ">
+        <a style="color: #fff; margin-left: 20px; top: 25%; position: relative;">Fecha final:</a>
+        <input type="date" id="fin" name="fin" placeholder="fecha fin" style="width: auto; top: 25%; position: relative;">
+        <input type="submit" name="Buscar" value="Buscar" style="width: auto; top: 25%; position: relative; border-width: 0px;" class="btn btn-light">
+      </form>
+      {% if pedidos %}
+      <div style="background-color: #E8ECEF; height: auto; width: 100%; margin: auto;">
+        <div style="height: auto; width: 97%; margin: auto;">
+          <br>
+          <p style="font-size:150%;">{{ campo }}</p>
+          <p style="font-size:120%;">#cuenta: {{ cuenta }}</p>
+          <p style="font-size:120%;">Periodo: {{ ini }}  -  {{ fin }}</p>
+          <p style="font-size:120%;">Ventas: ${{ proveedor }}</p>
+          <p style="font-size:120%;">Diezmos: ${{ diezmos }}</p>
+          <p style="font-size:120%;">Abonado a universitario: ${{ estudiante }}</p>
+          <p style="font-size:120%;">Total: ${{ total }}</p>
+          <br>
+        </div>
+      </div>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Nombre</th>
+            <th>Campo</th>
+            <th>Envio</th>
+            <th>Subtotal</th>
+            <th>total</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for pedido in pedidos %}
+          <tr>
+            <td>{{ pedido.id }}</td>
+            <td>{{ pedido.name }} {{pedido.last}}</td>
+            <td>{{ pedido.campo_id }}</td>
+            <td>${{ pedido.delivery_price+0 }}</td>
+            <td>${{ pedido.total+0 }}</td>
+            <td>${{ pedido.delivery_price + pedido.total }}</td>
+            <td>
+              <a href="{{ path('ventas_detalle',{'id':pedido.id}) }}" class="btn btn-light">Ver</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

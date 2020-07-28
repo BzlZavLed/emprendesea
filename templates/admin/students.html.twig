@@ -1,0 +1,59 @@
+{# templates/admin/books.html.twig #}
+{% extends 'admin_base.html.twig' %}
+{% block title %}Emprendum admin{% endblock %}
+{% block body %}
+  <div class="content-wrapper">
+    <div class="container-fluid">
+      <!-- Breadcrumbs-->
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="#">Admin</a>
+        </li>
+        <li class="breadcrumb-item active">Universitarios</li>
+      </ol>
+      <!-- code area-->
+       <!-- Buscador-->
+  
+      <div class="input-group mb-3" style="width: 100%;">
+        <form action="{{ path('students_search') }}" method="post" class="input-group-append" style="width: 100%;">
+          <input type="text" name="text" placeholder="Buscar" class="form-control" style="width: 80%;">
+          <input type="submit" value="Buscar" class="btn btn-primary" style="margin-left: 5px;">
+          <a href="{{ path('new_student') }}" class="btn btn-primary" style="background-color:#2ECCFA; margin-left: 5px; border: none;">Agregar</a>
+        </form>
+      </div>
+      {% if students %}
+      <table id="students" class="table table-striped">
+        <thead>
+          <tr>
+            <th>Matricula</th>
+            <th>Foto</th>
+            <th>Nombre</th>
+            <th>Facultad</th>
+            <th>Correo</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for student in students %}
+          <tr>
+            <td>{{ student.matricula }}</td>
+            <td>
+              <img src=" {{ asset('uploads/students_imgs/'~ student.foto) }} " alt="" height=100 width=80></img>
+            </td>
+            <td>{{ student.name }} {{ student.apellidos }}</td>
+            <td>{{ student.facultad }}</td>
+            <td>${{ student.correo}}</td>
+            <td>
+              <!--<a href="/emprendum/public/admin/books/editBook/" class="btn btn-light">Editar</a>-->
+              <a href="{{ path('delete_student',{'id':student.id}) }}" class="btn btn-danger delete-article" style="background-color: #FF0000;" data-id="{{ student.id }}">Eliminar</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p>No hay universitarios que mostrar</p>
+      {% endif %}  
+    </div>
+  </div>
+{% endblock %}

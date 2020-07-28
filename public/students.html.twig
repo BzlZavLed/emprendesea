@@ -1,0 +1,273 @@
+{# templates/store/histories.html.twig #}
+{% extends 'store_base.html.twig' %}
+
+{% block code %}
+<style type="text/css">
+  body{
+      height: auto; 
+      background-color: #25338C;
+  }
+  .footer{
+	  position: unset;
+  }
+</style>
+<div class="si-shadow" id="s-info">
+	<script type="text/javascript">
+    
+		function share(text){
+      var textArea = document.createElement("textarea");
+      textArea.value =  'https://emprendum.um.edu.mx/universitarios/' + text;
+      document.body.appendChild(textArea);
+      textArea.select();
+
+      try {
+        var successful = document.execCommand('copy');
+        var msg = successful ? 'successful' : 'unsuccessful';
+        document.getElementById("si-nots").style.display='block';
+      } catch (err) {
+        alert('No se pudo copiar el link, por favor intentalo en otro navegador');
+      }
+
+      document.body.removeChild(textArea);
+		}
+		function dismissInfo(){
+			document.getElementById("s-info").style.display='none';
+		}
+
+	</script> 
+	<div class="si-content">
+		<img class="si-dismiss" src="{{ asset('images/Group_176.png') }}" onclick="dismissInfo()">
+		<div class="si-alert" id="si-nots">
+			<h1 style="margin: 0; font-size: 1vw; margin-top: 0.7%; font-weight: 600;">LINK COPIADO A PORTAPAPELES</h1>
+		</div>
+		<img class="si-img" id="si-image">
+		<div class="si-tv">
+			<h1 class="si-name" id="si-name"></h1>
+			<h1 class="si-carrera" id="si-school"></h1>
+			<p class="si-desc" id="si-description"></p>
+			<div class="si-bc">
+				<button class="benefactor si-pick" id="si-pick">ELEGIR ESTUDIANTE</button>
+				<button class="transparent-button si-pick" id="si-share">COPIAR LINK PARA COMPARTIR</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div style="height: auto;">
+	<script>
+		var tag = document.createElement('script');
+
+      	tag.src = "https://www.youtube.com/iframe_api";
+      	var firstScriptTag = document.getElementsByTagName('script')[0];
+      	firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      	var player;
+      	function onYouTubeIframeAPIReady() {
+        	player = new YT.Player('s-player', {
+          		height: '390',
+          		width: '640',
+          		videoId: '8Paqygb3CQs',
+          		playerVars: {
+            		'autoplay': 0,
+            		'controls': 1,
+            		'showinfo': 0,
+            		'rel': 0
+          		},
+          		events: {
+            		'onStateChange': onPlayerStateChange
+          		}
+        	});
+      	}
+
+      	function onPlayerStateChange(event) {
+        	switch(event.data) {
+          	case 0:
+            	document.getElementById('s-card-content').style.display = 'block';
+            	break;
+          	case 1://none
+            	document.getElementById('s-card-content').style.display = 'none';
+            	break;
+          	case 2://block
+            	document.getElementById('s-card-content').style.display = 'block';
+        	}
+      	}
+      	function play(){
+      		player.playVideo();
+      	}
+    </script>
+	<div class="s-intro">
+		<h1 id="s-title">Cada vivencia construye sus sueños</h1>
+		<div id="s-player"></div>
+		<div id="s-card"></div>
+		<div id="s-card-content" onclick="play()">
+			<h1 id="s-ut">¿Puede un libro</h1>
+			<h1 id="s-bt">cumplir un sueño?</h1>
+		</div>
+	</div>	 
+</div>    
+<div>
+	<script type="text/javascript">
+    window.onload = function() {
+      {% if filted %}
+        document.getElementById('sc-recom').style.color='rgba(37, 45, 82, 0.5)';
+        document.getElementById('sc-carrera').style.color='rgba(37, 45, 82, 1)';
+      {% endif %}
+      {% if uni %}
+		saveStudent('{{ uni.id }}', '{{ asset('uploads/students_imgs/'~ uni.foto) }}', '{{ uni.name }}','{{ uni.facultad }}','{{ uni.correo }}');
+      {% endif %}
+    };
+
+	 $(document).ready(function(){
+    {% if uni %}
+		saveStudent('{{ uni.id }}', '{{ asset('uploads/students_imgs/'~ uni.foto) }}', '{{ uni.name }}','{{ uni.facultad }}','{{ uni.correo }}');
+      {% endif %}
+    });
+
+    // Esto lo modifique yo edny
+		function switchMode(){
+				window.location = "{{ path('universitarios') }}";
+		}
+
+    function showInfo(name,descripcion,foto,id,facultad,correo){
+	  var email=correo;
+
+      var namep = document.getElementById("si-name");
+      namep.innerHTML = name;
+
+      var fac = document.getElementById("si-school");
+      fac.innerHTML = facultad;
+
+      var desc = document.getElementById("si-description");
+      desc.innerHTML = descripcion;
+
+      document.getElementById('si-image').src= foto;
+      document.getElementById('si-pick').setAttribute( 'onClick', 'saveStudent(\''+id+'\',\''+foto+'\',\''+name+'\',\''+facultad+'\',\''+email+'\')' );
+      document.getElementById('si-share').setAttribute('onClick','share(\''+id+'\')');
+
+      document.getElementById('s-info').style.display='block';
+      document.getElementById("si-nots").style.display='none';
+    }
+    function saveStudent(id,foto,name,fac,correo){
+      window.sessionStorage.setItem('student',id);
+      window.sessionStorage.setItem('foto',JSON.stringify(foto));
+      window.sessionStorage.setItem('name',JSON.stringify(name));
+      window.sessionStorage.setItem('fac',JSON.stringify(fac));
+	  window.sessionStorage.setItem('correo',correo);
+      window.location = "{{ path('libreria') }}";
+    }
+     
+	</script>
+
+	<div class="s-content limitante" >
+	<img id="si-scr">
+		<h1 id="sc-title">Conoce a nuestra comunidad de universitarios</h1>
+		<br>
+		<br>
+		<form action="{{ path('libreria') }}" method="post">
+			<!--
+		<div class="limitante2">
+
+			<br>
+				<input type="radio" name="payment" id="todos" onchange="location.href='universitarios';">
+				<label class="lb-fac" for="todos" >
+					<i class="fa fa-users" aria-hidden="true" ></i>
+					<span>TODOS</span>
+				</label>
+				<input type="radio" name="payment" id="artcom" onchange="location.href='universitarios/by/1';">
+				<label class="lb-fac" for="artcom">
+					<i class="fa fa-paint-brush" aria-hidden="true"></i>
+					<span>ARTCOM</span>
+				</label>
+				<input type="radio" name="payment" id="faced" onchange="location.href='universitarios/by/4';">
+				<label class="lb-fac" for="faced">
+					<i class="fa fa-book" aria-hidden="true"></i>
+					<span>FACED</span>
+				</label>
+				<input type="radio" name="payment" id="facej">
+				<label class="lb-fac" for="facej">
+					<i class="fa fa-balance-scale" aria-hidden="true"></i>
+					<span>FACEJ</span>
+				</label>
+				<input type="radio" name="payment" id="esmus">
+				<label class="lb-fac" for="esmus">
+					<i class="fa fa-music" aria-hidden="true"></i>
+					<span>ESMUS</span>
+				</label>
+				<input type="radio" name="payment" id="fapsi">
+				<label class="lb-fac" for="fapsi">
+					<i class="fa fa-puzzle-piece" aria-hidden="true"></i>
+					<span>FAPSI</span>
+				</label>
+				<input type="radio" name="payment" id="facsa">
+				<label class="lb-fac" for="facsa">
+					<i class="fa fa-heartbeat" aria-hidden="true"></i>
+					<span>FACSA</span>
+				</label>
+				<input type="radio" name="payment" id="fitec" onchange="location.href='universitarios/by/3';">
+				<label class="lb-fac" for="fitec">
+					<i class="fa fa-laptop" aria-hidden="true"></i>
+					<span>FITEC</span>
+				</label>
+				<input type="radio" name="payment" id="fatame">
+				<label class="lb-fac" for="fatame">
+					<i class="fa fa-commenting-o" aria-hidden="true"></i>
+					<span>FATAME</span>
+				</label>
+			<br>
+		</div>
+		-->
+		</form>
+
+		<div class="sc-menu limitante" id="inicio">
+			<!-- Boton carrerra -->
+      <form action="{{ path('universitarios_search') }}" method="post">
+			   <button id="sc-recom" class="sc-switch" onclick="switchMode()">TODOS</button>
+         <div class="dropdown">
+				  <button id="sc-carrera" class="sc-switch dropbtn" style="color: rgba(37, 45, 82, 0.5);" >CARRERA</button>
+ 	 			  <div class="dropdown-content">
+            {% if escuela %}
+              {% for e in escuela %}
+			  <script>document.getElementById("inicio").innerHTML = window.errorLoad();</script>
+                <a href="{{ path('studentsById',{'id':e.id}) }}">{{ e.name }}</a> 
+              {% endfor %}
+            {% endif %}
+  				</div>
+			   </div>
+			   <div class="dropdown">
+				  <button id="sc-universidad" class="sc-switch dropbtn" style="color: rgba(37, 45, 82, 0.5);" >UNIVERSIDAD</button>
+ 	 			  <div class="dropdown-content">   
+                <a href="{{ path('studentsByUni',{'uni':"'MONTEMORELOS'"}) }}">Montemorelos</a> 
+				<a href="{{ path('studentsByUni',{'uni':"'ULV'"}) }}">Linda Vista</a> 
+				<a href="{{ path('studentsByUni',{'uni':"'UNAV'"}) }}">Navojoa</a> 
+  				</div>
+			   </div>
+          <input type="text" id="sc-search" name="text" placeholder="BUSCADOR" style="background-image: url('{{ asset('images/Search@2x.png') }}');">
+        <input type="submit" style="position: absolute; left: -9999px"/>
+      </form>
+		</div>
+		<div class="sc-grid">
+      {% if students %}
+        {% for student in students %}
+          <div class="sc-grid-item">
+            <div class="sc-item-ops">
+              <button class="transparent-button-white sc-meet" onclick="showInfo('{{ student.name }}'+' '+'{{ student.apellidos }}','{{ student.descripcion }}','{{ asset('uploads/students_imgs/'~ student.foto) }}','{{ student.id }}','{{ student.facultad }}','{{ student.correo }}')"> CONOCER </button>
+              <button class="benefactor sc-pick" onclick="saveStudent('{{ student.id }}', '{{ asset('uploads/students_imgs/'~ student.foto) }}', '{{ student.name }}','{{ student.facultad }}','{{ student.correo }}')"> ELEGIR UNIVERSITARIO </button>
+            </div>
+            <img src="{{ asset('uploads/students_imgs/'~ student.foto) }}" class="ht-card-img">
+            <p class="ht-card-name">{{ student.name }} {{ student.apellidos }}</p>
+            <p class="ht-card-puesto">{{ student.facultad }}</p>
+          </div>
+        {% endfor %}
+      {% endif %}
+		</div>
+	</div>	
+</div>
+
+<script>
+var prue=JSON.parse(window.sessionStorage.getItem("foto"));
+    function errorLoad() {
+      alert("errorLoad has run!");
+	  alert(prue);
+	  document.getElementById('si-scr').src= prue;
+    }
+  </script>
+{% endblock %}	

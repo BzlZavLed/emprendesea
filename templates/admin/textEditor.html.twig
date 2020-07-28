@@ -1,0 +1,58 @@
+{# templates/admin/books.html.twig #}
+{% extends 'admin_base.html.twig' %}
+{% block title %}Emprendum admin{% endblock %}
+{% block body %}
+  <div class="content-wrapper">
+    <div class="container-fluid">
+      <!-- Breadcrumbs-->
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="#">Admin</a>
+        </li>
+        <li class="breadcrumb-item active">Configuración</li>
+      </ol>
+      <!-- code area-->
+      <div>
+        <script type="text/javascript">
+          window.onload = function(){
+            $('#text').trumbowyg({
+              btns: [
+                ['foreColor', 'backColor'],
+                ['viewHTML'],
+                ['undo', 'redo'], 
+                ['formatting'],
+                ['strong', 'em', 'del'],
+                ['superscript', 'subscript'],
+                ['link'],
+                ['insertImage'],
+                ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
+                ['unorderedList', 'orderedList'],
+                ['horizontalRule'],
+                ['removeformat'],
+                ['fullscreen']
+              ]
+            });
+          };
+        </script>
+        <h4>
+          {% if title %}
+            {{ title }}
+          {% endif %}
+        </h4>
+        {% if id %}
+        <form class="form-group" action="{{ path('saveEditor', {'key':id}) }}" method="post" >
+          <textarea id="text" name="text" style="width: 90%; height: 400px;">
+            {% if text %}
+              {{ text.content }}
+            {% endif %}
+          </textarea>
+          <br>
+          <button type="submit" class="btn btn-primary btn-block" style="max-width: 200px; ">Guardar</button>
+        </form>
+        {% endif %}
+        <br>
+      </div>
+      <!-- end code area -->
+    </div>
+  </div>
+{% endblock %}

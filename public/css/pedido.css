@@ -1,0 +1,102 @@
+.p-student{
+	position: relative;
+	margin:5%;
+	float: left;
+	width: 29%;
+	height: auto;
+}
+.p-student img{
+	position: relative;
+	margin:0;
+	border-radius: 0.7vw;
+	width: 100%;
+	height: 15vw;
+}
+.p-student h1{
+	position: relative;
+	margin:0;
+	font-size: 1.2vw;
+	color: rgba(38, 103, 245, 1);
+	font-weight: 600;
+}
+.p-student h2{
+	position: relative;
+	margin:0;
+	font-size: 1vw;
+	color: rgba(37, 45, 82, 0.3);
+	font-weight: 600;
+}
+.p-title{
+	position: relative;
+	float: left;
+	width: 50%;
+	height: 17%;
+	margin: 0;
+	margin-top: 5%;
+}
+.p-title h1{
+	color: rgba(38, 103, 245, 1);
+	font-size: 1.5vw;
+	margin:0;
+}
+.p-content{
+	position: relative;
+	float: left;
+	width: 24%;
+	height: 50%;
+	margin:0;
+}
+.p-content h1{
+	color: rgba(37, 45, 82, 0.3);
+	font-size: 1vw;
+	margin:0;
+	margin-bottom: 2%;
+}
+.p-content h2{
+	color: rgba(37, 45, 82, 0.9);
+	font-size: 1vw;
+	margin:0;
+	margin-bottom: 2%;
+	font-weight: 400;
+}
+.p-content h3{
+	color: rgba(38, 103, 245, 1);
+	font-size: 1vw;
+	margin:5%;
+	margin-left: 0;
+	font-weight: 400;
+}
+.p-share{
+	width: 90%;
+	height: 10%;
+	margin: 5%;
+	margin-top: 0;
+	position: relative;
+	float: left;
+}
+.p-share h1{
+	color: rgba(37, 45, 82, 0.9);
+	font-size: 0.8vw;
+	margin:0;
+	margin-top: 0.5%;
+	font-weight: 400;
+	max-width: 17%;
+	position: relative;
+	float: left;
+}
+.p-share input{
+	position: relative;
+	float: left;
+	margin:0;
+	margin-left: 0.1%;
+	height: 1.5vw;
+	width: 1.5vw;
+}
+.s-clipboard{
+	position: relative;
+	float: left;
+	margin: 0;
+	margin-left: 1%;
+	height: 1.5vw;
+	font-size: 0.7vw;
+}

@@ -1,0 +1,58 @@
+{# templates/admin/newBook.html.twig #}
+{% extends 'admin_base.html.twig' %}
+{% block title %}Emprendum admin{% endblock %}
+{% block body %}
+    <div class="content-wrapper">
+    <div class="container-fluid">
+      <!-- Breadcrumbs-->
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="#">Admin</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="books">Libros</a>
+        </li>
+        <li class="breadcrumb-item active">Agregar Libro</li>
+      </ol>
+      <!-- code area-->
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        {{ form_end(form) }}
+        <table id="fileList" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Fotos</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <input type="Agregar" value="Agregar" class="btn btn-primary" style="background-color:#2ECCFA; margin-left: 5px; border: none;" onclick="addBook();">
+        <script type="text/javascript">
+            var fileInput = document.getElementById('form_imagenes');
+            var fileTable = document.getElementById('fileList').getElementsByTagName('tbody')[0];
+            var submitButton = document.getElementById('form_save');
+            submitButton.style.display = 'none';
+
+            fileInput.addEventListener('change', function (evnt) {
+                fileList = [];
+                fileTable.innerHTML = "";
+                for (var i = 0; i < fileInput.files.length; i++) {
+                    var row = fileTable.insertRow(0);
+                    var cell1 = row.insertCell(0);
+                    cell1.innerHTML = '<img src="'+URL.createObjectURL(fileInput.files[i])+'" alt="" height=100 width=80></img>'
+                }
+            });
+            function addBook(){
+                submitButton.click();
+            }
+        </script>
+        <br>
+        <br>
+        <br>
+      <!-- Scroll to Top Button-->
+      <a class="scroll-to-top rounded" href="#page-top">
+      <i class="fa fa-angle-up"></i>
+    </a>
+    
+{% endblock %}

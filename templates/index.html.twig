@@ -1,0 +1,464 @@
+{# templates/store/index.html.twig #}
+{% extends 'store_base.html.twig' %}
+{% block code %}
+<style type="text/css">
+	body{
+  		height: 460.6vw;
+	}
+</style>
+<div style="position: static;">
+	<div class="carrusel">
+		<img class = "carrusel-background" src="{{asset('images/0010_EMPRENDUM_18.png')}}">
+		<div class = "carrusel-text">
+    		<h1>LIBROS CON CAUSA</h1>
+    		<p>Hay historias que se escriben cuando adquieres un libro.</p>
+    		<button type="button" class="benefactor" onclick=" window.location = '{{ path('universitarios') }}';">CONOCE CÓMO</button>
+		</div>
+		<div class="vl">
+			<p><em>"Quiero ser un médico</em></p>
+			<p><em>que sirva a las comunidades</em></p>
+			<p><em><span>más necesitadas"</span></em></p>
+		</div>
+		<div class="name-home">
+			<p><b>Juan Pérez</b></p>
+			<p><span>MEDICINA</span></p>
+		</div>
+		<div valign="bottom" class="carrusel-bottom">
+			<div class="carrusel-bottom-cell info">
+				<h3>10,345</h3>
+				<t>ESTUDIANTES GRADUADOS</t>
+			</div>
+			<div class="carrusel-bottom-cell info">
+				<h3>30,945</h3>
+				<t>BENEFACTORES</t>
+			</div>
+			<div class="carrusel-bottom-cell info">
+				<h3>1,345,678</h3>
+				<t>LIBROS ENTREGADOS</t>
+			</div>
+			<div class="carrusel-bottom-cell">
+				<h3>10,345</h3>
+				<t>FAMILIAS INVOLUCRADAS</t>
+			</div>
+		</div>
+	</div>
+</div>
+<div style="position: static;">
+	<div class="fam">
+<!--		<img class = "fam-background" src="{{asset('images/0011_EMPRENDUM_1-2.JPG')}}"> -->
+		<p style="margin-top:5%;">Somos una familia, nos motivamos, nos cuidamos, aprendemos y compartimos vivencias que se suman al aprendizaje de las aulas en la universidad, recorremos caminos para llevar un mensaje especial de salud dentro de un libro, obtenemos experiencias que nos hacen crecer, en lugares que no imaginábamos.</p>
+		<p style="line-height: 300%">Confiamos en <b>Dios</b> en todos los caminos.</p>
+		<div>
+			<button type="button" class="benefactor" onclick=" window.location = '{{ path('historias') }}'">NUESTRA HISTORIA</button>
+		</div>
+
+		<img class = "fam-instructions" src="{{asset('images/Group_69.png')}}">
+	</div>	
+</div>
+<div style="position: static;">
+	<script type="text/javascript">
+		function hover($id) {
+			if ($id == 0){
+				document.getElementById("fisic-img").src = "{{asset('images/Group_96-selected.png')}}";
+				document.getElementById("fisic-button").style.display = 'block';
+				document.getElementById("fisic-card").style.display = 'block';
+				document.getElementById("fisic-back").style.display = 'block';
+				document.getElementById("fisic-back-img").style.display = 'block';
+			}else if ($id == 1){
+				document.getElementById("emo-img").src = "{{asset('images/Group_96-selected.png')}}";
+				document.getElementById("emo-button").style.display = 'block';
+				document.getElementById("emo-card").style.display = 'block';
+				document.getElementById("emo-back").style.display = 'block';
+				document.getElementById("emo-back-img").style.display = 'block';
+			}else if ($id == 2){
+  				document.getElementById("life-img").src = "{{asset('images/Group_96-selected.png')}}";
+  				document.getElementById("life-button").style.display = 'block';
+				document.getElementById("life-card").style.display = 'block';
+				document.getElementById("life-back").style.display = 'block';
+				document.getElementById("life-back-img").style.display = 'block';
+			}
+		}
+		function unhover($id){
+			if ($id == 0){
+				document.getElementById("fisic-img").src = "{{asset('images/Group_95.png')}}";
+				document.getElementById("fisic-button").style.display = 'none';
+				document.getElementById("fisic-card").style.display = 'none';
+				document.getElementById("fisic-back").style.display = 'none';
+				document.getElementById("fisic-back-img").style.display = 'none';
+			}else if ($id == 1){
+				document.getElementById("emo-img").src = "{{asset('images/Group_320.png')}}";
+				document.getElementById("emo-button").style.display = 'none';
+				document.getElementById("emo-card").style.display = 'none';
+				document.getElementById("emo-back").style.display = 'none';
+				document.getElementById("emo-back-img").style.display = 'none';
+			}else if ($id == 2){
+  				document.getElementById("life-img").src = "{{asset('images/Group_329.png')}}";
+  				document.getElementById("life-button").style.display = 'none';
+				document.getElementById("life-card").style.display = 'none';
+				document.getElementById("life-back").style.display = 'none';
+				document.getElementById("life-back-img").style.display = 'none';
+			}
+		}
+	</script>
+	<div class="motiv">
+		<h1>¿Qué te motiva a leer hoy?</h1>
+		<p class="motiv-text">Cuando adquieres un libro en EMPRENDUM puedes ayudar a un joven a lograr sus sueños de ser profesionista, pero lo más importante es que encuentres en nuestras páginas un mensaje para tí dentro de las tres dimensiones de salud.</p>
+		<div class="motiv-table">
+			
+			<div onmouseover="hover(0)" onmouseleave="unhover(0)" >
+				<div id="fisic-back"></div>
+				<div id="fisic-card"></div>
+				<img id="fisic-back-img" class="motiv-back-img" src="{{asset('images/EMPRENDUM_VS.png')}}">
+				<img class="motiv-img" id="fisic-img" src="{{asset('images/Group_95.png')}}">
+				<h3>Bienestar Físico</h3>
+				<p>Existen recursos sencillos para cuidar nuestro cuerpo y tener una mejor salud. Es un esfuerzo que comienza con pequeños pasos. ¿Comenzamos?</p>
+				<button id="fisic-button">IR A CATEGORÍA</button>
+			</div>
+			<div onmouseover="hover(1)" onmouseleave="unhover(1)" style="margin-right: 12.5%;  margin-left: 12.5%;">
+				<div id="emo-back"></div>
+				<div id="emo-card"></div>
+				<img id="emo-back-img" class="motiv-back-img" src="{{asset('images/0021_EMPRENDUM_21.jpg')}}">
+				<img class="motiv-img" id="emo-img" src="{{asset('images/Group_320.png')}}">
+				<h3>Equilibrio Emocional</h3>
+				<p>El manejo de emociones, la empatia y aprender a ser feliz con uno mismo, nuestra familia y los que nos rodean es el gran triunfo. ¿Cómo se logra?</p>
+				<button id="emo-button">IR A CATEGORÍA</button>
+			</div>
+			<div onmouseover="hover(2)" onmouseleave="unhover(2)">
+				<div id="life-back"></div>
+				<div id="life-card"></div>
+				<img id="life-back-img" class="motiv-back-img" src="{{asset('images/0022_EMPRENDUM_22.jpg')}}">
+				<img class="motiv-img" id="life-img" src="{{asset('images/Group_329.png')}}">
+				<h3>Evaluación de Vida</h3>
+				<p>Si sabemos a dónde queremos ir, es más fácil llegar. La dirección la obtenemos de lo alto. Es tiempo de avanzar. ¿Qué rumbo quieres tomar?</p>
+				<button id="life-button">IR A CATEGORÍA</button>
+			</div>
+		</div>
+	</div>	
+</div>
+<div style="position: static;">
+	<script>
+		var tag = document.createElement('script');
+
+      	tag.src = "https://www.youtube.com/iframe_api";
+      	var firstScriptTag = document.getElementsByTagName('script')[0];
+      	firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      	var player;
+      	function onYouTubeIframeAPIReady() {
+        	player = new YT.Player('player', {
+          		height: '390',
+          		width: '640',
+          		videoId: 'dNKoA6L1E28',
+          		playerVars: {
+            		'autoplay': 0,
+            		'controls': 1,
+            		'showinfo': 0,
+            		'rel': 0
+          		},
+          		events: {
+            		'onStateChange': onPlayerStateChange
+          		}
+        	});
+      	}
+
+      	function onPlayerStateChange(event) {
+        	switch(event.data) {
+          	case 0:
+            	document.getElementById('videoShadow').style.display = 'block';
+            	document.getElementById('videoShadowLight').style.display = 'block';
+            	break;
+          	case 1:
+            	document.getElementById('videoShadow').style.display = 'none';
+            	document.getElementById('videoShadowLight').style.display = 'none';
+            	break;
+          	case 2:
+            	document.getElementById('videoShadow').style.display = 'block';
+            	document.getElementById('videoShadowLight').style.display = 'block';
+        	}
+      	}
+      	function play(){
+      		player.playVideo();
+           	document.getElementById('videoShadow').style.display = 'none';
+            document.getElementById('videoShadowLight').style.display = 'none';
+      	}
+
+      	
+
+      	
+    </script>
+	<div class="video">
+		<div id="player"></div>
+		<div id="videoShadow" class="video-shadow">
+			<div style="margin : 5%;">
+				<br>
+				<h1 style="color: white;">¿Puede un libro</h1>
+				<h1 style="color: #2667F5;">cumplir un sueño?</h1>
+				<p>Nos emociona escuchar las historias de nuestros universitarios cuando terminan las campañas. Podríamos también hacer un libro sobre sus aventuras, sus hazañas y cosas extraordinarias que les suceden al tener contacto contigo, donde el protagonista es un ser increíble que camina con ellos y la fé en creer que podemos lograr un mundo mejor es su armadura.</p>
+				<p>Por ahora ese libro no existe pero podemos seguir escribiendo más historias.</p>
+				<button class="transparent-button-white" onclick="window.location = '{{ path('historias') }}'">MÁS HISTORIAS</button>
+			</div>
+		</div>
+		<div id="videoShadowLight" class="video-light-shadow">
+			<input type="image" src="{{asset('images/path_101.png')}}" class="play-button" onclick="play()">
+		</div>
+	</div>	
+</div>
+<div style="position: static;">
+	<script type="text/javascript">
+		function HHover($id) {
+			if ($id == 0){
+				document.getElementById("home-img").src = "{{asset('images/Group_96-selected.png')}}";
+				document.getElementById("home-button").style.display = 'block';
+				document.getElementById("home-card").style.display = 'block';
+				document.getElementById("home-back").style.display = 'block';
+				document.getElementById("home-back-img").style.display = 'block';
+			}else if ($id == 1){
+				document.getElementById("emp-img").src = "{{asset('images/Group_96-selected.png')}}";
+				document.getElementById("emp-button").style.display = 'block';
+				document.getElementById("emp-card").style.display = 'block';
+				document.getElementById("emp-back").style.display = 'block';
+				document.getElementById("emp-back-img").style.display = 'block';
+			}else if ($id == 2){
+				document.getElementById("church-img").src = "{{asset('images/Group_96-selected.png')}}";
+  				document.getElementById("church-button").style.display = 'block';
+				document.getElementById("church-card").style.display = 'block';
+				document.getElementById("church-back").style.display = 'block';
+				document.getElementById("church-back-img").style.display = 'block';
+			}
+		}
+		function HUnhover($id){
+			if ($id == 0){
+				document.getElementById("home-img").src = "{{asset('images/Group_292.png')}}";
+				document.getElementById("home-button").style.display = 'none';
+				document.getElementById("home-card").style.display = 'none';
+				document.getElementById("home-back").style.display = 'none';
+				document.getElementById("home-back-img").style.display = 'none';
+			}else if ($id == 1){
+				document.getElementById("emp-img").src = "{{asset('images/Group_295.png')}}";
+				document.getElementById("emp-button").style.display = 'none';
+				document.getElementById("emp-card").style.display = 'none';
+				document.getElementById("emp-back").style.display = 'none';
+				document.getElementById("emp-back-img").style.display = 'none';
+			}else if ($id == 2){
+				document.getElementById("church-img").src = "{{asset('images/Group_303.png')}}";
+  				document.getElementById("church-button").style.display = 'none';
+				document.getElementById("church-card").style.display = 'none';
+				document.getElementById("church-back").style.display = 'none';
+				document.getElementById("church-back-img").style.display = 'none';
+			}
+		}
+	</script>
+	<div class="help">
+		<h1>¿Qué podemos hacer por ti?</h1>
+		<p id="help-desc">Nuestra misión no termina aquí. Todo comienza cuando llegamos a ti por medio de tu hogar, empresa o iglesia; ahí se escriben las historias. Creemos que cada entorno puede impulsarse a ser mejor cada día, y por ello contamos con planes para realizar visitas de manera personal.</p>
+		<div class="help-table">
+			<div onmouseover="HHover(0)" onmouseleave="HUnhover(0)" >
+				<div id="home-back"></div>
+				<div id="home-card"></div>
+				<img id="home-back-img" class="motiv-back-img" src="{{asset('images/0023_EMPRENDUM_23.jpg')}}">
+				<img class="help-img" id="home-img" src="{{asset('images/Group_292.png')}}" style="height: 4.9vw; width: 6vw;">
+				<h3>En tu Hogar</h3>
+				<p>A través de una breve plática personal con quienes nos permiten entrar a sus hogares, compartimos las diferentes lecturas de nuestro programa.</p>
+				<button id="home-button">CONTÁCTANOS</button>
+			</div>
+			<div onmouseover="HHover(1)" onmouseleave="HUnhover(1)" style="margin-right: 12.5%;  margin-left: 12.5%;">
+				<div id="emp-back"></div>
+				<div id="emp-card"></div>
+				<img id="emp-back-img" class="motiv-back-img" src="{{asset('images/0020_EMPRENDUM_20.jpg')}}">
+				<img class="help-img" id="emp-img" src="{{asset('images/Group_295.png')}}">
+				<h3>En tu Empresa</h3>
+				<p>Estamos capacitados para realizar talleres, conferencias y cursos diseñados para crear mejores ambientes laborales.</p>
+				<button id="emp-button">CONTÁCTANOS</button>
+			</div>
+			<div onmouseover="HHover(2)" onmouseleave="HUnhover(2)">
+				<div id="church-back"></div>
+				<div id="church-card"></div>
+				<img id="church-back-img" class="motiv-back-img" src="{{asset('images/EMPRENDUM_IG.jpg')}}">
+				<img class="help-img" id="church-img" src="{{asset('images/Group_303.png')}}">
+				<h3>En tu Iglesia</h3>
+				<p>También creemos que es importante crecer en salud, así como crecemos en otras áreas. 3 Juan 3:2 Conoce nuestros talleres.</p>
+				<button id="church-button">CONTÁCTANOS</button>
+			</div>
+		</div>
+	</div>	
+</div>  
+<div style="position: static;">
+	<div class="work">
+		<h1 id="work-title">En su temporada vacacional nuestros estudiantes visitan</h1>
+		<div id="work-line">
+			<h1 class="work-numbers">+500</h1>
+			<p class="work-subs" id="line-ciudades" style="left: 6.7%; width: 10%;">ciudades</p>
+			<h1 class="work-text" style="left: 16%;">y llevan</h1>
+			<h1 class="work-numbers" style="left: 26.5%;">+60,000</h1>
+			<p class="work-subs" id="line-libros" style="left: 47.7%;">libros</p>
+			<h1 class="work-text" style="left: 53%;">a</h1>
+			<h1 class="work-numbers" style="left: 56%;">+1,000,000</h1>
+			<p class="work-subs" id="line-hogares" style="left: 94%; width: 10%">hogares</p>
+		</div>
+		<div class="work-card"></div>
+		<img src="{{asset('images/0014_EMPRENDUM_14.jpg')}}" >
+		<h1 class="work-ph" style="top:60%; left: 59.5%;">No es una labor fácil,</h1>
+		<h1 class="work-ph" style="top:65%; left: 60%;">pero su esfuerzo tiene</h1>
+		<h1 class="work-ph" style="top:70%; left: 60%; color: #2667F5;">historias grátificantes.</h1>
+		<button type="button" class="transparent-button work-button" onclick=" window.location = '{{ path('universitarios') }}';">ELIGE A UN ESTUDIANTE</button>
+	</div>	
+</div>  
+<div style="position: static;">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+	<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function () {
+    		var itemsMainDiv = ('.MultiCarousel');
+    		var itemsDiv = ('.MultiCarousel-inner');
+    		var itemWidth = "";
+
+    		$('.leftLst, .rightLst').click(function () {
+        		var condition = $(this).hasClass("leftLst");
+        		if (condition)
+            		click(0, this);
+        		else
+            		click(1, this)
+    		});
+
+    		ResCarouselSize();
+
+    		$(window).resize(function () {
+       	 	ResCarouselSize();
+    	});
+
+    	//this function define the size of the items
+    	function ResCarouselSize() {
+        	var incno = 0;
+        	var dataItems = ("data-items");
+        	var itemClass = ('.item');
+        	var id = 0;
+        	var btnParentSb = '';
+        	var itemsSplit = '';
+        	var sampwidth = $(itemsMainDiv).width();
+        	var bodyWidth = $('body').width();
+        	$(itemsDiv).each(function () {
+            	id = id + 1;
+            	var itemNumbers = $(this).find(itemClass).length;
+            	btnParentSb = $(this).parent().attr(dataItems);
+            	itemsSplit = btnParentSb.split(',');
+            	$(this).parent().attr("id", "MultiCarousel" + id);
+
+
+            	if (bodyWidth >= 768) {
+                	incno = itemsSplit[1];
+                	itemWidth = sampwidth / incno;
+            	}else {
+                	incno = itemsSplit[0];
+                	itemWidth = sampwidth / incno;
+            	}
+            	$(this).css({ 'transform': 'translateX(0px)', 'width': itemWidth * itemNumbers });
+            	$(this).find(itemClass).each(function () {
+                	$(this).outerWidth(itemWidth);
+            	});
+
+            	$(".leftLst").addClass("over");
+            	$(".rightLst").removeClass("over");
+
+        	});
+    	}
+
+
+    	//this function used to move the items
+    	function ResCarousel(e, el, s) {
+        	var leftBtn = ('.leftLst');
+        	var rightBtn = ('.rightLst');
+        	var translateXval = '';
+        	var divStyle = $(el + ' ' + itemsDiv).css('transform');
+        	var values = divStyle.match(/-?[\d\.]+/g);
+        	var xds = Math.abs(values[4]);
+        	if (e == 0) {
+            	translateXval = parseInt(xds) - parseInt(itemWidth * s);
+            	$(el + ' ' + rightBtn).removeClass("over");
+
+            	if (translateXval <= itemWidth / 2) {
+                	translateXval = 0;
+                	$(el + ' ' + leftBtn).addClass("over");
+            	}
+        	}
+        	else if (e == 1) {
+            	var itemsCondition = $(el).find(itemsDiv).width() - $(el).width();
+            	translateXval = parseInt(xds) + parseInt(itemWidth * s);
+            	$(el + ' ' + leftBtn).removeClass("over");
+
+           		if (translateXval >= itemsCondition - itemWidth / 2) {
+                	translateXval = itemsCondition;
+                	$(el + ' ' + rightBtn).addClass("over");
+           	 	}
+        	}
+        	$(el + ' ' + itemsDiv).css('transform', 'translateX(' + -translateXval + 'px)');
+    	}
+
+    	//It is used to get some elements from btn
+    	function click(ell, ee) {
+        	var Parent = "#" + $(ee).parent().attr("id");
+        	var slide = $(Parent).attr("data-slide");
+        	ResCarousel(ell, Parent, slide);
+    	}
+
+	});
+	</script>
+	<div class="people">
+		<h1>Mensaje de quienes creyeron en nosotros</h1>
+		<p id = "people-desc">Nuestro programa también involucra a nuestros egresados y a los padres, familia y amigos de nuestros universitarios, quienes depositan su confianza en nosotros y son el motor de sus sueños.</p>
+
+		<div class="row">
+		<div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel"  data-interval="1000">
+            <div class="MultiCarousel-inner">
+                <div class="item">
+                    <div class="people-comment-view">
+                		<p class="people-comment">"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."</p>
+                		<p class="people-name">Mamá de Juan</p>
+                		<p class="people-carrera">ESTUDIANTE DE MEDICINA</p>
+                	</div>
+                </div>
+                <div class="item">
+                    <div class="people-comment-view">
+                		<p class="people-comment">"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."</p>
+                		<p class="people-name">Mamá de Juan</p>
+                		<p class="people-carrera">ESTUDIANTE DE MEDICINA</p>
+                	</div>
+                </div>
+                <div class="item">
+                    <div class="people-comment-view">
+                		<p class="people-comment">"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."</p>
+                		<p class="people-name">Mamá de Juan</p>
+                		<p class="people-carrera">ESTUDIANTE DE MEDICINA</p>
+                	</div>
+                </div>
+                <div class="item">
+                    <div class="people-comment-view">
+                		<p class="people-comment">"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."</p>
+                		<p class="people-name">Mamá de Juan</p>
+                		<p class="people-carrera">ESTUDIANTE DE MEDICINA</p>
+                	</div>
+                </div>
+                <div class="item">
+                    <div class="people-comment-view">
+                		<p class="people-comment">"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."</p>
+                		<p class="people-name">Mamá de Juan</p>
+                		<p class="people-carrera">ESTUDIANTE DE MEDICINA</p>
+                	</div>
+                </div>
+            </div>
+            <input type="image" src="{{asset('images/Path_102.png')}}" class="leftLst">
+            <input type="image" src="{{asset('images/Path_103.png')}}" class="rightLst">
+        </div>
+	</div>	
+</div> 
+<div style="position: static;">
+	<div class="thnks">
+		<img src="{{asset('images/Image_146.png')}}">
+		<div class="thnks-line"></div>
+		<p>Respondiendo les dirá:</p>
+		<p>“Les digo de verdad que cuando ayudan aún al más pequeño, a mí me ayudan”</p>
+		<div class="thnks-line"></div>
+		<h1>¡Gracias a tu aporte se siguen escribiendo historias!</h1>
+	</div>	
+</div>  
+{% endblock %}

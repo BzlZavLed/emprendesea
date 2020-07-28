@@ -1,0 +1,153 @@
+{# templates/store/second.html.twig #}
+{% extends 'store_base.html.twig' %}
+{% block code %}
+<script>
+	window.onload = function(){
+      $('#text').trumbowyg({
+        btns: [],
+        disabled: true
+      });
+    	document.body.style.backgroundColor = "white";
+      showInfo();
+    };
+  function saveShopp(){      
+    var student = window.sessionStorage.getItem("student");
+    if(student == null){
+      alert('no se ha seleccionado a un universitario');
+      window.location ='{{ path('universitarios') }}';
+    }
+    var rows = JSON.parse(window.sessionStorage.getItem("cart"));
+    if (rows == null || rows.length == 0){
+      alert('no hay articulos en el carrito');
+      window.location ='{{ path('tienda') }}';
+    }
+    var ids = [];
+    for(var i = 0; i<rows.length; i++){
+      ids.push({ id:rows[i]['id'], qtt:rows[i]['cantidad']});
+    }
+
+    var data = {};
+    data.FirstName = document.getElementById('nameField').value;
+    data.LastName = document.getElementById('lastNField').value;
+    data.phone = document.getElementById('phoneField').value;
+    data.email = document.getElementById('mailField').value;
+    data.address = document.getElementById('streetField').value;
+    data.streets = document.getElementById('entreField').value;
+    data.city = document.getElementById('ciudadField').value;
+    data.postal = document.getElementById('zipField').value;
+    data.state = document.getElementById('stateField').value;
+    data.student_id = Number(student);
+    data.ids = ids;
+    
+    showLoader();
+    $.ajax({
+      url: '{{ path('shippOps') }}',
+      type: 'post',
+      data: JSON.stringify(data),
+      dataType: 'json',
+      contentType: 'application/json',
+      success: function (data) {
+        console.log(data)
+        hideLoader();
+        window.sessionStorage.setItem('pedido',data.pedido_id);
+        window.location ='{{ path('shippOps') }}/'+data.pedido_id;
+      },
+      error: function (request, error) {
+        hideLoader();
+        alert("Error al procesar la solicitud: " + error);
+      }
+    });
+  }
+  function showInfo(){
+    var info = document.getElementById("privacyPop");
+    info.style.display = "block";
+  }
+  function hidePopup(){
+    var info = document.getElementById("privacyPop");
+    info.style.display = "none";
+  }
+  
+</script>
+
+<div class="w3aitssinglewthree" style="background-color: #D6D9DB;">
+  <div class="horizonDiv" style="background-color: #FFF; height:50px;width: 70%; border: 5px; border-color: #5B6770; border-style: solid; margin: auto;">
+    <div class="divStep">
+      <span style="color: #5B6770; font-size:1.5vw;">Articulos</span>
+    </div>
+    <div class="selectedDivStep">
+      <span style="color: #fff; font-size:1.5vw;">Envío</span>
+    </div>
+    <div class="divStep">
+      <span style="color: #5B6770; font-size:1.5vw;">Resumen</span>
+    </div>
+    <div class="divStep">
+      <span style="color: #5B6770; font-size:1.5vw;">Pago</span>
+    </div>
+    <div class="divStep">
+      <span style="color: #5B6770; font-size:1.5vw;">Terminar</span>
+    </div>
+  </div>
+  <br>
+  <div style="width: 90%; height: auto; margin:auto; background-color: #fff;">
+    <div style="background-color: #5B6770; height:50px;width: 100%; display: block; line-height:47px; ">
+      <span style="color: #fff; font-size:1.5vw; margin-left: 2.5%" id="itemsCount">Envío</span>
+    </div>
+    <div class="horizonDiv" style="margin:5px;">
+      <h4 style="color: #003057; margin-left: 15px; margin-top: 15px; width: 20%; font-size:1.6vw">Nombre</h4>
+      <input type="text" class="form-control" style="margin: 10px;" id="nameField" placeholder="Nombre(s)">
+    </div>
+    <div class="horizonDiv" style="margin:5px;">
+      <h4 style="color: #003057; margin-left: 15px; margin-top: 15px; width: 20%; font-size:1.6vw">Apellido(s)</h4>
+      <input type="text" class="form-control" style="margin: 10px;" id="lastNField" placeholder="Apellido(s)">
+    </div>
+    <div class="horizonDiv" style="margin:5px;">
+      <h4 style="color: #003057; margin-left: 15px; margin-top: 15px; width: 20%; font-size:1.6vw">Teléfono</h4>
+      <input type="text" class="form-control" style="margin: 10px;" id="phoneField" placeholder="Teléfono">
+    </div>
+    <div class="horizonDiv" style="margin:5px;">
+      <h4 style="color: #003057; margin-left: 15px; margin-top: 15px; width: 20%; font-size:1.6vw">e-Mail</h4>
+      <input type="text" class="form-control" style="margin: 10px;" id="mailField" placeholder="e-Mail">
+    </div>
+    <div class="horizonDiv" style="margin:5px;">
+      <h4 style="color: #003057; margin-left: 15px; margin-top: 15px; width: 20%; font-size:1.6vw"> Calle ó Avenida</h4>
+      <input type="text" class="form-control" style="margin: 10px;" id="streetField" placeholder="# Calle ó Avenida">
+    </div>
+    <div class="horizonDiv" style="margin:5px;">
+      <h4 style="color: #003057; margin-left: 15px; margin-top: 15px; width: 20%; font-size:1.6vw">Entre calles</h4>
+      <input type="text" class="form-control" style="margin: 10px;" id="entreField" placeholder="Entre calles">
+    </div>
+    <div class="horizonDiv" style="margin:5px;">
+      <h4 style="color: #003057; margin-left: 15px; margin-top: 15px; width: 20%; font-size:1.6vw">Ciudad</h4>
+      <input type="text" class="form-control" style="margin: 10px;" id="ciudadField" placeholder="Ciudad">
+    </div>
+    <div class="horizonDiv" style="margin:5px;">
+      <h4 style="color: #003057; margin-left: 15px; margin-top: 15px; width: 20%; font-size:1.6vw">Código postal</h4>
+      <input type="text" class="form-control" style="margin: 10px;" id="zipField" placeholder="Código postal">
+    </div>
+    <div class="horizonDiv" style="margin:5px;">
+      <h4 style="color: #003057; margin-left: 15px; margin-top: 15px; width: 20%; font-size:1.6vw">Estado</h4>
+      <input type="text" class="form-control" style="margin: 10px;" id="stateField" placeholder="Estado">
+    </div>
+    
+    <div class="horizonDiv">
+      <div style="width: 80%"></div>
+      <button onclick="saveShopp()" class="btn" style="color:#fff; background-color: #003057; width: 20%; margin: 2.5%;">Siguiente</button>
+    </div>
+  </div>
+</div>
+<br>
+{% endblock %}
+{% block popup %}
+<div class="divPopUp"  id="privacyPop">
+  <div class="popUp" style="height: 550px; top: 15%; text-align: center;">
+    <span style="font-size:2.0vw; ">Politicas de privacidad</span>
+    {% if privs %}
+    <div style="background-color: #fff;">
+      <textarea id="text" style="height: 350px;">{{ privs.content }}</textarea>
+    </div>
+    {% endif %} 
+    <button onclick="window.location ='{{ path('index') }}';" class="btn" style="color:#000; background-color: #E1E1E2; width: 20%; margin: 2.5%; margin-bottom: 10px; ">Cancelar</button>
+    <button onclick="hidePopup()" class="btn" style="color:#fff; background-color: #003057; width: 20%; margin: 2.5%; margin-bottom: 10px; ">Acepto</button>
+  </div>
+</div>
+{% endblock %}

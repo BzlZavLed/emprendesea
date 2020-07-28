@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<!-- Head -->
+<head>
+	<style type="text/css">
+		@font-face {
+  			font-family: apercu;
+  			src: url('{{asset('fonts/apercu/Apercu_Regular.otf')}}');
+		}
+		@font-face {
+  			font-family: apercu;
+  			src: url('{{asset('fonts/apercu/Apercu_Bold.otf')}}');
+  			font-weight: bold;
+		}
+		@font-face {
+  			font-family: apercu;
+  			src: url('{{asset('fonts/apercu/Apercu_Light.otf')}}');
+  			font-weight: lighter;
+		}
+
+    #pedidoSubmit {
+      border-width: 0;
+      margin-left: 2%;
+      background: url( {{ asset('images/Search.png') }} );
+      background-repeat: no-repeat;
+      position:relative;
+      float:left;
+      width:20%;
+      height:2.5vw;
+    }
+	</style>
+
+	<title>Emprendum</title>
+	<link rel="icon" type="image/png" href="{{ asset('images/emprendum.PNG') }}">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
+	<link rel="stylesheet" href="{{ asset('adminResources/Trumbowyg/dist/ui/trumbowyg.min.css') }}" type="text/css" media="all">
+</head>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="{{ asset('css/slick/slick.css') }}"/>
+<link rel="stylesheet" type="text/css" href="{{ asset('css/slick/slick-theme.css') }}"/>
+
+<script type="text/javascript">
+	document.onreadystatechange = function(e){
+    	if (document.readyState === 'complete'){
+        	$('#text').trumbowyg({
+            	btns: [],
+            	disabled: true
+        	});
+        	$('#terms').trumbowyg({
+            	btns: [],
+            	disabled: true
+        	});
+        	$('#faqs').trumbowyg({
+            	btns: [],
+            	disabled: true
+        	});
+    	}
+	};
+	function carrito(){
+		var student = window.sessionStorage.getItem("student");
+        if (student == null){
+            alert('Selecciona a un universitario primero');
+            return;
+        }
+        rows = JSON.parse(window.sessionStorage.getItem("cart"));
+        if (rows == null){
+            alert('Agrega articulos a tú carrito');
+            return;
+        }
+        window.location = "{{ path('first') }}";
+	}
+	function estudiante(){
+		{#window.sessionStorage.getItem("student");#}
+		window.location.href = "{{ relative_path('../public/universitarios/') }}" + window.sessionStorage.getItem("student") ;
+	}
+	function showLoader(){
+    	var ld = document.getElementById("loadingPop");
+    	ld.style.display = "block";
+	}
+	function hideLoader(){
+   		var ld = document.getElementById("loadingPop");
+    	ld.style.display = "none";
+	}
+	function showPrivacy(){
+        var info = document.getElementById("privacyPop");
+        info.style.display = "block";
+    }
+    function hidePrivacy(){
+        var info = document.getElementById("privacyPop");
+        info.style.display = "none";
+    }
+    function showTerms(){
+        var info = document.getElementById("termsPop");
+        info.style.display = "block";
+    }
+    function hideTerms(){
+        var info = document.getElementById("termsPop");
+        info.style.display = "none";
+    }
+    function showFaqs(){
+        var info = document.getElementById("faqsPop");
+        info.style.display = "block";
+    }
+    function hideFaqs(){
+        var info = document.getElementById("faqsPop");
+        info.style.display = "none";
+    }
+    function showPedidoDialog(){
+        var pedido = document.getElementById("pedidoDismiss");
+        pedido.style.display = "block";
+        var ped = document.getElementById("pedidoDialog");
+        ped.style.display = "block";
+    }
+    function hidePedidoDialog(){
+        var pedido = document.getElementById("pedidoDismiss");
+        pedido.style.display = "none";
+        var ped = document.getElementById("pedidoDialog");
+        ped.style.display = "none";
+    }
+</script> 
+
+<link rel="stylesheet" href="{{ asset('css/emprendumStyle.css') }}" type="text/css">
+<link rel="stylesheet" href="{{ asset('css/history.css') }}" type="text/css">
+<link rel="stylesheet" href="{{ asset('css/students.css') }}" type="text/css">
+<link rel="stylesheet" href="{{ asset('css/library.css') }}" type="text/css">
+<link rel="stylesheet" href="{{ asset('css/book.css') }}" type="text/css">
+<link rel="stylesheet" href="{{ asset('css/shop.css') }}" type="text/css">
+<link rel="stylesheet" href="{{ asset('css/pedido.css') }}" type="text/css">
+
+<body>
+  <div id="pedidoDismiss" onclick="hidePedidoDialog()"></div>
+  <div class="pedidoDialog" id="pedidoDialog">
+    <h1>Por favor ingresa tu número de pedido</h1>
+    <div id="pedidoForm" style="position: relative; width: 100%; float: left;">
+      <form autocomplete="off" method="post" action="{{ path('pedidoAccess') }}">
+        <input type="text" name="id" placeholder="Número de pedido">
+        <button id="pedidoSubmit" type="submit"/>
+      </form>
+    </div>
+    <h2>Al realizar tu compra enviamos un correo con el número de pedido.</h2>
+  </div>
+
+	<div class="loaderContainer"  id="loadingPop">
+  		<div class="loader"></div>
+	</div>
+	<div class="menu">
+		<div class="menu-imagen">
+			<a href="{{ path('index') }}">
+			<img src="{{ asset('images/Logo_Emprendum.png') }}">
+			</a>
+		</div>
+		<div class="menu-lista">
+			<ul>
+				<li><a {% if menu == 0 %} id="menu-active" {% endif %} href="{{ path('index') }}">INICIO</a></li>
+				<li><a {% if menu == 1 %} id="menu-active" {% endif %} href="{{ path('historias') }}">NUESTRA HISTORIA</a></li>
+				<li><a {% if menu == 2 %} id="menu-active" {% endif %} href="{{ path('universitarios') }}">UNIVERSITARIOS</a></li>
+				<li><a {% if menu == 3 %} id="menu-active" {% endif %} href="{{ path('libreria')}}">LIBRERIA</a></li>
+				<li><a {% if menu == 4 %} id="menu-active" {% endif %} onclick="carrito()" style="cursor: pointer;">CARRITO</a></li>
+				<li><a {% if menu == 5 %} id="menu-active" {% endif %} onclick="showPedidoDialog()" style="cursor: pointer;">MI PEDIDO</a></li>
+				<li><a {% if menu == 6 %} id="menu-active" {% endif %} href="{{ path('fronteras') }}">FRONTERAS</a></li>
+			</ul>
+		</div>
+		<div class="menu-boton">
+			<button type="button" id="menu-benefactor" class="benefactor" onclick="window.location.href='https://docs.google.com/forms/d/e/1FAIpQLSfmGo4jLTmUUyh9Gx0k5TR4CVD3obMIXIVyeJ7PAHOj7yrfJg/viewform?vc=0&c=0&w=1&usp=mail_form_link'">INSCRIPCIÓN INTERSEMESTRAL-INVIERNO 2020</button>
+		</div>
+	</div>
+	{% block code %}{% endblock %}
+ <div style="pisition:static;">
+	<div class="footer">
+		<div class="ft-menu-logo">
+			<ul>
+				<li><img class="ft-logo" src="{{ asset('images/Logo_Emprendum.png') }}"></li>
+				<li><img class="ft-vs" src="{{ asset('images/vivir_sano2.png') }}" onclick="window.location.href='https://www.um.edu.mx'"><img class="ft-um" src="{{ asset('images/Frase.png') }}" onclick="window.location.href='https://www.um.edu.mx'"></li>
+			</ul>
+		</div>
+		<div class="ft-menu">
+			<ul>
+				<li><h4>Explorar</h4></li>
+				<li><a href="{{ path('index') }}">Inicio</a></li>
+				<li><a href="{{ path('universitarios') }}">Súmate al esfuerzo</a></li>
+				<li><a href="{{ path('libreria')}}">Librería</a></li>
+				<li><a href="#">Carrito</a></li>
+				<li><a href="#">Mi pedido</a></li>
+			</ul>
+		</div>
+		<div class="ft-menu">
+			<ul>
+  				<li><h4>Conócenos</h4></li>
+				<li><a href="{{ path('historias') }}">Nuestra historia</a></li>
+  				<li><a href="{{ path('index') }}">Blog de historias</a></li>
+  				<li><a href="{{ path('historias') }}">Contacto</a></li>
+			</ul>
+		</div>
+		<div class="ft-menu">
+			<ul>
+  				<li><h4>Legal</h4></li>
+  				<li><a onclick="showPrivacy()" style="cursor: pointer; color: rgba(250,250,250,0.6);">Aviso de privacidad</a></li>
+  				<li><a onclick="showTerms()" style="cursor: pointer; color: rgba(250,250,250,0.6);">Términos y condiciones</a></li>
+				<li><a href="{{ path('universitarios') }}">Preguntas frecuentes</a></li>
+			</ul>
+		</div>
+		<div class="ft-menu-contact">
+			<h4 class="ft-follow">SÍGUENOS</h4>	
+			<div class="ft-follow-ops">
+				<img class="ft-opt" src="{{ asset('images/facebook_logo.png') }}" onclick="window.location.href='https://www.facebook.com/emprendumc/'">
+				<img class="ft-opt" src="{{ asset('images/instagram_logo.png') }}" onclick="window.location.href='https://www.instagram.com/emprendum/'">
+				<img class="ft-opt" src="{{ asset('images/youtube_logo.png') }}" onclick="window.location.href='https://www.youtube.com/channel/UCc6L8Ojxb3skVSs7ZYCSnjA'">
+				<img class="ft-logo-um" src="{{ asset('images/monte.png') }}" onclick="window.location.href='https://www.um.edu.mx'">
+				<h3 id="ft-cr">© 2020 EMPRENDUM</h3>
+			</div>
+		</div>
+	</div>	
+<div>
+<div class="divPopUp"  id="privacyPop">
+    <div class="popUp" style="height: 39vw; top: 15%; text-align: center;">
+        <span style="font-size:2.0vw; ">Aviso de privacidad</span>
+        {% if legal %}
+        <div style="background-color: #fff;">
+            <div id="text" style="height: 30vw; overflow: scroll;">
+            	{% for t in legal if (t.name == "priv") %}
+        			<p class="MsoNormal"><strong>Políticas de
+Privacidad y Seguridad<o:p></o:p></strong></p>
+
+<p class="MsoNormal">Este aviso de privacidad forma parte del uso del sitio <strong>www.emprendum.um.edu.mx</strong><o:p></o:p></p>
+
+<p class="MsoNormal"><strong>emprendum.um.edu.mx</strong>
+se compromete a asegurar la privacidad de la información personal obtenida a
+través de su servicio en línea. Le sugerimos leer la normativa descrita a
+continuación, para entender el tratamiento de su información personal cuando
+utiliza nuestros servicios. Estas normas de confidencialidad pueden tener
+cambios en el futuro, por lo que se recomienda revisarlas periódicamente.<o:p></o:p></p>
+
+<p class="MsoNormal">Montemorelos de CV &nbsp;(en adelante <strong>emprendum.um.edu.mx</strong>), con domicilio en Av,Libertad 1300 Pte, Apdo.
+16 C.p 67530, Montemorelos Nuevo León, México, es una empresa debidamente
+establecida en México, con registro RFC UMO8409105C4. Nuestro responsable de la
+protección de datos es el C.P&nbsp; Carlos
+Sergio Gastelum Rubalcaba , usted puede contactarlo en la cuenta de
+correo:&nbsp;<strong><span style="color:black;
+mso-themecolor:text1">emprendum@um.edu.mx</span></strong><span style="color:black;
+mso-themecolor:text1"> </span><o:p></o:p></p>
+
+<p class="MsoNormal">Este Aviso de Privacidad contempla en todo momento los
+principios de licitud, consentimiento, información, calidad, finalidad,
+lealtad, proporcionalidad y responsabilidad en el tratamiento de los datos
+personales.<o:p></o:p></p>
+
+<p class="MsoNormal"><strong>1.- Tipo de
+información personal que se obtiene<o:p></o:p></strong></p>
+
+<p class="MsoNormal">En <strong><span style="color:black;mso-themecolor:text1">emprendum.um.edu.mx </span></strong>recolectamos
+información de diferentes maneras y desde varias áreas de nuestro sitio web. Se
+encuentra sujeta a las normas de confidencialidad y privacidad toda aquella
+información personal que el usuario ingresa voluntariamente a nuestro sitio, la
+creación del perfil personal, la inscripción al servicio de correo electrónico,
+así como la información que ingresa durante el proceso de compra y
+participación en concursos, rifas y encuestas en línea que llevamos a cabo
+ocasionalmente.<o:p></o:p></p>
+
+<p class="MsoNormal">La información deberá ser veraz y completa. El usuario
+responderá en todo momento por los datos proporcionados y en ningún caso <strong><span style="color:black;mso-themecolor:
+text1">emprendum.um.edu.mx</span></strong><span style="color:black;mso-themecolor:
+text1"> </span>será responsable de la veracidad de estos.<o:p></o:p></p>
+
+<p class="MsoNormal">La información que <strong><span style="color:black;mso-themecolor:text1">emprendum.um.edu.mx</span></strong><span style="color:black;mso-themecolor:text1"> </span>solicita al usuario es la
+siguiente:<o:p></o:p></p>
+
+<p class="MsoNormal">&nbsp;Cuenta de correo electrónico<o:p></o:p></p>
+
+<p class="MsoNormal">&nbsp;Nombre completo<o:p></o:p></p>
+
+<p class="MsoNormal">&nbsp;Domicilio de envío<o:p></o:p></p>
+
+<p class="MsoNormal">&nbsp;Teléfono<o:p></o:p></p>
+
+<p class="MsoNormal">&nbsp;Razón Social<o:p></o:p></p>
+
+<p class="MsoNormal">&nbsp;Domicilio Fiscal<o:p></o:p></p>
+
+<p class="MsoNormal">&nbsp;RFC<o:p></o:p></p>
+
+<p class="MsoNormal"><br>
+<!--[if !supportLineBreakNewLine]--><br>
+<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal">De manera opcional, el usuario puede proporcionar
+información adicional con la finalidad de realizar transacciones u obtener
+información de sus pedidos. En estos casos podrían solicitarse los siguientes
+datos:<o:p></o:p></p>
+
+<p class="MsoNormal">&nbsp;Número de tarjeta de crédito<o:p></o:p></p>
+
+<p class="MsoNormal">&nbsp;Banco emisor de la tarjeta de crédito<o:p></o:p></p>
+
+<p class="MsoNormal">&nbsp;Fecha de vencimiento de la tarjeta de crédito<o:p></o:p></p>
+
+<p class="MsoNormal">&nbsp;Nombre completo del tarjetahabiente<o:p></o:p></p>
+
+<p class="MsoNormal">&nbsp;Celular (si desea recibir alertas SMS)<o:p></o:p></p>
+
+<p class="MsoNormal">&nbsp;Fecha de nacimiento<o:p></o:p></p>
+
+<p class="MsoNormal"><br>
+<!--[if !supportLineBreakNewLine]--><br>
+<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal">Importante:&nbsp;La información de la tarjeta de crédito NO
+es almacenada por <strong><span style="color:black;mso-themecolor:text1">emprendum.um.edu.mx</span></strong><o:p></o:p></p>
+
+<p class="MsoNormal"><strong>2.- Uso de la
+Información<o:p></o:p></strong></p>
+
+<p class="MsoNormal">La información solicitada permite a <strong><span style="color:black;mso-themecolor:text1">emprendum.um.edu.mx</span></strong><span style="color:black;mso-themecolor:text1"> </span>contactar a los usuarios
+cuando sea necesario para completar los procedimientos de cotización y/o venta,
+responder dudas y comentarios.<o:p></o:p></p>
+
+<p class="MsoNormal">Asimismo utilizaremos la información obtenida para:<o:p></o:p></p>
+
+<p class="MsoNormal">&nbsp;Procurar un servicio eficiente<o:p></o:p></p>
+
+<p class="MsoNormal">&nbsp;Generar una cuenta de acceso para utilizar nuestro
+servicio<o:p></o:p></p>
+
+<p class="MsoNormal">&nbsp;Informar sobre nuevos productos y/o servicios<o:p></o:p></p>
+
+<p class="MsoNormal">&nbsp;Dar cumplimiento a obligaciones contraídas con
+nuestros clientes<o:p></o:p></p>
+
+<p class="MsoNormal">&nbsp;Informar sobre cambios de nuestros productos o
+servicios<o:p></o:p></p>
+
+<p class="MsoNormal">&nbsp;Proveer una mejor atención al usuario<o:p></o:p></p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal"><strong>3.- Protección<o:p></o:p></strong></p>
+
+<p class="MsoNormal">La seguridad y la confidencialidad de los datos que los
+usuarios proporcionen al contratar un servicio o comprar un producto en línea
+estarán protegidos por un servidor seguro bajo el protocolo Secure Socket Layer
+.<o:p></o:p></p>
+
+<p class="MsoNormal">Para verificar que se encuentra en un entorno protegido
+asegúrese de que aparezca una S en la barra de navegación. Ejemplo: https://.<o:p></o:p></p>
+
+<p class="MsoNormal">Sin embargo, y a pesar de contar cada día con herramientas
+más seguras, la protección de los datos enviados a través de Internet no se
+puede garantizar al 100%; por lo que una vez recibidos, se hará todo lo posible
+por salvaguardar la información.<o:p></o:p></p>
+
+<p class="MsoNormal">Al recabar los datos del usuario en línea, podemos elaborar
+estadísticas internas que nos indiquen cuáles son los servicios y productos más
+apreciados por diferentes segmentos de usuarios, igualmente nos sirve para dar
+la formalidad debida al proceso de compra.<o:p></o:p></p>
+
+<p class="MsoNormal">4<strong><span style="color:black;mso-themecolor:text1">.- Qué son los cookies y cómo se
+utilizan<o:p></o:p></span></strong></p>
+
+<p class="MsoNormal">Los cookies son pequeñas piezas de información que son
+enviadas por el sitio Web a su navegador.<o:p></o:p></p>
+
+<p class="MsoNormal">Los cookies se almacenan en el disco duro de su equipo y se
+utilizan para determinar sus preferencias cuando se conecta a los servicios de
+nuestros sitios, así como para rastrear determinados comportamientos o
+actividades llevadas a cabo por usted dentro de nuestros sitios.<o:p></o:p></p>
+
+<p class="MsoNormal">En algunas secciones de nuestro sitio requerimos que el
+cliente tenga habilitados los cookies ya que algunas de las funcionalidades
+requieren de éstas para trabajar. Los cookies nos permiten: a) reconocerlo al
+momento de entrar a nuestro sitio y ofrecerle de una experiencia personalizada,
+b) conocer la configuración personal del sitio especificada por usted, por
+ejemplo, los cookies nos pemiten detectar el ancho de banda que usted ha
+seleccionado al momento de ingresar al home page de nuestro sitio, de tal forma
+que sabemos qué tipo de información es aconsejable descargar, c) calcular el
+tamaño de nuestra audiencia y medir algunos parámetros de tráfico, pues cada
+navegador que obtiene acceso a nuestro sitio adquiere un cookie que se usa para
+determinar la frecuencia de uso y las secciones de los sitios visitadas,
+reflejando así sus hábitos y preferencias, información que nos es útil para
+mejorar el contenido, los titulares y las promociones para los usuarios. Los
+cookies también nos ayudan a rastrear algunas actividades, por ejemplo, en
+algunas de las encuestas que lanzamos en línea, podemos utilizar cookies para
+detectar si el usuario ya ha llenado la encuesta y evitar desplegarla
+nuevamente, en caso de que lo haya hecho. El botón de “ayuda” que se encuentra
+en la barra de herramientas de la mayoría de los navegadores, le dirá cómo
+evitar aceptar nuevos cookies, cómo hacer que el navegador le notifique cuando
+recibe un nuevo cookie o cómo deshabilitar todos los cookies. Sin embargo, las
+cookies le permitirán tomar ventaja de las características más benéficas que le
+ofrecemos, por lo que le recomendamos que las deje activadas.<o:p></o:p></p>
+
+<p class="MsoNormal"><strong><span style="color:black;mso-themecolor:text1">5.- Confidencialidad de la información<o:p></o:p></span></strong></p>
+
+<p class="MsoNormal">Cuando se encuentre en el sitio de <strong><span style="color:black;mso-themecolor:text1">emprendum.um.edu.mx</span></strong><span style="color:black;mso-themecolor:text1"> </span>y le pidan datos personales,
+usted compartirá la información únicamente con <strong><span style="color:black;mso-themecolor:text1">emprendum.um.edu.mx</span></strong><o:p></o:p></p>
+
+<p class="MsoNormal"><strong><span style="color:black;mso-themecolor:text1">emprendum.um.edu.mx</span></strong><span style="color:black;mso-themecolor:text1"> </span>no compartirá la información
+confidencial con terceras partes, excepto que tenga expresa autorización de
+quienes se suscribieron, o cuando haya sido requerido por orden judicial para
+cumplir con las disposiciones procesales.<o:p></o:p></p>
+
+<p class="MsoNormal"><strong><span style="color:black;mso-themecolor:text1">emprendum.um.edu.mx</span></strong><span style="color:black;mso-themecolor:text1"> &nbsp;</span>no vende ni alquila la información de
+los usuarios. Si los datos personales del usuario debieran ser compartidos con
+socios comerciales o patrocinadores, el usuario será notificado antes que éstos
+sean recogidos o transferidos.<o:p></o:p></p>
+
+<p class="MsoNormal"><strong><span style="color:black;mso-themecolor:text1">emprendum.um.edu.mx</span></strong><span style="color:black;mso-themecolor:text1"> </span>puede difundir las
+estadísticas en conjunto de los usuarios (por ejemplo, el porcentaje de
+nuestros usuarios que son hombres o mayores a determinada edad, etc.) para
+describir nuestros servicios y para otros propósitos lícitos en los casos que
+marque la ley.<o:p></o:p></p>
+
+<p class="MsoNormal"><strong><span style="color:black;mso-themecolor:text1">emprendum.um.edu.mx</span></strong><span style="color:black;mso-themecolor:text1"> &nbsp;</span>puede difundir la información de la
+cuenta en casos especiales cuando pensemos que proporcionar esta información
+puede servir para identificar, localizar o realizar acciones legales contra
+personas que pudiesen infringir las condiciones de servicio de<strong><span style="color:black;mso-themecolor:
+text1"> emprendum.um.edu.mx</span></strong>, o causar daños o interferencia sobre
+los derechos de <strong><span style="color:black;
+mso-themecolor:text1">emprendum.um.edu.mx</span></strong><span style="color:black;
+mso-themecolor:text1"> </span>o sus propiedades, o de cualquier otra persona
+que pudiese resultar perjudicada por dichas actividades.<o:p></o:p></p>
+
+<p class="MsoNormal">6<strong><span style="color:black;mso-themecolor:text1">.- Limitación de Uso y Divulgación de
+la Información<o:p></o:p></span></strong></p>
+
+<p class="MsoNormal">En nuestro programa de notificación de promociones, ofertas
+y servicios a través de correo electrónico, sólo <strong><span style="color:black;mso-themecolor:text1">emprendum.um.edu.mx</span></strong><span style="color:black;mso-themecolor:text1"> </span>tiene acceso a la información
+recabada. Este tipo de publicidad se realiza mediante avisos y mensajes
+promocionales de correo electrónico, los cuales sólo serán enviados a usted y a
+aquellos contactos registrados para tal propósito, esta indicación podrá usted
+modificarla en cualquier momento enviando un correo a&nbsp;<strong><span style="color:black;mso-themecolor:text1">clienteemprendum@um.edu.mx</span></strong>.
+En los correos electrónicos enviados, pueden incluirse ocasionalmente ofertas
+de terceras partes que sean nuestros socios comerciales.<o:p></o:p></p>
+
+<p class="MsoNormal"><strong><span style="color:black;mso-themecolor:text1">7.- Protección de la información
+personal<o:p></o:p></span></strong></p>
+
+<p class="MsoNormal">La información proporcionada por el usuario, está asegurada
+por una contraseña personal a la cual sólo el usuario podrá acceder y de la
+cual sólo él tiene conocimiento.<o:p></o:p></p>
+
+<p class="MsoNormal">Le recomendamos que no revele su contraseña a nadie. <strong><span style="color:black;mso-themecolor:
+text1">emprendum.um.edu.mx</span></strong><span style="color:black;mso-themecolor:
+text1"> </span>no solicitará su contraseña en ninguna llamada telefónica o
+mensaje de correo no solicitados. En todo momento, el usuario es el responsable
+único y final de mantener en secreto su nombre de usuario, contraseña personal,
+clave de acceso y número confidencial con los cuales tenga acceso a los
+servicios y contenidos de nuestro sitio. Para disminuir los riesgos <strong><span style="color:black;mso-themecolor:
+text1">emprendum.um.edu.mx</span></strong><span style="color:black;mso-themecolor:
+text1"> </span>recomienda al usuario salir de su cuenta y cerrar la ventana de
+su navegador cuando finalice su actividad, más aún si comparte su computadora
+con alguien o utiliza una computadora en un lugar público como una biblioteca o
+un café Internet.<o:p></o:p></p>
+
+<p class="MsoNormal">Una vez recibidos los datos, haremos todo lo posible para
+salvaguardar su seguridad en nuestros sistemas. En este tema, el equipo de
+colaboradores de <strong><span style="color:
+black;mso-themecolor:text1">emprendum.um.edu.mx</span></strong> ha enfocado sus
+esfuerzos para ofrecer la tecnología más moderna y actualizada a fin de
+ofrecerle la mayor seguridad posible.<o:p></o:p></p>
+
+<p class="MsoNormal"><strong><span style="color:black;mso-themecolor:text1">8.- Confidencialidad (menores de edad)<o:p></o:p></span></strong></p>
+
+<p class="MsoNormal">La salvaguarda de la información infantil es extremadamente
+importante. Se recomienda a los padres y tutores que asesoren a los menores de
+edad al momento de navegar por Internet y que aprueben el envío de cualquier
+tipo de información personal.<o:p></o:p></p>
+
+<p class="MsoNormal"><strong><span style="color:black;mso-themecolor:text1">9.- Aceptación de los términos<o:p></o:p></span></strong></p>
+
+<p class="MsoNormal">Esta declaración de Confidencialidad / Privacidad está
+sujeta a los términos y condiciones de <strong><span style="color:black;mso-themecolor:text1">www.emprendum.um.edu.mx</span></strong>, lo
+cual constituye un acuerdo legal entre el usuario y <strong><span style="color:black;mso-themecolor:text1">emprendum.um.edu.mx<o:p></o:p></span></strong></p>
+
+<p class="MsoNormal">Si el usuario utiliza los servicios de <strong><span style="color:black;mso-themecolor:text1">www.emprendum.um.edu.mx</span></strong>,
+significa que ha leído, entendido y acordado los términos antes expuestos.<o:p></o:p></p>
+
+<p class="MsoNormal">11.- Principios mínimos de nuestra política de privacidad /
+confidencialidad<o:p></o:p></p>
+
+<p class="MsoNormal">A continuación, <strong><span style="color:black;mso-themecolor:text1">www.emprendum.um.edu.mx</span></strong><span style="color:black;mso-themecolor:text1"> </span>le expondrá brevemente los
+principios que rigen sus políticas de privacidad y confidencialidad para la
+información proporcionada por los usuarios de sus servicios electrónicos en
+línea:<o:p></o:p></p>
+
+<p class="MsoNormal">a) <strong><span style="color:black;mso-themecolor:text1">emprendum.um.edu.mx</span></strong><span style="color:black;mso-themecolor:text1"> </span>únicamente recabara la
+información del cliente que es necesaria para brindarle los servicios
+personalizados que se encuentran disponibles en el sitio de Internet, la cual
+se utilizará únicamente para los fines que es solicitada.<o:p></o:p></p>
+
+<p class="MsoNormal">b) <strong><span style="color:black;mso-themecolor:text1">www.emprendum.um.edu.mx</span></strong><span style="color:black;mso-themecolor:text1"> </span>se esfuerza por asegurar la
+calidad de la información que se recaba sobre nuestros usuarios de servicios en
+línea, particularmente cuando se haya obtenido al través de algún proveedor de
+información o de servicios.<o:p></o:p></p>
+
+<p class="MsoNormal">c) <strong><span style="color:black;mso-themecolor:text1">www.emprendum.um.edu.mx</span></strong><span style="color:black;mso-themecolor:text1"> </span>enfoca sus esfuerzos para
+ofrecer la tecnología más moderna y actualizada a fin de ofrecer a sus
+clientes/usuarios la mayor seguridad posible en el manejo y transferencia de la
+información que es requerida en los diversos procesos de requerimiento de
+datos.<o:p></o:p></p>
+
+<p class="MsoNormal">d) <strong><span style="color:black;mso-themecolor:text1">www.emprendum.um.edu.mx</span></strong><span style="color:black;mso-themecolor:text1"> </span>evita la divulgación de
+información acerca del cliente/usuario, haciéndolo únicamente respecto de
+aquellos datos que expresamente sean autorizados para ello.<o:p></o:p></p>
+
+<p class="MsoNormal">e) En todo momento, <strong><span style="color:black;mso-themecolor:text1">www.emprendum.um.edu.mx</span></strong><span style="color:black;mso-themecolor:text1"> </span>está atento a las inquietudes
+que manifiesten nuestros clientes/usuarios respecto al manejo de la información
+que proporcionen para los diversos procesos en línea.<o:p></o:p></p>
+
+<p class="MsoNormal">f) <strong><span style="color:black;mso-themecolor:text1">emprendum.um.edu.mx </span></strong>cuida
+de que estos principios de privacidad/confidencialidad se extiendan al conjunto
+de relaciones comerciales al interior del grupo.<o:p></o:p></p>
+
+<p class="MsoNormal">g) <strong><span style="color:black;mso-themecolor:text1">emprendum.um.edu.mx</span></strong><span style="color:black;mso-themecolor:text1"> </span>comparte la responsabilidad
+del cuidado de la información con sus empleados, haciéndolos copartícipes de
+los lineamientos expuestos en los documentos de "Políticas de privacidad y
+Seguridad”.<o:p></o:p></p>
+
+<p class="MsoNormal">12.- Modificaciones en las políticas de privacidad<o:p></o:p></p>
+
+<p class="MsoNormal"><strong><span style="color:black;mso-themecolor:text1">www.emprendum.um.edu.mx</span></strong> se
+reserva el derecho de efectuar en cualquier momento, modificaciones en las
+presentes políticas de privacidad y adaptarlas a novedades legislativas,
+jurisprudenciales, así como a prácticas del mercado.<o:p></o:p></p>
+
+<p class="MsoNormal">Estas modificaciones estarán disponibles al público en
+nuestra página de Internet [<strong><span style="color:black;mso-themecolor:text1">www.emprendum.um.edu.mx</span></strong>,
+sección aviso de privacidad]<o:p></o:p></p>
+
+<p class="MsoNormal">Queda bajo responsabilidad del usuario leer periódicamente
+las políticas de privacidad para estar al tanto de dichas modificaciones, sobre
+todo antes de realizar un pedido o contratar un servicio en <strong><span style="color:black;mso-themecolor:
+text1">emprendum.um.edu.mx<o:p></o:p></span></strong></p>
+
+<p class="MsoNormal">Si el usuario considera que han sido vulnerados sus derechos
+respecto de la protección de datos personales, tiene el derecho de acudir a la
+autoridad correspondiente para defender su ejercicio. La autoridad es el
+Instituto Nacional de Transparencia, Acceso a la Información y Protección de
+Datos Personales (INAI), su sitio web es: www.inai.org.mx<br></p>                      
+    			{% endfor %}
+    		</div>
+        </div>
+        {% endif %} 
+        <button onclick="hidePrivacy()" class="sh-next-button" style="max-width: 10vw; left: 40%; bottom: 6%;">OK</button>
+    </div>
+</div>
+<div class="divPopUp"  id="termsPop">
+    <div class="popUp" style="height: 39vw; top: 15%; text-align: center;">
+        <span style="font-size:2.0vw; ">Términos y condiciones</span>
+        {% if legal %}
+        <div style="background-color: #fff;">
+             <div id="terms" style="height: 30vw; overflow: scroll;">
+             	{% for t in legal if (t.name == "terms") %}
+				 <p class="MsoNormal"><strong><span style="font-size:14.0pt;mso-bidi-font-size:11.0pt;line-height:107%">Términos y
+Condiciones de Uso<o:p></o:p></span></strong></p><p class="MsoNormal"><strong><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;line-height:107%">1.- Proemio<o:p></o:p></span></strong></p><p class="MsoNormal">Al ingresar y utilizar este portal de Internet, cuyo nombre
+de dominio es&nbsp;<strong><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;line-height:107%">www.emprendum.um.edu.mx</span></strong>,
+propiedad de Universidad de &nbsp;Montemorelos CV, que en lo sucesivo se
+denominará "emprendum.um.edu.mx”, el usuario está aceptando los TÉRMINOS Y
+CONDICIONES DE USO contenidos en este convenio y declara expresamente su
+aceptación utilizando para tal efecto medios electrónicos, en términos de lo
+dispuesto por el artículo 1803 del Código Civil Federal.<o:p></o:p></p><p class="MsoNormal">En caso de no aceptar en forma absoluta y completa los
+términos y condiciones de este convenio, el usuario deberá abstenerse de
+acceder, utilizar y observar el sitio <strong>www.emprendum.um.edu.mx</strong><o:p></o:p></p><p class="MsoNormal">Y en caso de que el usuario acceda, utilice y observe el
+sitio web&nbsp;<strong>www.emprendum.um.edu.mx</strong>
+se considerará como una absoluta y expresa aceptación de los TÉRMINOS Y
+CONDICIONES DE USO aquí estipulados.<o:p></o:p></p><p class="MsoNormal">La sola utilización de dicha página de Internet le otorga al
+público en general la condición de usuario (en adelante referido como el
+«usuario» o los «usuarios») e implica la aceptación, plena e incondicional, de
+todas y cada una de las condiciones generales y particulares incluidas en estos
+TÉRMINOS Y CONDICIONES DE USO publicados por <strong>emprendum.um.edu.mx</strong>, en el momento mismo en que el usuario acceda
+al sitio web.<o:p></o:p></p><p class="MsoNormal">Cualquier modificación a los presentes TÉRMINOS Y
+CONDICIONES DE USO será realizada cuando el titular de esta, en este caso <strong>emprendum.um.edu.mx</strong>, lo considere
+apropiado, siendo exclusiva responsabilidad del usuario asegurarse de tomar
+conocimiento de tales modificaciones.<o:p></o:p></p><p class="MsoNormal">2.- Convenio<o:p></o:p></p><p class="MsoNormal">Convenio de adhesión para el uso de la página de
+Internet&nbsp;<strong>www.emprendum.um.edu.mx</strong>&nbsp; que celebran: por una parte, <strong>emprendum.um.edu.mx</strong> y, por la otra, el
+usuario, sujetándose, ambas partes, a lo establecido en este documento.<o:p></o:p></p><p class="MsoNormal">3.- Licencia<o:p></o:p></p><p class="MsoNormal">a) Por virtud de la celebración de este convenio, “<strong>emprendum.um.edu.mx</strong>” otorga y concede
+al usuario el derecho no exclusivo, revocable y no transferible de ver y
+utilizar el sitio web&nbsp;<strong>www.emprendum.um.edu.mx</strong>
+&nbsp;de conformidad con los TÉRMINOS Y
+CONDICIONES DE USO que aquí se estipulan. Para los efectos del presente
+convenio, las partes acuerdan que por «usuario» se entenderá a cualquier
+persona de cualquier naturaleza que ingrese al sitio web&nbsp;<strong>www.emprendum.um.edu.mx</strong> &nbsp;&nbsp;y/o a cualquiera de las subpáginas que
+despliegan su contenido y/o a la persona de cualquier naturaleza que se dé de
+alta y/o use cualquiera de los servicios que se ofrecen a través de dicha
+página.<o:p></o:p></p><p class="MsoNormal">b) El usuario sólo podrá imprimir y/o copiar cualquier
+información contenida o publicada en el sitio web&nbsp;<strong>www.emprendum.um.edu.mx</strong> &nbsp;&nbsp;exclusivamente
+para uso personal, queda terminantemente prohibido el uso comercial de dicha
+información. En caso de ser persona moral se sujetará a lo dispuesto por el
+artículo 148, fracción IV de la Ley Federal del Derecho de Autor.<o:p></o:p></p><p class="MsoNormal">c) La reimpresión, publicación, distribución, asignación,
+sublicencia, venta, reproducción electrónica o por otro medio, parcial o total,
+de cualquier información, documento o gráfico que aparezca en el sitio
+web&nbsp;<strong>www.emprendum.um.edu.mx</strong> &nbsp;&nbsp;para
+cualquier uso distinto al personal no comercial le está expresamente prohibido
+al usuario, a menos de que cuente con la autorización previa y por escrito de <strong>emprendum.um.edu.mx<o:p></o:p></strong></p><p class="MsoNormal">4.- Reglas para el uso del sitio web&nbsp;<strong>www.emprendum.um.edu.mx&nbsp; <o:p></o:p></strong></p><p class="MsoNormal">El usuario y <strong>emprendum.um.edu.mx</strong>
+están de acuerdo en que la utilización del sitio web&nbsp;<strong>www.emprendum.um.edu.mx&nbsp; </strong>&nbsp;se sujetará a las siguientes reglas:<o:p></o:p></p><p class="MsoNormal">1. Información contenida en el sitio&nbsp;<strong>www.emprendum.um.edu.mx&nbsp; </strong>. El usuario reconoce y acepta que la
+información publicada o contenida en dicho sitio será claramente identificada
+de forma tal que se reconozca que la misma proviene y ha sido generada por <strong>emprendum.um.edu.mx&nbsp; </strong>o por sus proveedores.<o:p></o:p></p><p class="MsoNormal">2. No obstante, la información, conceptos y opiniones
+publicadas en dicho sitio no necesariamente reflejan la posición de<strong> emprendum.um.edu.mx&nbsp; </strong>, ni de sus empleados, oficiales,
+directores, accionistas, licenciatarios y concesionarios (en lo sucesivo los
+«afiliados»). Por esta razón, <strong>emprendum.um.edu.mx&nbsp; </strong>no se hace responsable por ninguna de las
+informaciones, opiniones y conceptos que se emitan en la página web referida.
+En este caso, se recomienda al usuario consultar con un especialista y/o
+profesional en la materia. Asimismo, <strong>emprendum.um.edu.mx&nbsp; </strong>no se hace responsable de la información
+contenida en la página de Internet, incluidas las subpáginas, en el entendido
+de que el uso y seguimiento de la misma es bajo riesgo y responsabilidad del
+usuario.<o:p></o:p></p><p class="MsoNormal">3. <strong>emprendum.um.edu.mx&nbsp; </strong>se reserva el derecho de bloquear el
+acceso o remover en forma parcial o total toda información, comunicación o
+material que a su exclusivo juicio pueda resultar: i) abusivo, difamatorio u
+obsceno; ii) fraudulento, artificioso o engañoso; iii) violatorio de derechos
+de autor, marcas, confidencialidad, secretos industriales o cualquier derecho
+de propiedad intelectual de un tercero; iv) ofensivo o; v) que de cualquier
+forma contravenga lo establecido en este convenio. Si el usuario desea obtener
+mayor información de un tema en específico proveído por <strong>emprendum.um.edu.mx&nbsp; </strong>o sus
+proveedores deberá consultarlo directamente con cada uno de ellos, según
+corresponda, y/o con un especialista en la materia.<o:p></o:p></p><p class="MsoNormal">4. El usuario reconoce que <strong>emprendum.um.edu.mx&nbsp; </strong>no
+controla o censura previamente el contenido disponible en la página de
+Internet. Por tal motivo, <strong>emprendum.um.edu.mx&nbsp; </strong>no asume ninguna responsabilidad por el
+contenido provisto a dicha página por proveedores independientes o ajenos a <strong>emprendum.um.edu.mx&nbsp; </strong>y no tiene el control editorial sobre el
+contenido, información y/o material generado y/o provisto por terceros. Todas
+las opiniones, consejos, declaraciones, servicios, ofertas u otras
+informaciones o contenidos expresados o puestos a disposición del público por
+terceros, pertenecen a su respectivo autor y <strong>emprendum.um.edu.mx&nbsp; </strong>no asume
+responsabilidad alguna frente a ello. De la misma forma, <strong>emprendum.um.edu.mx&nbsp; </strong>no
+garantiza la exactitud, veracidad, amplitud y/o utilidad de cualquier contenido
+provisto por tales terceros. Adicionalmente, <strong>emprendum.um.edu.mx&nbsp; </strong>no es
+responsable ni garantiza la exactitud, exhaustividad, veracidad y/o
+confiabilidad de cualquier opinión, información, consejo o declaración
+expresados por <strong>emprendum.um.edu.mx&nbsp; </strong>a través de su página de Internet y bajo
+ninguna circunstancia <strong>emprendum.um.edu.mx&nbsp; </strong>será responsable de cualquier daño y/o
+perjuicio, directo o indirecto, causado en virtud de la confianza que el
+usuario deposite en información obtenida a través de su sitio <strong>emprendum.um.edu.mx&nbsp; </strong>se reserva el derecho de suprimir o
+modificar el contenido de esta página que, a exclusivo juicio de <strong>emprendum.um.edu.mx&nbsp; </strong>, no cumpla con sus estándares o que
+pudiera resultar contrario al ordenamiento jurídico vigente y, por
+consiguiente, no será responsable por cualquier falla o tardanza que se genere
+al eliminar tal material.<o:p></o:p></p><p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class="MsoNormal">4. Los rembolsos solicidatos por medio de un cargo duplicado se realizarán descontando la comisión correspondiente equivalente al 3.9% + IVA en caso de realizar el pago por medio de OXXO PAY, 12.5MXN + IVA en caso de realizar el pago por medio de transacción electrónica, 2.9% + 2.5MXN + IVA en caso de realizar la transacción por medio de tarjetas en una sola exhibición y de 3.9% a 13.9% + IVA en caso de manejo de crédito 
+<p class="MsoNormal">5.- Formatos<o:p></o:p></p><p class="MsoNormal">Los usuarios reconocen que, al proporcionar la información
+de carácter personal requerida en alguno de los servicios que se prestan en
+este sitio web, otorgan a <strong>emprendum.um.edu.mx&nbsp; </strong>la autorización señalada en el artículo
+109 de la Ley Federal del Derecho de Autor. En todos los casos, los usuarios
+responderán por la veracidad de la información proporcionada a<strong> emprendum.um.edu.mx&nbsp; </strong><o:p></o:p></p><p class="MsoNormal">Asimismo, para la prestación de servicios, el usuario se
+obliga además a aceptar los términos y condiciones estipulados para tal efecto.<o:p></o:p></p><p class="MsoNormal">6.- Derechos de autor y propiedad industrial<o:p></o:p></p><p class="MsoNormal"><strong>emprendum.um.edu.mx&nbsp; </strong>, el sitio web&nbsp;<strong>www.emprendum.um.edu.mx&nbsp; </strong>,
+sus logotipos y todo el material que aparece en dicho sitio, son marcas,
+nombres de dominio, nombres comerciales y obras artísticas propiedad de sus
+respectivos titulares y están protegidos por los tratados internacionales y las
+leyes aplicables en materia de propiedad intelectual y derechos de autor.<o:p></o:p></p><p class="MsoNormal">Los derechos de autor sobre el contenido, organización,
+recopilación, compilación, información, logotipos, fotografías, imágenes,
+programas, aplicaciones, y en general cualquier información contenida o
+publicada en el sitio web&nbsp;<strong>www.emprendum.um.edu.mx&nbsp; </strong>&nbsp;se
+encuentran debidamente protegidos a favor de<strong> emprendum.um.edu.mx&nbsp; </strong>, sus
+afiliados, proveedores y/o de sus respectivos propietarios, de conformidad con
+la legislación aplicable en materia de propiedad intelectual e industrial.<o:p></o:p></p><p class="MsoNormal">Se prohíbe expresamente al usuario modificar, alterar o
+suprimir, ya sea en forma total o parcial, los avisos, marcas, nombres
+comerciales, señas, anuncios, logotipos o en general cualquier indicación que
+se refiera a la propiedad de la información contenida en el sitio señalado.<o:p></o:p></p><p class="MsoNormal">En caso de que el usuario transmita a <strong>emprendum.um.edu.mx&nbsp; </strong>cualquier
+información, programas, aplicaciones, software o en general cualquier material
+que requiera ser licenciado a través del sitio web&nbsp;<strong>www.emprendum.um.edu.mx&nbsp; </strong>, el
+usuario otorga con este acto a <strong>emprendum.um.edu.mx&nbsp; </strong>una licencia perpetua, universal,
+gratuita, no exclusiva, mundial y libre de regalías, que incluye los derechos
+de sublicenciar, vender, reproducir, distribuir, transmitir, crear trabajos
+derivados, exhibirlos y ejecutarlos públicamente.<o:p></o:p></p><p class="MsoNormal">Lo establecido en el párrafo anterior se aplicará igualmente
+a cualquier otra información que el usuario envíe o transmita a <strong>emprendum.um.edu.mx&nbsp; </strong>incluyendo, sin limitación alguna, ideas
+para renovar o mejorar el sitio web&nbsp;<strong>www.emprendum.um.edu.mx&nbsp; </strong>, ya sea que éstas hayan sido incluidas
+en cualquier espacio de la página señalada o en virtud de otros medios o modos
+de transmisión conocidos o que sean desarrollados en el futuro.<o:p></o:p></p><p class="MsoNormal">Por lo anterior, el usuario renuncia expresamente con este
+acto a llevar a cabo cualquier acción, demanda o reclamación en contra de<strong> emprendum.um.edu.mx&nbsp; </strong>, sus afiliados o proveedores por
+cualquier actual o eventual violación de cualquier derecho de autor o propiedad
+intelectual derivado de la información, programas, aplicaciones, software,
+ideas y demás material que el propio usuario envíe al sitio web&nbsp;<strong>www.emprendum.um.edu.mx&nbsp; </strong><o:p></o:p></p><p class="MsoNormal">Es nuestra política actuar contra las violaciones que en
+materia de propiedad intelectual se pudieran generar u originar según lo
+estipulado en la legislación y en otras leyes de propiedad intelectual
+aplicables, incluyendo la eliminación o el bloqueo del acceso a material que se
+encuentra sujeto a actividades que infrinjan el derecho de propiedad
+intelectual de terceros.<o:p></o:p></p><p class="MsoNormal">En caso de que algún usuario o tercero consideren que
+cualquiera de los contenidos que se encuentren o sean introducidos en dicho
+sitio&nbsp;<strong>www.emprendum.um.edu.mx&nbsp; </strong>&nbsp;y/o
+cualquiera de sus servicios, violen sus derechos de propiedad intelectual
+deberán enviar una notificación a la siguiente dirección <strong>clienteemprendum@um.edu.mx</strong>, en la que indiquen: i) datos personales
+verídicos (nombre, dirección, número de teléfono y dirección de correo
+electrónico del reclamante); ii) firma autógrafa con los datos personales del
+titular de los derechos de propiedad intelectual; iii) indicación precisa y
+completa del (los) contenido (s) protegido (s) mediante los derechos de
+propiedad intelectual supuestamente infringidos, así como la localización de
+dichas violaciones en el sitio web referido; iv) declaración expresa y clara de
+que la introducción del (los) contenido (s) indicado (s) se ha realizado sin el
+consentimiento del titular de los derechos de propiedad intelectual
+supuestamente infringidos; v) declaración expresa, clara y bajo la
+responsabilidad del reclamante de que la información proporcionada en la
+notificación es exacta y de que la introducción del (los) contenido (s)
+constituye una violación de dichos derechos.<o:p></o:p></p><p class="MsoNormal">7.- Material publicitario<o:p></o:p></p><p class="MsoNormal">El usuario reconoce y acepta que <strong>emprendum.um.edu.mx</strong>&nbsp;&nbsp; es una
+organización independiente de terceros patrocinadores y anunciantes cuya
+información, imágenes, anuncios y demás material publicitario o promocional (en
+lo subsecuente «material publicitario›) puede ser publicado en el sitio
+web&nbsp;<strong>www.emprendum.um.edu.mx</strong>&nbsp; <o:p></o:p></p><p class="MsoNormal">El usuario reconoce y acepta que el material publicitario no
+forma parte del contenido principal que se publica en dicho sitio. Asimismo,
+reconoce y acepta con este acto que este material se encuentra protegido por
+las leyes que en materia de propiedad intelectual e industrial resulten
+aplicables.<o:p></o:p></p><p class="MsoNormal">8.- Negación de garantías<o:p></o:p></p><p class="MsoNormal">El usuario está de acuerdo que la utilización del sitio
+web&nbsp;<strong>www.emprendum.um.edu.mx</strong>&nbsp; &nbsp;se
+realiza bajo su propio riesgo y que los servicios y productos que ahí se
+prestan y ofrecen se prevén sobre una base «tal cual» y «según sean
+disponibles». <strong>emprendum.um.edu.mx</strong>&nbsp; no garantiza que la página señalada satisfaga
+los requerimientos del usuario o que los servicios que en ella se ofrecen no
+sufran interrupciones, sean seguros o estén exentos de errores.<o:p></o:p></p><p class="MsoNormal"><strong>emprendum.um.edu.mx</strong>&nbsp; no garantiza o avala en ninguna forma la
+veracidad, precisión, legalidad, moralidad o ninguna otra característica del
+contenido del material que se publique en el sitio web&nbsp;<strong>www.emprendum.um.edu.mx</strong>&nbsp; <o:p></o:p></p><p class="MsoNormal"><strong>emprendum.um.edu.mx</strong>&nbsp; se libera de cualquier responsabilidad y
+condiciones, tanto expresas como implícitas, en relación con los servicios e
+información contenida o disponible en o a través de esta página web;
+incluyendo, sin limitación alguna:<o:p></o:p></p><p class="MsoNormal">a) La disponibilidad de uso del sitio web&nbsp;<strong>www.emprendum.um.edu.mx</strong>&nbsp; <o:p></o:p></p><p class="MsoNormal">b) La ausencia de virus, errores, desactivadores o cualquier
+otro material contaminante o con funciones destructivas en la información o
+programas disponibles en o a través de esta página o en general cualquier falla
+en&nbsp;dicho sitio<o:p></o:p></p><p class="MsoNormal">c) No obstante lo anterior, <strong>emprendum.um.edu.mx</strong>&nbsp; o sus
+proveedores podrán actualizar el contenido de la página constantemente, por lo
+que se solicita al usuario tomar en cuenta que algunas informaciones
+publicitadas o contenidas en o a través de este sitio web pueden haber quedado
+obsoletas y/o contener imprecisiones o errores tipográficos u ortográficos.<o:p></o:p></p><p class="MsoNormal">9.- Limitaciones a la responsabilidad<o:p></o:p></p><p class="MsoNormal">Hasta el máximo permitido por las leyes aplicables, <strong>emprendum.um.edu.mx</strong>&nbsp; no será responsable, en ningún caso, por
+daños directos, especiales, incidentales, indirectos, o consecuenciales que en
+cualquier forma se deriven o se relacionen con:<o:p></o:p></p><p class="MsoNormal">a) El uso o ejecución del sitio <strong>www.emprendum.um.edu.mx</strong>&nbsp; con
+el retraso o la falta de disponibilidad de uso de <strong>emprendum.um.edu.mx</strong>&nbsp; <o:p></o:p></p><p class="MsoNormal">b) La proveeduría o falta de la misma de servicios de
+cualquier informació n o gráficos contenidos o publicados en o a través del
+sitio señalado.<o:p></o:p></p><p class="MsoNormal">c) La actualización o falta de actualización de la
+información.<o:p></o:p></p><p class="MsoNormal">d) La alteración o modificación, total o parcial, de la
+información después de haber sido incluida en dicho sitio.<o:p></o:p></p><p class="MsoNormal">e) Cualquier otro aspecto o característica de la información
+contenida o publicada en la página web o a través de las ligas que
+eventualmente se incluyan en este sitio.<o:p></o:p></p><p class="MsoNormal">f) La proveeduría o falta de proveeduría que los demás
+servicios, todos los supuestos anteriores serán vigentes, aún en los casos en
+que se le hubiere notificado o avisado a <strong>emprendum.um.edu.mx</strong>&nbsp; acerca de la posibilidad de que se
+ocasionaran dichos daños.<o:p></o:p></p><p class="MsoNormal">10.- Modificaciones al sitio <strong>www.emprendum.um.edu.mx</strong>&nbsp; <o:p></o:p></p><p class="MsoNormal"><strong>emprendum.um.edu.mx</strong>&nbsp; podrá en cualquier momento y cuando lo
+considere conveniente, sin necesidad de avisar al usuario, realizar
+correcciones, adiciones, mejoras o modificaciones al contenido, presentación,
+información, servicios, áreas, bases de datos y demás elementos de dicho sitio,
+sin que ello de lugar ni derecho a ninguna reclamación o indemnización, ni que
+esto implique reconocimiento de responsabilidad alguna a favor del usuario.<o:p></o:p></p><p class="MsoNormal">11.- Modificaciones al convenio<o:p></o:p></p><p class="MsoNormal"><strong>emprendum.um.edu.mx</strong>&nbsp; se reserva el derecho de modificar los
+TÉRMINOS Y CONDICIONES DE USO de este convenio en cualquier momento, siendo
+efectivas dichas modificaciones de forma inmediata por medio de:<o:p></o:p></p><p class="MsoNormal">a) La publicación en el sitio web <strong>www.emprendum.um.edu.mx</strong>&nbsp; del
+convenio modificado.<o:p></o:p></p><p class="MsoNormal">b) La notificación al usuario sobre dichas modificaciones.<o:p></o:p></p><p class="MsoNormal">De esta forma, el usuario está de acuerdo en revisar dicho
+convenio periódicamente con la finalidad de mantenerse al tanto de dichas
+modificaciones. No obstante lo anterior, cada vez que el usuario acceda al
+sitio señalado se considerará como una aceptación absoluta a las modificaciones
+del presente convenio.<o:p></o:p></p><p class="MsoNormal">12.- Términos adicionales<o:p></o:p></p><p class="MsoNormal">Ocasionalmente, <strong>emprendum.um.edu.mx</strong>&nbsp; podrá agregar a los TÉRMINOS Y CONDICIONES DE
+USO del presente convenio provisiones adicionales relativas a áreas específicas
+o nuevos servicios que se proporcionen en o a través del sitio web&nbsp;<strong>www.emprendum.um.edu.mx</strong>&nbsp; &nbsp;(en lo
+subsecuente «términos adicionales»), los cuales serán publicados en las áreas
+específicas o nuevos servicios de dicho sitio para su lectura y aceptación. El
+usuario reconoce y acepta que estos términos adicionales forman parte
+integrante del presente convenio para todos los efectos legales a que haya
+lugar.<o:p></o:p></p><p class="MsoNormal">13.- Cesión de derechos<o:p></o:p></p><p class="MsoNormal"><strong>emprendum.um.edu.mx</strong>&nbsp; podrá, en cualquier momento y cuando así lo
+estime conveniente, ceder total o parcialmente sus derechos y obligaciones
+derivados del presente convenio. En virtud de dicha cesión, <strong>emprendum.um.edu.mx</strong>&nbsp; quedará liberada de cualquier obligación a
+favor del usuario, establecida en el presente convenio.<o:p></o:p></p><p class="MsoNormal">14.- Indemnización<o:p></o:p></p><p class="MsoNormal">El usuario está de acuerdo en indemnizar a<strong> emprendum.um.edu.mx</strong>&nbsp; , sus afiliados, proveedores, vendedores y
+asesores por cualquier acción, demanda o reclamación (incluso de honorarios de
+abogados y de costas judiciales) derivadas de cualquier incumplimiento por
+parte del usuario al presente convenio; incluyendo, sin limitación de alguna de
+las derivadas de:<o:p></o:p></p><p class="MsoNormal">a) Cualquier aspecto relativo al uso del sitio <strong>www.emprendum.um.edu.mx</strong>&nbsp; <o:p></o:p></p><p class="MsoNormal">b) La información contenida o disponible en o a través de
+dicho sitio o de injurias, difamación o cualquier otra conducta violatoria del
+presente convenio por parte del usuario en el uso de la página web señalada.<o:p></o:p></p><p class="MsoNormal">c) La violación a las leyes aplicables o tratados
+internacionales relativos a los derechos de autor o propiedad intelectual,
+contenidos o disponibles en, o a través de dicho sitio web.<o:p></o:p></p><p class="MsoNormal">15.- Terminación<o:p></o:p></p><p class="MsoNormal"><strong>emprendum.um.edu.mx</strong>&nbsp; &nbsp;se
+reserva el derecho, a su exclusiva discreción, y sin necesidad de aviso o
+notificación al usuario, para:<o:p></o:p></p><p class="MsoNormal">a) Terminar definitivamente el presente convenio.<o:p></o:p></p><p class="MsoNormal">b) Descontinuar o dejar de publicar definitivamente el sitio
+web&nbsp;<strong>emprendum.um.edu.mx</strong>&nbsp; &nbsp;sin
+responsabilidad alguna para<strong> emprendum.um.edu.mx</strong>&nbsp; , sus afiliados o proveedores.<o:p></o:p></p><p class="MsoNormal">16.- Subsistencia<o:p></o:p></p><p class="MsoNormal">Estos TÉRMINOS Y CONDICIONES DE USO, así como los términos
+adicionales, constituyen el acuerdo íntegro entre las partes, y sustituye
+cualquier otro acuerdo o convenio celebrado con anterioridad. Cualquier
+cláusula o provisión del presente convenio, así como de los términos
+adicionales, legalmente declarada inválida, será eliminada o modificada a
+elección de<strong> emprendum.um.edu.mx</strong>&nbsp; , con la finalidad de corregir su vicio o
+defecto. Sin embargo, el resto de las cláusulas o provisiones mantendrán su
+fuerza, obligatoriedad y validez.<o:p></o:p></p><p class="MsoNormal">17.- No renuncia de derechos<o:p></o:p></p><p class="MsoNormal">La inactividad por parte de<strong> emprendum.um.edu.mx</strong>&nbsp; , sus
+afiliados o proveedores al ejercicio de cualquier derecho o acción derivados
+del presente convenio, en ningún momento deberá interpretarse como renuncia a
+dichos derechos o acciones.<o:p></o:p></p><p class="MsoNormal">18.- Legislación aplicable y jurisdicción<o:p></o:p></p><p class="MsoNormal">Este convenio estará sujeto y será interpretado de acuerdo
+con las leyes y ante los tribunales del Distrito Federal, México.<br></p>
+    			{% endfor %}
+             </div>
+        </div>
+        {% endif %} 
+        <button onclick="hideTerms()" class="sh-next-button" style="max-width: 10vw; left: 40%; bottom: 6%;">OK</button>
+    </div>
+</div>
+<div class="divPopUp"  id="faqsPop">
+    <div class="popUp" style="height: 550px; top: 15%; text-align: center;">
+        <span style="font-size:2.0vw; ">Preguntas frecuentes</span>
+        {% if legal %}
+        <div style="background-color: #fff;">
+             <textarea id="faqs" style="height: 350px;">
+             	{% for t in legal if (t.name == "faqs") %}
+        			{{ t.content }}
+    			{% endfor %}
+             </textarea>
+        </div>
+        {% endif %} 
+        <button onclick="hideFaqs()" class="sh-next-button" style="max-width: 10vw; left: 40%;">OK</button>
+    </div>
+</div>
+<!-- Import Trumbowyg -->
+<script src="{{ asset('adminResources/Trumbowyg/dist/trumbowyg.min.js') }}"></script>
+</body>
+<!-- -->
+</html>

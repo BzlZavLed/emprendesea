@@ -1,0 +1,160 @@
+@font-face {
+    font-family: 'AbrilFatface';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../../webfonts/Abril_Fatface/AbrilFatface-Regular.ttf');
+}
+.event-info-box {
+  background: #25338C;
+  padding: 40px 0;
+}
+
+.event-info-box .col-lg-3,
+.event-info-box .col-lg-4 {
+    border-right: 1px solid #13CC93;
+}
+
+.event-info-box .col-lg-3:last-child,
+.event-info-box .col-lg-4:last-child {
+  border-right: 0;
+}
+
+.event-info-content .info-title {
+  font-size: 41px;
+  line-height: 45px;
+  font-weight: 800;
+  color: #13CC93;
+}
+
+.event-info-content .info-description {
+  color: #13CC93;
+  font-size: 13px;
+  line-height: 42px;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+
+
+.post-title {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.parrafo{
+    font-weight: 400;
+    font-size: 1.5rem;
+}
+
+#welcome{
+    min-height: 100vh;
+}
+#imgFrase{
+    width: 60%;
+    margin-top: 50vh;
+}
+.bg-overlay[data-style="9"] {
+    background: radial-gradient(circle at center, rgba(0, 0, 0, 0.1) 0%, #111 100%);
+    opacity: .9;
+}
+.bg-overlay[data-style="2"] {
+    background: #2250fc;
+    opacity: .3;
+}
+#txtB1:hover{
+    background-image: url('../../images/Temporal/inicio/txt1.jpg');
+}
+#txtB2:hover{
+    background-image: url('../../images/Temporal/inicio/txt2.jpg');
+}
+#txtB3:hover{
+    background-image: url('../../images/Temporal/inicio/txt3.jpg');
+}
+#txtB4:hover{
+    background-image: url('../../images/Temporal/inicio/txt4.jpg');
+}
+#txtB5:hover{
+    background-image: url('../../images/Temporal/inicio/txt5.jpg');
+}
+#txtB6:hover{
+    background-image: url('../../images/Temporal/inicio/txt6.jpg');
+}
+#txtB1:hover,#txtB2:hover,#txtB3:hover,#txtB4:hover,#txtB5:hover,#txtB6:hover{
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+
+}
+.txtDiseño{
+    font-family: 'AbrilFatface';
+    font-size: 50px;
+    line-height: 55px;
+    position: sticky;
+    color: #2667F5;
+}
+.txtDiseño span{
+    font-family: 'Poppins';
+    font-size: 14px;
+    line-height: 14px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: #EEEEEE;
+}
+.txtNulo{
+    line-height: 50px;
+}
+.text-box:hover h3,.text-box:hover h5, .text-box:hover p, .text-box:hover i{
+    color: white!important;
+}
+.img-est, .img-est img{
+    border-radius: 0px 10px 10px 0px;
+    -moz-border-radius: 0px 10px 10px 0px;
+    -webkit-border-radius: 0px 10px 10px 0px;
+}
+.img-est{
+    background-color: yellow;
+}
+.img-est.d-none.d-xl-block{
+    position: absolute;
+    z-index: 10;
+    top: -230px;
+}
+.img-est img{
+    margin-top:-15px;
+    margin-bottom: 15px;
+    margin-left: -15px;
+}
+.team-members.team-members-shadow .team-member{
+    border: none;
+}
+.team-members .team-member{
+    background-color: transparent;
+    text-align: right;
+}
+.team-members .team-member .team-desc > p{
+    text-align: center;
+}
+.team-members .team-member .team-desc > p >span{
+    color: #13CC93;
+}
+@media (min-width: 1024px){
+    .txtDiseño,.txtNulo{
+        float: left;
+        margin: 0px 10px;
+    }
+    .txt-center-laptop{
+        text-align: left;
+    }
+}
+@media (max-width: 1024px){
+    .txtDiseño span{
+        bottom: 10px;
+    }
+    .inspiro-slider .slide .slide-captions {
+        margin-top: 20vh;
+        text-align: left;
+    }
+    #imgFrase{
+        width: 100%;
+    }
+}

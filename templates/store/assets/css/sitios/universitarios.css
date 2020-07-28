@@ -1,0 +1,32 @@
+.img-est, .img-est img{
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+}
+.img-est{
+    background-color: #00D7B3;
+}
+.img-est{
+    position: absolute;
+    z-index: 10;
+    top: -250px;
+    right: 0;
+}
+.img-est>.grid-item{
+    margin-top:-15px;
+    margin-bottom: 5px;
+    margin-left: -15px;
+}
+.btn:not(.close):not(.mfp-close).btn-info{
+    background-color: #00D7B3;
+    border-color: #00D7B3;
+}
+.portfolio-item.no-overlay .portfolio-image{
+    min-height: 230px;
+}
+.portfolio-item.no-overlay .portfolio-description h3{
+    min-height: 55px;
+}
+.portfolio-item.no-overlay .portfolio-description p{
+    min-height: 50px;
+}

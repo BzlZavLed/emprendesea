@@ -1,0 +1,94 @@
+{# templates/admin/pedidoDetalle.html.twig #}
+{% extends 'admin_base.html.twig' %}
+{% block title %}Emprendum admin{% endblock %}
+{% block body %}
+<div class="content-wrapper">
+  <div class="container-fluid">
+    <!-- Breadcrumbs-->
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="#">Admin</a>
+      </li>
+      <li class="breadcrumb-item active">Ventas</li>
+    </ol>
+    <!-- code area-->
+    <div style="height: auto; width: 80%; margin: auto; text-align: center;">
+      <br>
+      <br>
+      <h1 style="color: #212F3D; text-align: center;">Mi Pedido</h1>
+      <br>
+      {% if pedido %}
+      <h3 style="color: #212F3D; margin-left: 25px; text-align: left;">Información de envío</h3>
+      <br>
+      <div style="margin-left: 35px; text-align: left;">
+        <p id="name" style="color: #212F3D;">{{ pedido.name }} {{ pedido.last }}</p>
+        <p id="phone" style="color: #212F3D;">{{ pedido.phone }}</p>
+        <p id="mail" style="color: #212F3D;">{{ pedido.email }}</p>
+        <p id="address" style="color: #212F3D;">{{ pedido.street }}</p>
+        <p id="streets" style="color: #212F3D;">{{ pedido.entre }}</p>
+        <p id="city" style="color: #212F3D;">{{ pedido.city }}</p>
+        <p id="state" style="color: #212F3D;">{{ pedido.state }}</p>
+        <p id="zip" style="color: #212F3D;">{{ pedido.cp }}</p>
+        <p  style="color: #212F3D;">Envío por:{{ pedido.carrier }}</p>
+        <p  style="color: #212F3D;">Servicio:{{ pedido.deliveryService }}</p>
+        <br>
+        <br>
+        <h4 id="pedido_id" style="color: #212F3D;">Pedido:{{ pedido.id }}</h4>
+        {% if pedido.paymentId %}
+          {% if pedido.tracking %}
+          <h4 id="status" style="color: #212F3D;">Status:Enviado</h4>
+          <h4 style="color: #212F3D;">Número de rastreo:{{ pedido.tracking }}</h4>
+          {% else %}
+          <h4 id="status" style="color: #212F3D;">Status:Envio pendiente</h4>
+          <form action="{{ path('add_tracking') }}" method="post" class="input-group-append" style="width: 100%;">
+            <input type="text" name="tracking" placeholder="Ingresa el código de rastreo" class="form-control" style="width: 80%;">
+            <input type="hidden" value="{{ pedido.id }}" name="id" />
+            <input type="submit" value="Agregar" class="btn btn-primary" style="margin-left: 5px;">
+          </form>
+          {% endif %}
+        {% else %}
+        <h4 id="status" style="color: #212F3D;">Status:Pago pendiente</h4>
+        {% endif %}
+      </div>
+      <h3 style="color: #212F3D; margin-left: 25px; margin-top: 25px;">Articulos</h3>
+      <div style="margin: 20px;">
+        <table id="articulosTable" class="table table-striped">
+          <thead class="thead-dark">
+            <tr>
+              <th></th>
+              <th>Articulo</th>
+              <th>Cantidad</th>
+              <th>Costo</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>    
+            {% for book in content %}
+            <tr>
+              <td>
+                <img src=" {{ asset('uploads/books_imgs/'~ book.foto)}} " alt="" style="max-width: 60px; max-height: 150px;"></img>
+              </td>
+              <td>{{ book.name }}</td>
+              <td>{{ book.quantity }}</td>
+              <td>${{ book.price }}</td>
+              <td>${{ book.total }}</td>
+            </tr>
+            {% endfor %}         
+          </tbody>
+        </table>
+      </div>
+      <h4 id="subtotalLabel" style="color: #212F3D; margin-right: 50px; margin-top: 25px; text-align: right;">Subtotal: ${{ subtotal }} mxn</h4>
+      <h4 id="subtotalLabel" style="color: #212F3D; margin-right: 50px; margin-top: 25px; text-align: right;">Envio: ${{ pedido.deliveryPrice }} mxn</h4>
+      <h3 id="totalLabel" style="color: #212F3D; margin-right: 50px; margin-top: 15px; text-align: right;">Total: ${{ total }} mxn</h3>
+      {% else %}
+      <h3 style="color: #212F3D; margin-left: 25px;">El número de pedido no ingresado existe</h3>
+      {% endif%}
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+    </div>
+  </div>
+</div>
+{% endblock %}

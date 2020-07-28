@@ -1,0 +1,163 @@
+SQL
+SELECT id, SUM(delivery_price + total)/100 FROM `pedido` where  visto = "enviado" GROUP BY id
+SELECT id, SUM(delivery_price + total)/100 FROM `pedido` where  visto = "surtido" GROUP BY id
+
+
+
+public function cardPayment(Request $request){
+      $content = $request->getContent();
+      $data = json_decode($content, true);
+      $token = $data['token'];
+      $pid = $data['id'];
+      $sid = $data['shipp'];
+      $dona = $data['dona']*100;
+      $envio = $data['envio']*100;
+      $alumId = $data['alumId'];
+      $alumPhoto = $data['alumPhoto'];
+      $alumMail = $data['alumMail'];
+      $alumName = $data['alumName'];
+
+      $entityManager = $this->getDoctrine()->getManager();
+      $pedido = $entityManager->getRepository(Pedido::class)->find($pid);
+     /* $shippRepo = $entityManager->getRepository(DeliveryRate::class);
+      $shipp = $shippRepo->findOneBy([
+        'rate_id' => $sid
+      ]);*/
+      switch ($sid) {
+        case 1:
+          $pedido->setShipId($sid);
+          $pedido->setCarrier("Físico");
+          $pedido->setDeliveryService("Entregado por Universitario");
+          $pedido->setDeliveryPrice($envio);
+            break;
+        case 2:
+          $pedido->setShipId($sid);
+          $pedido->setCarrier("Correos de Mexico");
+          $pedido->setDeliveryService("Entrega en 15 dias");
+          $pedido->setDeliveryPrice($envio);
+            break;
+        case 3:
+          $pedido->setShipId($sid);
+          $pedido->setCarrier("FedEx");
+          $pedido->setDeliveryService("Entrega en 3-5 dias");
+          $pedido->setDeliveryPrice($envio);       
+            break;
+        case 4:
+          $pedido->setShipId($sid);
+          $pedido->setCarrier("FedEx USA");
+          $pedido->setDeliveryService("Entrega en 3-5 dias");
+          $pedido->setDeliveryPrice($envio);
+            break;
+        case 5:
+          $pedido->setShipId($sid);
+          $pedido->setCarrier("DHL");
+          $pedido->setDeliveryService("Entrega en 3-5 dias");
+          $pedido->setDeliveryPrice(14400);
+            break;
+          default:
+            break;
+    }
+
+      $entityManager->flush();
+
+    //  prueba
+      $ckey = "key_gq2BjykrFBQ5DjfRADiczQ";
+
+//produccion
+      //$ckey = "key_H3z4zps752h88zYYuRi2CA";
+
+      $post = [
+        "name" => $pedido->getName(),
+        "email" => $pedido->getEmail(),
+        "phone" => $pedido->getPhone(),
+        "payment_sources" =>[ array(
+          "type" => "card",
+          "token_id" => $token
+        )]
+      ];
+ 
+      $ch=curl_init('https://api.conekta.io/customers');
+      $payload = json_encode( $post );
+      curl_setopt( $ch, CURLOPT_POSTFIELDS, $payload );
+      curl_setopt( $ch, CURLOPT_HTTPHEADER, array('accept: application/vnd.conekta-v2.0.0+json','Content-Type:application/json'));
+      curl_setopt( $ch, CURLOPT_USERPWD,$ckey);
+      curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+      $decodedText = html_entity_decode(curl_exec($ch));
+      $cresult = json_decode($decodedText, true);
+      curl_close($ch);
+
+      $contentRepo = $entityManager->getRepository(PedidoContent::class);
+      $content = $contentRepo->findBy([
+        'pedido_id' => $pid
+      ]);
+
+      $cArray = array();
+      $total = 0;
+      $totalList = 0;
+      foreach ($content as $item) {
+        $book = $entityManager->getRepository(Books::class)->find($item->getBookId());
+        array_push($cArray, ["name"=>$book->getTitulo(), "unit_price"=>$item->getUnitPrice(), "quantity"=>$item->getQtt()]);
+        $total += ($item->getUnitPrice()*$item->getQtt());
+        $totalList += ($item->getUnitPriceList()*$item->getQtt());
+      }
+      array_push($cArray, ["name"=>"Donacion", "unit_price"=>$dona, "quantity"=>1]);
+
+      $post = [
+      "line_items"=> $cArray,
+      "shipping_lines"=> [array(
+          "amount"=> intval($pedido->getDeliveryPrice()),
+          "carrier"=> $pedido->getCarrier()
+      )],
+      "currency"=> "MXN",
+      "customer_info"=> array(
+          "customer_id"=> $cresult['id'],
+      ),
+      "shipping_contact"=>array(
+           "address"=> array(
+               "street1"=> $pedido->getStreet(),
+               "postal_code"=> $pedido->getCp(),
+               "country"=> "MX"
+           )
+       ),
+       "metadata"=> array("reference"=> $pedido->getId(), "mail" => $alumMail, "photo" => $alumPhoto, "id" => $alumId, "name" => $alumName, "total" =>$total/100 , "totalList"=> $totalList/100, "envio"=> $envio/100 ),
+       "charges"=>[array(
+          "payment_method"=> array(
+              "type"=> "card",
+              "payment_source_id"=> $cresult['default_payment_source_id']
+          )
+        )]
+      ];
+
+      $ch=curl_init('https://api.conekta.io/orders');
+      $payload = json_encode( $post );
+      curl_setopt( $ch, CURLOPT_POSTFIELDS, $payload );
+      curl_setopt( $ch, CURLOPT_HTTPHEADER, array('accept: application/vnd.conekta-v2.0.0+json','Content-Type:application/json'));
+      curl_setopt( $ch, CURLOPT_USERPWD,$ckey);
+      curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+      $decodedText = html_entity_decode(curl_exec($ch));
+      $presult = json_decode($decodedText, true);
+      curl_close($ch);
+
+      if($presult["object"]=="error"){
+        $message = $presult["details"][0]["message"];
+        return new JsonResponse(array('error'=>$message));
+      }
+
+      $entityManager = $this->getDoctrine()->getManager();
+      $pedido = $entityManager->getRepository(Pedido::class)->find($pid);
+      $pedido->setPaymentId($presult["charges"]["data"][0]["order_id"]);
+      $pedido->setTotal($total+$dona);
+      $pedido->setTotalLista($totalList+$dona);
+
+     /* $shippRepo = $entityManager->getRepository(DeliveryRate::class); 
+      $shipps = $shippRepo->findBy([
+        'pedido_id' => $pid
+      ]);
+      foreach ($shipps as $sh) {
+        $entityManager->remove($sh);
+      }
+*/
+      $entityManager->flush();
+  
+      return new JsonResponse(array('contenido'=>$content));
+    }

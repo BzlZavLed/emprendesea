@@ -1,0 +1,45 @@
+img{
+    max-width:100%;
+}
+.imgMovida,.imgMovida img{
+    border-radius: 10px 10px 10px 10px;
+    -moz-border-radius: 10px 10px 10px 10px;
+    -webkit-border-radius: 10px 10px 10px 10px;
+}
+.imgMovida{
+    background-color: #2667F5;
+}
+.imgMovida img{
+    width: 100%;
+    margin-top: -10px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+.imgAlianzas{
+    border-radius: 10px 10px 0px 0px;
+    -moz-border-radius: 10px 10px 0px 0px;
+    -webkit-border-radius: 10px 10px 0px 0px;
+    width: 100%;
+}
+h6{
+    color: #0050FF;
+    font-size: 14px;
+    line-height: 20px;
+}
+.banNuestro{
+    color: white;
+    background-color: #0050FF;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    padding: 5px;
+}
+.titulo-historia{
+    background-color: #00D7B3;
+    padding: 2px 7px;
+    font-size: 1.5rem;
+}
+@media (max-width: 1024px){
+    .carrusel-titulo {
+        font-size: 30px !important;
+    }
+}

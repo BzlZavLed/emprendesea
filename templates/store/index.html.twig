@@ -1,0 +1,712 @@
+{# templates/store/index.html.twig #}
+{% extends 'store_base.html.twig' %}
+{% block code %}
+<style type="text/css">
+	body{
+  		height: 460.6vw;
+	}
+</style>
+<script type="text/javascript">
+    window.onload = function (){
+        var col = JSON.parse(window.sessionStorage.getItem("student"));
+        if(col == null){
+            document.getElementById('l-estudiante-button').style.display = 'none';
+        }else{
+            document.getElementById('l-estudiante-button').style.display = 'block';
+            foto();          
+        }
+    };
+
+	$(document).ready(function(){
+  $(document.getElementById('l-estudiante-button')).hover(function(){
+      recortarNombre()
+      //document.getElementById("texto").innerHTML=JSON.parse(window.sessionStorage.getItem("name"));
+      //document.getElementById("textos").innerHTML=JSON.parse(window.sessionStorage.getItem("name"));
+    document.getElementById("li-seg").style.display = 'block';
+    }, function(){
+    document.getElementById("li-seg").style.display = 'none';
+  });
+});
+
+function conoceComo(){
+	document.getElementById('k-how').style.display = 'block';
+}
+
+function conoceComoB(){
+	document.getElementById('k-how').style.display = 'none';
+}
+
+function foto(){
+        var prue=JSON.parse(window.sessionStorage.getItem("foto"));
+        var separado = prue.split("")
+        var reverse = separado.reverse()
+        var unir = reverse.join("")
+        var n = unir.search("/")
+        var bien = 'uploads/students_imgs/'+prue.slice(prue.length-n,prue.length)
+        document.getElementById('l-foto').src=bien;
+        console.log(bien);
+}
+function recortarNombre(){
+        var prue=JSON.parse(window.sessionStorage.getItem("name"));
+        var separado = prue.split(" ");
+        var name= separado[0]
+        var nombre = name.charAt(0).toUpperCase() + name.slice(1)
+        console.log(separado.length + "solo console de prueba")
+        switch(separado.length) {
+        case 1:
+            console.log("1")
+            break;
+        case 2:
+            var name= separado[1]
+            nombre += " " +  name.charAt(0).toUpperCase() + name.slice(1)
+            console.log("2")
+            break;
+        case 3:
+            var name= separado[1]
+            nombre += " " +  name.charAt(0).toUpperCase() + name.slice(1)
+            console.log("3")
+        break;
+        case 4:
+            var name= separado[2]
+            nombre += " " +  name.charAt(0).toUpperCase() + name.slice(1)
+            console.log("4")
+        break;
+        default:
+            // code block
+        }
+        
+        document.getElementById("textos").innerHTML=nombre
+}
+
+</script>
+<button class="l-student-b" id="l-estudiante-button">
+<div class="l-seg" id="li-seg">
+<p style="margin-top: 3%; font-size: 1.36vw;">En esta parte encontrarás opciones en las cuales</p>
+<p style="color: #F0C11C; margin-top: -3px; font-size: 1.36vw;">podemos ser de ayuda</p>
+<p class="l-p-name" style="margin-top: 6%;"><span id="textos"></span></p>
+</div>
+<img id="l-foto" >
+</button>
+
+	<div class="si-shadow-ind" id="s-info-ind">
+	<script type="text/javascript">
+		function dismissInfo(){
+			document.getElementById("s-info-ind").style.display='none';
+		}
+	</script> 
+
+		<div class="si-content-ind">
+		<div class="ct-bar">
+			<img class="si-dismiss-ind" src="{{ asset('images/close-256.png') }}" onclick="dismissInfo()">
+			<img class="ct-bar-img" src="/images/Logo_Emprendum.png">
+		</div>
+			<form action="enviarCorreo.php" method="POST">
+				<h3 class="ct-title">Empresas</h3> 
+				<div class="fm-container">
+					<div class="fm-field">
+					<label for="nameInc">Nombre Empresa</label>
+					<input type="text" id="nameInc" name="nameInc">
+					</div>
+					<div class="fm-field">
+					<label for="telInc">Telefono Oficina</label>
+					<input type="text" id="telInc" name="phoneInc">
+					</div>
+					<div class="fm-field">
+					<label for="locInc">Ciudad y Estado</label>
+					<input type="text" id="locInc" name="locInc">
+					</div>
+				</div>
+				<h3 class="ct-title">Contacto</h3>
+				<div class="fm-container">
+					<div class="fm-field">
+					<label for="name">Nombre Personal</label>
+					<input type="text" id="name" name="name">
+					</div>
+					<div class="fm-field">
+					<label for="phone">Telefono/Whatsapp</label>
+					<input type="text" id="phone" name="phone">
+					</div>
+					<div class="fm-field">
+					<label for="email">Correo Electronico</label>
+					<input type="text" id="email" name="email">
+					</div>
+				</div>
+				<hr style="border: 1px solid #F0C11C; with; width: 95%;">
+				<div class="fm-container-check">
+					<div>
+						<label class="fm-title">Servicio a consular <a href="https://emprendum.um.edu.mx/files/1.%20Propuesta%20de%20capacitaci%C3%B3n%20NOM035.pdf" target="_blank"> Más Info</a> :</label>
+					</div>
+					<div>
+						<input type="checkbox" id="cbox2" value="seminarios" name="service[]"> <label for="cbox2">Seminarios</label>
+					</div>
+					<div>
+						<input type="checkbox" id="cbox2" value="talleres" name="service[]"> <label for="cbox2">Talleres</label>
+					</div>
+					<div>
+						<input type="checkbox" id="cbox2" value="conferencias" name="service[]"> <label for="cbox2">Conferencias</label>
+					</div>
+					<div>
+						<input type="checkbox" id="cbox2" value="charlas" name="service[]"> <label for="cbox2">Charla</label>
+					</div>
+				</div>
+				<h3 class="ct-title" style="margin-bottom: 0;">Temas</h3>
+				<div class="ul-row">
+					<div class="ul-column"> 
+					<p for="fname" style="font-weight: bolder;">Salud Física</p>
+					<ul style="list-style-type:none; margin-bottom: 0; margin-left: -5%;">
+					<li><input type="checkbox" name="service[]" value="Salud Fisica" />Nutrición para vivir mejor <a href="https://emprendum.um.edu.mx/files/1.%20EDITABLE_FICHA%20T%C3%89CNICA_NUTRICI%C3%93N%20PARA%20VIVIR%20M%C3%81S%20Y%20MEJOR.pdf" target="_blank"> ver más</a></li>
+					<li><input type="checkbox" name="service[]" value="Salud Fisica" />Quiero vivir sano<a href="https://emprendum.um.edu.mx/files/2.%20EDITABLE_FICHA%20T%C3%89CNICA_QUIERO%20VIVIR%20SANO.pdf" target="_blank"> ver más</a></li>
+					<li><input type="checkbox" name="service[]" value="Salud Fisica" />El poder medicinal de los alimentos<a href="https://emprendum.um.edu.mx/files/3.%20EDITABLE_FICHA%20T%C3%89CNICA_EL%20PODER%20MEDICINAL%20DE%20LOS%20ALIMENTOS.pdf" target="_blank"> ver más</a></li>
+					<li><input type="checkbox" name="service[]" value="Salud Fisica" />Diabetes, mitos y realidades<a href="https://emprendum.um.edu.mx/files/4.%20EDITABLE_FICHA%20T%C3%89CNICA_DIABETES,%20MITOS%20Y%20REALIDADES.pdf" target="_blank"> ver más</a></li>
+					<li><input type="checkbox" name="service[]" value="Salud Fisica" />Enfermedades del siglo XXI<a href="https://emprendum.um.edu.mx/files/5.%20EDITABLE_FICHA%20T%C3%89CNICA_ENFERMEDADES%20DEL%20SIGLO%20XXI.pdf" target="_blank"> ver más</a></li>
+					</ul>  
+					</div>
+					<div class="ul-column"> 
+					<p for="fname" style="font-weight: bolder;">Mental-Laboral</p>
+					<ul style="list-style-type:none; margin-bottom: 0; margin-left: -5%;">
+					<li><input type="checkbox" name="service[]" value="Salud Fisica" />Sinergia laboral<a href="https://emprendum.um.edu.mx/files/1.%20EDITABLE_FICHA%20T%C3%89CNICA_SINERGIA%20LABORAL.pdf" target="_blank"> ver más</a></li>
+					<li><input type="checkbox" name="service[]" value="Salud Fisica" />Teoría del cambio<a href="https://emprendum.um.edu.mx/files/2.%20EDITABLE_FICHA%20T%C3%89CNICA_TEOR%C3%8DA%20DEL%20CAMBIO.pdf" target="_blank"> ver más</a></li>
+					<li><input type="checkbox" name="service[]" value="Salud Fisica" />Vive con estrés<a href="https://emprendum.um.edu.mx/files/3.%20EDITABLE_FICHA%20T%C3%89CNICA_VIVE%20CON%20ESTR%C3%89S.pdf" target="_blank"> ver más</a></li>
+					<li><input type="checkbox" name="service[]" value="Salud Fisica" />Relaciones humanas positivas<a href="https://emprendum.um.edu.mx/files/4.%20EDITABLE_FICHA%20T%C3%89CNICA_RELACIONES%20HUMANAS%20POSITIVAS.pdf" target="_blank"> ver más</a></li>
+					<li><input type="checkbox" name="service[]" value="Salud Fisica" />Tú también puedes llegar<a href="https://emprendum.um.edu.mx/files/5.%20EDITABLE_FICHA%20T%C3%89CNICA_T%C3%9A%20TAMBIEN%20PUEDES%20LLEGAR.pdf" target="_blank"> ver más</a></li>
+					</ul>  
+					</div>
+					<div class="ul-column"> 
+					<p for="fname" style="font-weight: bolder;">Socio-Familiar</p>
+					<ul style="list-style-type:none; margin-bottom: 0; margin-left: -5%;">
+					<li><input type="checkbox" name="service[]" value="Salud Fisica" />Estilo de paternidad VS hijos triundafores<a href="https://emprendum.um.edu.mx/files/1.%20EDITABLE_FICHA%20T%C3%89CNICA_ESTILOS%20DE%20PATERNIDAD%20VS%20HIJOS%20TRIUNFADORES.pdf" target="_blank"> ver más</a></li>
+					<li><input type="checkbox" name="service[]" value="Salud Fisica" />Cómo enfrentar la crisis<a href="https://emprendum.um.edu.mx/files/2.%20EDITABLE_FICHA%20T%C3%89CNICA_C%C3%93MO%20ENFRENTAR%20LA%20CRISIS.pdf" target="_blank"> ver más</a></li>
+					<li><input type="checkbox" name="service[]" value="Salud Fisica" />A pesar de nuestras diferencias me casaría de nuevo contigo<a href="https://emprendum.um.edu.mx/files/3.%20EDITABLE_FICHA%20T%C3%89CNICA_A%20PESAR%20DE%20NUESTRAS%20DIFERENCIAS%20ME%20CASAR%C3%8DA%20DE%20NUEVO%20CONTIGO.pdf" target="_blank"> ver más</a></li>
+					<li><input type="checkbox" name="service[]" value="Salud Fisica" />Vinculo familiar positivo<a href="https://emprendum.um.edu.mx/files/4.%20EDITABLE_FICHA%20T%C3%89CNICA_V%C3%8DNCULO%20FAMILIAR%20POSITIVO..pdf" target="_blank"> ver más</a></li>
+					</ul>  
+					</div>
+				</div>
+				<hr style="border: 1px solid #F0C11C; with; width: 95%; margin-top: 10px;">
+				<div class="fm-container-foot">
+					<div>
+						<label for="comment">Comentarios</label>
+					</div>
+					<div>
+						<textarea id="comment" rows="2" cols="90"type="text" name="comment"> </textarea>
+					</div>
+					<div>
+						<input type="submit" value="Enviar">
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+<div style="position: static;">
+<div class="kh-div" id="k-how">
+<img class="kh-img" src="{{asset('images/image_how.png')}}">
+<div class = "kh-texto" style="z-index: 1;">
+    		<h1>¡Escribe una</h1>
+			<h1 style="margin-left: 3vw;">hisotria diferente!</h1>
+    		<p class="kh-texto-p">Cuando adquieres una literatura en nuestra librería contribuyes al sueño de un estudiante con tu inversión.</p>
+			<p class="kh-texto-p">Para sumarte a la causa y poder ayudarte también, contamos con una librería dedicada al fondo de becas de nuestros universitarios.</p>
+			<div class="kh-columns">
+				<div class="kh-column-cell">
+					<img src="{{asset('images/home_people.png')}}">
+					<p>Primero conoce y elige a un Universitario</p>
+				</div>
+				<div class="kh-column-cell">
+					<img style="width:3vw;     margin-top: 50%;" src="{{asset('images/home_arrow.png')}}">
+				</div>
+				<div class="kh-column-cell">
+					<img style="max-width: 52%;"src="{{asset('images/home_book.png')}}">
+					<p>Selecciona tus lecturas de acuerdo a tus necesidades</p>
+				</div>
+				<div class="kh-column-cell">
+					<img style="width:3vw;     margin-top: 50%;" src="{{asset('images/home_arrow.png')}}">
+				</div>
+				<div class="kh-column-cell">
+					<img src="{{asset('images/home_check.png')}}">
+					<p>Asigna tu inversion al estudiante que hayas elegido.</p>
+				</div>
+			</div>
+    	    <button type="button" class="kh-benefactor" onclick=" window.location = '{{ path('universitarios') }}';">ELEGIR UNIVERSITARIO</button>
+			<br>
+			<button type="button" class="kh-goback" onclick="conoceComoB()"><img src="{{asset('images/Path_102.png')}}">VOLVER</button>
+		</div>
+		<div valign="bottom" class="carrusel-bottom">
+			<div class="carrusel-bottom-cell info" style="border-top-color: #ffffff; border-right-color: #ffffff;">
+				<h3>10,345</h3>
+				<t>ESTUDIANTES GRADUADOS</t>
+			</div>
+			<div class="carrusel-bottom-cell info" style="border-top-color: #ffffff; border-right-color: #ffffff;">
+				<h3>30,945</h3>
+				<t>BENEFACTORES</t>
+			</div>
+			<div class="carrusel-bottom-cell info"style="border-top-color: #ffffff; border-right-color: #ffffff;">
+				<h3>1,345,678</h3>
+				<t>LIBROS ENTREGADOS</t>
+			</div>
+			<div class="carrusel-bottom-cell"style="border-top-color: #ffffff; border-right-color: #ffffff;">
+				<h3>10,345</h3>
+				<t>FAMILIAS INVOLUCRADAS</t>
+			</div>
+		</div></div>
+	<div class="carrusel">
+		<img class = "carrusel-background" src="{{asset('images/0010_EMPRENDUM_18.png')}}">
+		<div class = "carrusel-text">
+    		<h1>Libros con causa</h1>
+    		<p>Hay historias que se escriben cuando adquieres un libro.</p>
+    		<button type="button" class="benefactor" onclick="conoceComo()">CONOCE CÓMO</button>
+		</div>
+		<div class="vl">
+			<p><em>"Quiero ayudar </em></p>
+			<p><em>a los que más necesitan</em></p>
+			<p><em><span>salud y bienestar"</span></em></p>
+		</div>
+		<div class="name-home">
+			<p><b>Alexis Marín</b></p>
+			<p><span>Médico cirujano</span></p>
+		</div>
+		<div valign="bottom" class="carrusel-bottom">
+			<div class="carrusel-bottom-cell info">
+				<h3>10,345</h3>
+				<t>ESTUDIANTES GRADUADOS</t>
+			</div>
+			<div class="carrusel-bottom-cell info">
+				<h3>30,945</h3>
+				<t>BENEFACTORES</t>
+			</div>
+			<div class="carrusel-bottom-cell info">
+				<h3>1,345,678</h3>
+				<t>LIBROS ENTREGADOS</t>
+			</div>
+			<div class="carrusel-bottom-cell">
+				<h3>10,345</h3>
+				<t>FAMILIAS INVOLUCRADAS</t>
+			</div>
+		</div>
+	</div>
+</div>
+<div style="position: static;">
+	<div class="fam">
+<!--		<img class = "fam-background" src="{{asset('images/0011_EMPRENDUM_1-2.JPG')}}"> -->
+		<p style="margin-top:5%;">Somos una familia, nos motivamos, nos cuidamos, aprendemos y compartimos vivencias que se suman al aprendizaje de las aulas en la universidad. Recorremos caminos para llevar un mensaje especial de salud dentro de un libro. Obtenemos experiencias que nos hacen crecer, en áreas que no imaginábamos.</p>
+		<p style="line-height: 300%">Confiamos en <b>Dios</b> en todos los caminos.</p>
+        <div>
+            <button type="button" class="transparent-button" onclick=" window.location = '{{ path('historias') }}'">NUESTRA HISTORIA</button>
+        </div>
+ 
+        <img class = "fam-instructions" src="{{asset('images/Group_69.png')}}">
+    </div>  
+</div>
+<div style="position: static;">
+    <script type="text/javascript">
+        function hover($id) {
+            if ($id == 0){
+                document.getElementById("fisic-img").src = "{{asset('images/Group_96-selected.png')}}";
+                document.getElementById("fisic-button").style.display = 'block';
+                document.getElementById("fisic-card").style.display = 'block';
+                document.getElementById("fisic-back").style.display = 'block';
+                document.getElementById("fisic-back-img").style.display = 'block';
+            }else if ($id == 1){
+                document.getElementById("emo-img").src = "{{asset('images/Group_96-selected.png')}}";
+                document.getElementById("emo-button").style.display = 'block';
+                document.getElementById("emo-card").style.display = 'block';
+                document.getElementById("emo-back").style.display = 'block';
+                document.getElementById("emo-back-img").style.display = 'block';
+            }else if ($id == 2){
+                document.getElementById("life-img").src = "{{asset('images/Group_96-selected.png')}}";
+                document.getElementById("life-button").style.display = 'block';
+                document.getElementById("life-card").style.display = 'block';
+                document.getElementById("life-back").style.display = 'block';
+                document.getElementById("life-back-img").style.display = 'block';
+            }
+        }
+        function unhover($id){
+            if ($id == 0){
+                document.getElementById("fisic-img").src = "{{asset('images/Group_95.png')}}";
+                document.getElementById("fisic-button").style.display = 'none';
+                document.getElementById("fisic-card").style.display = 'none';
+                document.getElementById("fisic-back").style.display = 'none';
+                document.getElementById("fisic-back-img").style.display = 'none';
+            }else if ($id == 1){
+                document.getElementById("emo-img").src = "{{asset('images/Group_320.png')}}";
+                document.getElementById("emo-button").style.display = 'none';
+                document.getElementById("emo-card").style.display = 'none';
+                document.getElementById("emo-back").style.display = 'none';
+                document.getElementById("emo-back-img").style.display = 'none';
+            }else if ($id == 2){
+                document.getElementById("life-img").src = "{{asset('images/Group_329.png')}}";
+                document.getElementById("life-button").style.display = 'none';
+                document.getElementById("life-card").style.display = 'none';
+                document.getElementById("life-back").style.display = 'none';
+                document.getElementById("life-back-img").style.display = 'none';
+            }
+        }
+    </script>
+    <div class="motiv">
+        <h1>¿Qué te motiva a leer hoy?</h1>
+        <p class="motiv-text">Cuando adquieres un libro en EMPRENDUM puedes ayudar a un joven a lograr sus sueños de ser profesionista, pero lo más importante es que encuentres en nuestras páginas un mensaje para tí dentro de las tres dimensiones de salud.</p>
+        <div class="motiv-table">
+            
+            <div onmouseover="hover(0)" onmouseleave="unhover(0)" >
+                <div id="fisic-back"></div>
+                <div id="fisic-card"></div>
+                <img id="fisic-back-img" class="motiv-back-img" src="{{asset('images/EMPRENDUM_VS.png')}}">
+                <img class="motiv-img" id="fisic-img" src="{{asset('images/Group_95.png')}}">
+                <h3>Bienestar Físico</h3>
+                <p>Existen recursos sencillos para cuidar nuestro cuerpo y tener una mejor salud. Es un esfuerzo que comienza con pequeños pasos. ¿Comenzamos?</p>
+                <button id="fisic-button" onclick=" window.location = '{{ path('libreria') }}';">IR A CATEGORÍA</button>
+            </div>
+            <div onmouseover="hover(1)" onmouseleave="unhover(1)" style="margin-right: 12.5%;  margin-left: 12.5%;">
+                <div id="emo-back"></div>
+                <div id="emo-card"></div>
+                <img id="emo-back-img" class="motiv-back-img" src="{{asset('images/0021_EMPRENDUM_21.png')}}">
+                <img class="motiv-img" id="emo-img" src="{{asset('images/Group_320.png')}}">
+                <h3>Equilibrio Emocional</h3>
+                <p>El manejo de emociones, la empatía y aprender a ser feliz con uno mismo, nuestra familia y los que nos rodean es el gran triunfo. ¿Cómo se logra?</p>
+                <button id="emo-button" onclick=" window.location = '{{ path('libreria') }}';">IR A CATEGORÍA</button>
+            </div>
+            <div onmouseover="hover(2)" onmouseleave="unhover(2)">
+                <div id="life-back"></div>
+                <div id="life-card"></div>
+                <img id="life-back-img" class="motiv-back-img" src="{{asset('images/EMPRENDUM_22.png')}}">
+                <img class="motiv-img" id="life-img" src="{{asset('images/Group_329.png')}}">
+                <h3>Evaluación de Vida</h3>
+                <p>Si sabemos a dónde queremos ir, es más fácil llegar. La dirección la obtenemos de lo alto. Es tiempo de avanzar. ¿Qué rumbo quieres tomar?</p>
+                <button id="life-button" onclick=" window.location = '{{ path('libreria') }}';">IR A CATEGORÍA</button>
+            </div>
+        </div>
+    </div>  
+</div>
+<div style="position: static;">
+    <script>
+        var tag = document.createElement('script');
+ 
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+ 
+        var player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '390',
+                width: '640',
+                videoId: 'HF4vuGEjdnM',
+                playerVars: {
+                    'autoplay': 0,
+                    'controls': 1,
+                    'showinfo': 0,
+                    'rel': 0
+                },
+                events: {
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+ 
+        function onPlayerStateChange(event) {
+            switch(event.data) {
+            case 0:
+                document.getElementById('videoShadow').style.display = 'block';
+                document.getElementById('videoShadowLight').style.display = 'block';
+                break;
+            case 1:
+                document.getElementById('videoShadow').style.display = 'none';
+                document.getElementById('videoShadowLight').style.display = 'none';
+                break;
+            case 2:
+                document.getElementById('videoShadow').style.display = 'block';
+                document.getElementById('videoShadowLight').style.display = 'block';
+            }
+        }
+        function play(){
+            player.playVideo();
+            document.getElementById('videoShadow').style.display = 'none';
+            document.getElementById('videoShadowLight').style.display = 'none';
+        }
+ 
+        
+ 
+        
+    </script>
+    <div class="video">
+        <div id="player"></div>
+        <div id="videoShadow" class="video-shadow">
+            <div style="margin : 10%; margin-top : 17%;">
+                <br>
+                <h1 style="color: white;">¿Puede un libro</h1>
+                <h1 style="color: #2667F5;">cumplir un sueño?</h1>
+                <p>Nos emociona escuchar las historias de nuestros universitarios cuando terminan las campañas. Podríamos también hacer un libro sobre sus aventuras, sus hazañas y cosas extraordinarias que les suceden al tener contacto contigo, donde el protagonista es un ser increíble que camina con ellos y la fe en creer que podemos lograr un mundo mejor es su armadura.</p>
+                <p>Por ahora ese libro no existe, pero podemos seguir escribiendo más historias.</p>
+                <button class="transparent-button-white" onclick="window.location = '{{ path('historias') }}'">MÁS HISTORIAS</button>
+            </div>
+        </div>
+        <div id="videoShadowLight" class="video-light-shadow">
+            <input type="image" src="{{asset('images/path_101.png')}}" class="play-button" onclick="play()">
+        </div>
+    </div>  
+</div>
+<div style="position: static;">
+    <script type="text/javascript">
+        function HHover($id) {
+            if ($id == 0){
+                document.getElementById("home-img").src = "{{asset('images/Group_96-selected.png')}}";
+                document.getElementById("home-button").style.display = 'block';
+                document.getElementById("home-card").style.display = 'block';
+                document.getElementById("home-back").style.display = 'block';
+                document.getElementById("home-back-img").style.display = 'block';
+            }else if ($id == 1){
+                document.getElementById("emp-img").src = "{{asset('images/Group_96-selected.png')}}";
+                document.getElementById("emp-button").style.display = 'block';
+                document.getElementById("emp-card").style.display = 'block';
+                document.getElementById("emp-back").style.display = 'block';
+                document.getElementById("emp-back-img").style.display = 'block';
+            }else if ($id == 2){
+                document.getElementById("church-img").src = "{{asset('images/Group_96-selected.png')}}";
+                document.getElementById("church-button").style.display = 'block';
+                document.getElementById("church-card").style.display = 'block';
+                document.getElementById("church-back").style.display = 'block';
+                document.getElementById("church-back-img").style.display = 'block';
+            }
+        }
+        function HUnhover($id){
+            if ($id == 0){
+                document.getElementById("home-img").src = "{{asset('images/Group_292.png')}}";
+                document.getElementById("home-button").style.display = 'none';
+                document.getElementById("home-card").style.display = 'none';
+                document.getElementById("home-back").style.display = 'none';
+                document.getElementById("home-back-img").style.display = 'none';
+            }else if ($id == 1){
+                document.getElementById("emp-img").src = "{{asset('images/Group_295.png')}}";
+                document.getElementById("emp-button").style.display = 'none';
+                document.getElementById("emp-card").style.display = 'none';
+                document.getElementById("emp-back").style.display = 'none';
+                document.getElementById("emp-back-img").style.display = 'none';
+            }else if ($id == 2){
+                document.getElementById("church-img").src = "{{asset('images/Group_303.png')}}";
+                document.getElementById("church-button").style.display = 'none';
+                document.getElementById("church-card").style.display = 'none';
+                document.getElementById("church-back").style.display = 'none';
+                document.getElementById("church-back-img").style.display = 'none';
+            }
+        }
+ 
+        function showInfo(){
+      document.getElementById('s-info-ind').style.display='block';
+      document.getElementById("si-nots-ind").style.display='none';
+    }
+    </script>
+ 
+ 
+    <div class="help">
+        <h1>¿Qué podemos hacer por ti?</h1>
+        <p id="help-desc">Nuestra misión no termina aquí. Todo comienza cuando llegamos a ti por medio de tu hogar, empresa o iglesia; ahí se escriben las historias. Creemos que cada entorno puede impulsarse a ser mejor cada día, y por ello contamos con planes para realizar visitas de manera personal.</p>
+        <div class="help-table">
+            <div onmouseover="HHover(0)" onmouseleave="HUnhover(0)" >
+                <div id="home-back"></div>
+                <div id="home-card"></div>
+                <img id="home-back-img" class="motiv-back-img" src="{{asset('images/0023_EMPRENDUM_23.png')}}">
+                <img class="help-img" id="home-img" src="{{asset('images/Group_292.png')}}" style="height: 4.9vw; width: 6vw;">
+                <h3>En tu Hogar</h3>
+                <p>A través de una breve plática personal con quienes nos permiten entrar a sus hogares, compartimos las diferentes lecturas de nuestro programa.</p>
+                <button id="home-button" onclick="showInfo()">CONTÁCTANOS</button>
+            </div>
+            <div onmouseover="HHover(1)" onmouseleave="HUnhover(1)" style="margin-right: 12.5%;  margin-left: 12.5%;">
+                <div id="emp-back"></div>
+                <div id="emp-card"></div>
+                <img id="emp-back-img" class="motiv-back-img" src="{{asset('images/0020_EMPRENDUM_20.png')}}">
+                <img class="help-img" id="emp-img" src="{{asset('images/Group_295.png')}}">
+                <h3>En tu Empresa</h3>
+                <p>Estamos capacitados para realizar talleres, conferencias y cursos diseñados para crear mejores ambientes laborales.</p>
+                <button id="emp-button" onclick="showInfo()">CONTÁCTANOS</button>
+            </div>
+            <div onmouseover="HHover(2)" onmouseleave="HUnhover(2)">
+                <div id="church-back"></div>
+                <div id="church-card"></div>
+                <img id="church-back-img" class="motiv-back-img" src="{{asset('images/EMPRENDUM_IG.png')}}">
+                <img class="help-img" id="church-img" src="{{asset('images/Group_303.png')}}">
+                <h3>En tu Iglesia</h3>
+                <p>También creemos que es importante crecer en salud, así como crecemos en otras áreas. (3 Juan 3:2) Conoce nuestros talleres.</p>
+                <button id="church-button" onclick="showInfo()">CONTÁCTANOS</button>
+            </div>
+        </div>
+    </div>  
+</div>  
+<div style="position: static;">
+    <div class="work">
+        <h1 id="work-title">En su temporada vacacional nuestros estudiantes visitan</h1>
+        <div id="work-line">
+            <h1 class="work-numbers">+500</h1>
+            <p class="work-subs" id="line-ciudades" style="left: 6.7%; width: 10%;">ciudades</p>
+            <h1 class="work-text" style="left: 16%;">y llevan</h1>
+            <h1 class="work-numbers" style="left: 26.5%;">+60,000</h1>
+            <p class="work-subs" id="line-libros" style="left: 47.7%;">libros</p>
+            <h1 class="work-text" style="left: 53%;">a</h1>
+            <h1 class="work-numbers" style="left: 56%;">+1,000,000</h1>
+            <p class="work-subs" id="line-hogares" style="left: 94%; width: 10%">hogares</p>
+        </div>
+        <div class="work-card"></div>
+        <img src="{{asset('images/0014_EMPRENDUM_14.png')}}" >
+        <h1 class="work-ph" style="top:60%; left: 59.5%;">No es una labor fácil,</h1>
+        <h1 class="work-ph" style="top:65%; left: 60%;">pero su esfuerzo tiene</h1>
+        <h1 class="work-ph" style="top:70%; left: 60%; color: #2667F5;">historias gratificantes.</h1>
+        <button type="button" class="transparent-button work-button" onclick=" window.location = '{{ path('universitarios') }}';">ELIGE A UN ESTUDIANTE</button>
+    </div>  
+</div>  
+<div style="position: static;">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var itemsMainDiv = ('.MultiCarousel');
+            var itemsDiv = ('.MultiCarousel-inner');
+            var itemWidth = "";
+ 
+            $('.leftLst, .rightLst').click(function () {
+                var condition = $(this).hasClass("leftLst");
+                if (condition)
+                    click(0, this);
+                else
+                    click(1, this)
+            });
+ 
+            ResCarouselSize();
+ 
+            $(window).resize(function () {
+            ResCarouselSize();
+        });
+ 
+        //this function define the size of the items
+        function ResCarouselSize() {
+            var incno = 0;
+            var dataItems = ("data-items");
+            var itemClass = ('.item');
+            var id = 0;
+            var btnParentSb = '';
+            var itemsSplit = '';
+            var sampwidth = $(itemsMainDiv).width();
+            var bodyWidth = $('body').width();
+            $(itemsDiv).each(function () {
+                id = id + 1;
+                var itemNumbers = $(this).find(itemClass).length;
+                btnParentSb = $(this).parent().attr(dataItems);
+                itemsSplit = btnParentSb.split(',');
+                $(this).parent().attr("id", "MultiCarousel" + id);
+ 
+ 
+                if (bodyWidth >= 768) {
+                    incno = itemsSplit[1];
+                    itemWidth = sampwidth / incno;
+                }else {
+                    incno = itemsSplit[0];
+                    itemWidth = sampwidth / incno;
+                }
+                $(this).css({ 'transform': 'translateX(0px)', 'width': itemWidth * itemNumbers });
+                $(this).find(itemClass).each(function () {
+                    $(this).outerWidth(itemWidth);
+                });
+ 
+                $(".leftLst").addClass("over");
+                $(".rightLst").removeClass("over");
+ 
+            });
+        }
+ 
+ 
+        //this function used to move the items
+        function ResCarousel(e, el, s) {
+            var leftBtn = ('.leftLst');
+            var rightBtn = ('.rightLst');
+            var translateXval = '';
+            var divStyle = $(el + ' ' + itemsDiv).css('transform');
+            var values = divStyle.match(/-?[\d\.]+/g);
+            var xds = Math.abs(values[4]);
+            if (e == 0) {
+                translateXval = parseInt(xds) - parseInt(itemWidth * s);
+                $(el + ' ' + rightBtn).removeClass("over");
+ 
+                if (translateXval <= itemWidth / 2) {
+                    translateXval = 0;
+                    $(el + ' ' + leftBtn).addClass("over");
+                }
+            }
+            else if (e == 1) {
+                var itemsCondition = $(el).find(itemsDiv).width() - $(el).width();
+                translateXval = parseInt(xds) + parseInt(itemWidth * s);
+                $(el + ' ' + leftBtn).removeClass("over");
+ 
+                if (translateXval >= itemsCondition - itemWidth / 2) {
+                    translateXval = itemsCondition;
+                    $(el + ' ' + rightBtn).addClass("over");
+                }
+            }
+            $(el + ' ' + itemsDiv).css('transform', 'translateX(' + -translateXval + 'px)');
+        }
+ 
+        //It is used to get some elements from btn
+        function click(ell, ee) {
+            var Parent = "#" + $(ee).parent().attr("id");
+            var slide = $(Parent).attr("data-slide");
+            ResCarousel(ell, Parent, slide);
+        }
+ 
+    });
+    </script>
+    <div class="people">
+        <h1>Mensaje de quienes creyeron en nosotros</h1>
+        <p id = "people-desc">Nuestro programa también involucra a nuestros egresados y a los padres, familia y amigos de nuestros universitarios, quienes depositan su confianza en nosotros y son el motor de sus sueños.</p>
+ 
+        <div class="row">
+        <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel"  data-interval="1000">
+            <div class="MultiCarousel-inner">
+                <div class="item">
+                    <div class="people-comment-view">
+                        <p class="people-comment">Gracias a la labor que mi hijo ha realizado en Emprendum, se volvió <span>una persona más abierta</span> para tratar con otras personas.</p>
+                        <p class="people-name">Mamá de Jorge Reyes </p>
+                        <p class="people-carrera">ESTUDIANTE DE TEOLOGÍA</p>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="people-comment-view">
+                        <p class="people-comment">Gracias a  Dios y a Emprendum, ha sido de mucha bendición para mi hija, pues le ha ayudado económicamente para <span>pagar su colegiatura</span>. </p>
+                        <p class="people-name">Mamá de Keren Montalvo</p>
+                        <p class="people-carrera">ESTUDIANTE DE MEDICINA</p>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="people-comment-view">
+                        <p class="people-comment">Agradezco a Dios por el programa Emprendum que <span>inspiran, motivan y despiertan</span> habilidades que solo ahí pueden desarrollar. Es gracias a este que mi hijo a aprendido el liderazgo </p>
+                        <p class="people-name">Mamá de Sergio Contreras</p>
+                        <p class="people-carrera">ESTUDIANTE DE ODONTOLOGÍA</p>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="people-comment-view">
+                        <p class="people-comment">Agradecemos a Dios y a EMPRENDUM por facilitar <span>trabajo en equipo, motivación, estrategias, liderazgo</span> y los medios económicos. </p>
+                        <p class="people-name">Mamá de Arlett Joachín</p>
+                        <p class="people-carrera">ESTUDIANTE DE MEDICINA</p>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="people-comment-view">
+                        <p class="people-comment">Agradezco a Dios y al departamento Emprendum pues ha sido de bendición en un <span>crecimiento espiritual</span> en ella, y afirmado su confianza en el Señor. Además de eso le permite salir adelante en la UM</p>
+                        <p class="people-name">Mamá de Aiby Sánchez</p>
+                        <p class="people-carrera">ESTUDIANTE DE MEDICINA</p>
+                    </div>
+                </div>
+            </div>
+ 
+            
+            <input type="image" src="{{asset('images/Path_102.png')}}" class="leftLst">
+            <input type="image" src="{{asset('images/Path_103.png')}}" class="rightLst">
+        </div>
+    </div>  
+</div> 
+<div style="position: static;">
+    <div class="thnks">
+        <img src="{{asset('images/Image_146.png')}}">
+        <div class="thnks-line"></div>
+        <p>Respondiendo les dirá:</p>
+        <p>“Les digo de verdad que cuando ayudan aun al más pequeño, a mí me ayudan”</p>
+        <div class="thnks-line"></div>
+        <h1>¡Gracias a tu aporte se siguen escribiendo historias!</h1>
+    </div>  
+</div>  
+{% endblock %}

@@ -1,0 +1,183 @@
+{# templates/store/universitarios.html.twig #}
+{% extends 'store_base.html.twig' %}
+
+{% block code %}
+<style type="text/css">
+  body{
+      height: auto; 
+  }
+  .footer{
+	  position: unset;
+  }
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+// document.getElementById("demo").innerHTML = "Paragraph changed!";
+$(document).ready(function(){
+  $(document.getElementById('l-estudiante-button')).hover(function(){
+      recortarNombre()
+      //document.getElementById("texto").innerHTML=JSON.parse(window.sessionStorage.getItem("name"));
+      //document.getElementById("textos").innerHTML=JSON.parse(window.sessionStorage.getItem("name"));
+    document.getElementById("li-seg").style.display = 'block';
+    }, function(){
+    document.getElementById("li-seg").style.display = 'none';
+  });
+});
+</script>
+<script type="text/javascript">
+    window.onload = function (){
+        var rows = JSON.parse(window.sessionStorage.getItem("cart"));
+        var col = JSON.parse(window.sessionStorage.getItem("student"));
+        if(rows == null){
+            document.getElementById('l-carrito-button').style.display = 'none';
+        } else{
+            document.getElementById('l-carrito-qtt').innerHTML = rows.length;
+            document.getElementById('l-carrito-button').style.display = 'block';
+        }
+        if(col == null){
+            document.getElementById('l-estudiante-button').style.display = 'none';
+        }else{
+            document.getElementById('l-estudiante-button').style.display = 'block';
+            foto();          
+        }
+        
+    };
+
+</script>
+<script>
+function foto(){
+        var prue=JSON.parse(window.sessionStorage.getItem("foto"));
+        var separado = prue.split("")
+        var reverse = separado.reverse()
+        var unir = reverse.join("")
+        var n = unir.search("/")
+        var bien = 'uploads/students_imgs/'+prue.slice(prue.length-n,prue.length)
+        document.getElementById('l-foto').src=bien;
+        console.log(bien);
+}
+
+
+function recortarNombre(){
+        var prue=JSON.parse(window.sessionStorage.getItem("name"));
+        var separado = prue.split(" ");
+        var name= separado[0]
+        var nombre = name.charAt(0).toUpperCase() + name.slice(1)
+        console.log('length'+separado.length)
+        switch(separado.length) {
+        case 1:
+            break;
+        case 2:
+            var name= separado[1]
+            nombre += " " +  name.charAt(0).toUpperCase() + name.slice(1)
+            break;
+        case 3:
+            var name= separado[1]
+            nombre += " " +  name.charAt(0).toUpperCase() + name.slice(1)
+        break;
+        case 4:
+            var name= separado[2]
+            nombre += " " +  name.charAt(0).toUpperCase() + name.slice(1)
+        break;
+        default:
+            // code block
+        }
+        document.getElementById("textos").innerHTML=nombre
+}
+
+</script>
+<button class="l-carrito" id="l-carrito-button" style="background-image: url('{{ asset('images/Bg carrito@2x.png') }}')" onclick="carrito()">
+    <img src="{{ asset('images/Carrito@2x.png') }}">
+    <p id="l-carrito-qtt"></p>
+</button>
+<!-- onclick="estudiante()"-->
+<button class="l-student-b" id="l-estudiante-button">
+<div class="l-seg" id="li-seg">
+<p style="font-size: .91vw;">Bienvenido a nuestra Librería donde podrás escoger uno o varios manuales que serán de ayuda para tí y los tuyos</p>
+<p style="color: #F0C11C; font-size: 1vw;">Contribuyes a mi proyecto educativo, Gracias</p>
+<p class="l-p-name" style="margin-top: 5%;"><span id="textos"></span></p>
+</div>
+<img id="l-foto">
+</button>
+
+
+
+    <div style="position: static;">
+    <div class="l-intro">
+        <img src="{{ asset('images/0008_EMPRENDUM_16.JPG') }}">
+        <div>
+            <h1>Leer te permite escribir una nueva historia</h1>
+        </div>
+    </div>   
+</div> 
+<div style="position: static; height:15vw;">
+    <div class="l-cats">
+        <div class="lc-card lc-left">
+            <img src="{{asset('images/EMPRENDUM_VS_STORE.png')}}">
+            <div>
+                <h1>Bienestar Físico</h1>
+                <p>Existen recursos sencillos para cuidar nuestro cuerpo y llevar una mejor vida con salud. Es un esfuerzo que comienza con pequeños pasos. ¿Quieres comenzar?</p>
+                <!--<button>VER CATEGORÍA</button>-->
+            </div>
+        </div>
+        <div class="lc-card lc-center">
+            <img src="{{ asset('images/EMPRENDUM_EE_STORE.png') }}">
+            <div>
+                <h1>Equilibrio Emocional</h1>
+                <p>Controlar nuestras emociones, sentir lo que sienten los demás, aprender a ser feliz con uno mismo, con nuestra familia y con los que nos rodean es uno de los mayores triunfos. ¿Cómo se logra?</p>
+                <!--<button>VER CATEGORÍA</button>-->
+            </div>
+            
+        </div>
+        <div class="lc-card lc-right">
+            <img src="{{ asset('images/EMPRENDUM_EV_STORE.png') }}">
+            <div>
+                <h1>Evaluación de Vida</h1>
+                <p>Si sabemos a dónde queremos ir, es más fácil llegar. La dirección la obtenemos de lo alto. Es tiempo de avanzar. ¿Qué rumbo quieres tomar?</p>
+                <!--<button>VER CATEGORÍA</button>-->
+            </div>
+            
+        </div>
+    </div>   
+</div>
+<div style="display:none; width: 50px; height: 50px; background-color: red;">
+<p>Hola</p>
+</div>
+
+<div style="position: static;">
+    <div class="l-books">
+        <div class="sc-menu">
+            {% if mode==1 %}
+            <button id="lb-recom" class="lb-switch" onclick="window.location.href='{{ path('showBooksBy',{'all':'1'}) }}'">TODOS LOS LIBROS</button>
+            <button id="lb-new" class="lb-switch" style="color: rgba(37, 45, 82, 0.5); margin-left: 5%;" onclick="window.location.href='{{ path('showBooksBy',{'all':0}) }}'">NUEVOS</button>
+            {% else %}
+            <button id="lb-recom" class="lb-switch" style="color:rgba(37, 45, 82, 0.5);" onclick="window.location.href='{{ path('showBooksBy',{'all':'1'}) }}'">TODOS LOS LIBROS</button>
+            <button id="lb-new" class="lb-switch" style="color: #2667F5; margin-left: 5%;" onclick="window.location.href='{{ path('showBooksBy',{'all':0}) }}'">NUEVOS</button>
+            {% endif %}
+            <form action="{{ path('libreria_search') }}" method="post"  style="margin-top: 0; margin-bottom: 30px;">
+                <input type="text" id="sc-search" name="text" placeholder="BUSCADOR" style="background-image: url('{{ asset('images/Search@2x.png') }}');">
+                <input type="submit" style="position: absolute; left: -9999px"/>
+            </form>
+        </div>
+        <div class="lb-grid">
+            {% if books %}
+                {% for book in books %}
+                <div class="lb-grid-item">
+                    <img class="lb-grid-item-img" src="{{ asset('uploads/books_imgs/'~ book.portada) }}">
+                    <div class="lb-grid-info" >
+                        <img class="lb-grid-carrito" src="{{ asset('images/Group_145.png') }}" style="display: none">
+                        <img class="lb-grid-img" src="{{ asset('uploads/books_imgs/'~ book.portada) }}">
+                        <div class="lb-grid-name" onclick="window.location.href='{{ path('libro',{'id':book.id}) }}'">
+                            <h1>{{ book.titulo }}</h1>
+                        </div>
+                        <div class="lb-grid-price">
+                            <p>{{ book.autor }}</p>
+                            <h1>${{ book.publico /100 }} mxn</h1>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>  
+</div>
+{% endblock %}

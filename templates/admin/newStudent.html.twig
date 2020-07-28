@@ -1,0 +1,29 @@
+{# templates/admin/newBook.html.twig #}
+{% extends 'admin_base.html.twig' %}
+{% block title %}Emprendum admin{% endblock %}
+{% block body %}
+    <div class="content-wrapper">
+    <div class="container-fluid">
+      <!-- Breadcrumbs-->
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="#">Admin</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="students">Universitarios</a>
+        </li>
+        <li class="breadcrumb-item active">Agregar universitario</li>
+      </ol>
+      <!-- code area-->
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        {{ form_end(form) }}
+        <br>
+        <br>
+        <br>
+      <!-- Scroll to Top Button-->
+      <a class="scroll-to-top rounded" href="#page-top">
+      <i class="fa fa-angle-up"></i>
+    </a>
+    
+{% endblock %}

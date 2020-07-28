@@ -1,0 +1,63 @@
+{# templates/admin/books.html.twig #}
+{% extends 'admin_base.html.twig' %}
+{% block title %}Emprendum admin{% endblock %}
+{% block body %}
+  <div class="content-wrapper">
+    <div class="container-fluid">
+      <!-- Breadcrumbs-->
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="#">Admin</a>
+        </li>
+        <li class="breadcrumb-item active">Libros</li>
+      </ol>
+      <!-- code area-->
+       <!-- Buscador-->
+  
+      <div class="input-group mb-3" style="width: 100%;">
+        <form action="{{ path('books_search') }}" method="post" class="input-group-append" style="width: 100%;">
+          <input type="text" name="text" placeholder="Buscar" class="form-control" style="width: 80%;">
+          <input type="submit" value="Buscar" class="btn btn-primary" style="margin-left: 5px;">
+          <a href="{{ path('new_book') }}" class="btn btn-primary" style="background-color:#2ECCFA; margin-left: 5px; border: none;">Agregar</a>
+        </form>
+      </div>
+      {% if books %}
+      <table id="books" class="table table-striped">
+        <thead>
+          <tr>
+            <th>Clave</th>
+            <th>Foto</th>
+            <th>Titulo</th>
+            <th>Disponibles</th>
+            <th>Precio colportor</th>
+            <th>Precio público</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for book in books %}
+          <tr>
+            <td>{{ book.id }}</td>
+            <td>
+              {% if book.imagenes|length > 0 %}
+                <img src=" {{ asset('uploads/books_imgs/'~ book.portada)}} " alt="" height=100 width=80></img>
+              {% endif %} 
+            </td>
+            <td>{{ book.titulo }}</td>
+            <td>{{ book.disponibles }}</td>
+            <td>${{ book.colportor }}</td>
+            <td>${{ book.publico }}</td>
+            <td>
+              <a href="books/editBook/{{ book.id }}" class="btn btn-light">Editar</a>
+              <a href="{{ path('delete_book', {'id':book.id}) }}" class="btn btn-danger delete-article" style="background-color: #FF0000;" data-id="{{ book.id }}">Eliminar</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p>No hay libros que mostrar</p>
+      {% endif %}  
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,325 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Sans+Pro:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700;1,900&display=swap');
+
+.s-intro{
+	margin-top:0;
+  	width: 100%;
+  	height: 25vw;
+  	position: relative;
+  	background-color: #F0C11C;
+}
+#s-title{
+	position:absolute;
+	bottom:5%;
+	left:5%;
+	color: white;
+	font-weight: 600;
+	font-size: 4vw;
+	width: 45%;
+}
+#s-player{
+	position: absolute;
+	right: 10%;
+	bottom: -5%;
+	height: 80%;
+	width: 40%;
+	z-index: 2;
+	border-radius: 0.5vw;
+ 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+} 
+#s-card{
+	position:absolute;
+	right: 11%;
+	bottom: -10%;
+	height: 80%;
+	width: 40%;
+	z-index: 1;
+	border-radius: 0.5vw;
+	background-color: #00D7B3;
+ 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+#s-card-content{
+	position: absolute;
+	right: 10%;
+	bottom: -5%;
+	height: 80%;
+	width: 40%;
+	z-index: 3;
+	border-radius: 0.5vw;
+ 	background-image: linear-gradient(rgba(7, 41, 96, .3),rgba(7, 41, 96, .6));
+}
+#s-ut{
+	font-size: 2vw;
+	color:white;
+	position: absolute;
+	left: 5%;
+	bottom: 17%;
+	font-weight: 600;
+	font-family: 'Raleway', sans-serif;
+}
+#s-bt{
+	font-size: 2vw;
+	color: rgba(38, 103, 245, 1);
+	position: absolute;
+	left: 5%;
+	bottom: 5%;
+	font-weight: 600;
+	font-family: 'Raleway', sans-serif;
+}
+.s-content{
+	/*margin-top:25vw;*/
+  	width: 100%;
+	  height: auto;
+	  padding-bottom: 70px;
+  	/* position: absolute;*/
+  	background-color: white;
+}
+#sc-title{
+	position: relative;
+	text-align: center;
+	width: 100%;
+	size: 4vw;
+	color: #252D52;
+	top: 4vw;
+	font-family: 'Raleway', sans-serif;
+}
+.sc-menu{
+	position: relative;
+	left: 10%;
+	right: 10%;
+	width: 80%;
+	top: 4vw;
+	height: auto;
+}
+.faculty{
+	background-color: #000000;
+  	border: none;
+ 	color: #252D52;
+  	padding: 15px 32px;
+  	text-align: center;
+  	text-decoration: none;
+  	display: inline-block;
+  	font-weight: 600;
+  	font-size: 1vw;
+}
+.limitante{
+	border-color: #000000;
+	border-width: 5px;
+}
+.limitante2{ 
+	background-color: transparent;
+	height: 20vh;
+	max-width:100% ;
+	display: flex;
+	box-sizing: border-box;
+	margin-left: 15px;
+	margin-right: 15px;
+	padding-right: 8px;
+}
+input[type="radio"]{
+	-webkit-appearance: none;
+}
+.lb-fac{
+	height: 15vh;
+	width: 12.5%; 
+	border: 6px solid #252D52;
+	position: relative;
+	margin: auto;
+	border-radius: 10px;
+	color: #252D52;
+	transition: 0.2s;
+}
+.fa{
+	font-size: 40px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-80%);
+}
+.lb-fac>span{
+	font-size: 15px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,80%);
+	font-weight: 500;
+}
+input[type="radio"]:checked + .lb-fac{
+	background-color: #252D52;
+	color:#ffffff;
+	box-shadow: 0 10px 25px rgba(24, 249, 141, 0.2) ;
+}
+.sc-switch{
+	background-color: transparent;
+  	border: none;
+ 	color: #252D52;
+  	padding: 15px 32px;
+  	text-align: center;
+  	text-decoration: none;
+  	display: inline-block;
+  	font-weight: 600;
+	  font-size: 1vw;
+	  font-family: 'Raleway', sans-serif;
+}
+.sc-swich:hover{
+ 	color: #252D52;
+}
+#sc-search{
+	color: #252D52;
+	border-radius: 1vw;
+  	border: 0px solid #ccc;
+  	padding-left: 1%;
+  	height: 2vw;
+  	float: right;
+  	font-weight: 600;
+  	font-size: 0.9vw;
+ 	box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    background-repeat: no-repeat;
+    background-position: right 8% center;
+	background-size: 0.9vw;
+	font-family: 'Raleway', sans-serif;
+}
+.sc-grid {
+	position: relative;
+	top:6vw;
+	left: 9.5%;
+	right: 9.5%;
+	width: 81%;
+	height: auto;
+  	display: grid;
+  	grid-gap: 3vw;
+  	grid-template-columns: 16.5% 16.5% 16.5% 16.5% 16.5%;
+  	padding: 3vw;
+  	padding-top: 0;
+}
+
+.sc-grid-item {
+ 	height: 20vw;
+	min-width: 100%;
+ 	position: relative;
+}
+.sc-item-ops{
+	position: absolute;
+	z-index: 4;
+	width: 100%;
+	height: 80%;
+	border-radius: 0.3vw;
+	background-color: rgba(38, 103, 245, 0.52);
+	opacity: 0;
+}
+.sc-meet{
+	margin: 0 auto;
+  	display: block;
+	margin-top:50%;
+	font-size: 0.6vw;
+}
+.sc-pick{
+	background-color: rgba(0, 215, 179, 1);
+	margin: 0 auto;
+  	display: block;
+	margin-top: 5%;
+	font-size: 0.6vw;
+}
+.sc-item-ops:hover{
+	opacity: 1;
+}
+.si-shadow{
+	background-color: rgba(255, 255, 255, 0.6);
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 900;
+	display: none;
+}
+.si-content{
+	margin: 0 auto;
+  	display: block;
+	margin-top: 10%;
+	width: 45%;
+	height: 45%;
+	background-color: white;
+	border-radius: 0.2vw;
+ 	box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+ 	position: relative;
+}
+.si-img{
+	border-radius: 0.5vw;
+	position: relative;
+	float: left;
+	margin-left: 5%;
+	margin-top: 5%;
+	height: 80%;
+	width: 30%;
+}
+.si-tv{
+	position: relative;
+	float: left;
+	width: 55%;
+	height: 75%;
+	margin: 5%;
+}
+.si-name{
+	color: rgba(38, 103, 245, 1);
+	font-weight: 700;
+	position: relative;
+	text-align: left;
+	font-size: 2vw;
+	margin: 0;
+}
+.si-carrera{
+	color: rgba(37, 45, 82, 1);
+	position: relative;
+	text-align: left;
+	font-size: 0.7vw;
+	font-weight: 400;
+	margin:0;
+}
+.si-desc{
+	color: rgba(37, 45, 82, 1);
+	position: relative;
+	text-align: left;
+	font-size: 0.8vw;
+	font-weight: 400;
+	margin:0;
+	width: 90%;
+	height: 40%;
+	margin-top: 5%;
+}
+.si-bc{
+	width: 100%;
+	height: 12%;
+	position: relative;
+	display:inline-block;
+}
+.si-pick{
+	height: 1.5vw;
+	font-size: 0.65vw;
+	position: relative;
+	float: left;
+}
+.si-alert{
+	position: absolute;
+	width: 100%;
+	margin: 0;
+	bottom: 0;
+	left: 0;
+	background-color: rgba(38, 103, 245, 1);
+	color: white;
+	height: 10%;
+	text-align: center;
+	border-bottom-left-radius: 0.2vw;
+	border-bottom-right-radius: 0.2vw;
+	display: none;
+}
+.si-dismiss{
+	position: absolute;
+	right: 3%;
+	top: 5%;
+	width: 2%;
+	height: 4.5%;
+}
+
+.fondo{
+	background-color: #F0C11C;
+}

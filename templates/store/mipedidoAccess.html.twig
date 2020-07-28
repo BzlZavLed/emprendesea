@@ -1,0 +1,42 @@
+{# templates/store/mipedidoAccess.html.twig #}
+{% extends 'store_base.html.twig' %}
+{% block code %}
+<script>
+    window.onload = function(){
+    	document.body.style.backgroundColor = "white";
+    };
+    function saveIt(){
+        var id = document.getElementById('idField').value;
+        window.location.href="{{ path('pedidoAccess') }}/"+id;
+    }
+</script>
+<div class="w3aitssinglewthree" style="background-color: #D6D9DB;">
+    <br>
+    <div style="height: 600px; width: 80%; margin: auto; background-color: #fff; text-align: center;">
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <h1 style="color: #212F3D; text-align: center;">Mi Pedido</h1>
+        <br>
+        {% if error %}
+          <div class="alert alert-warning" role="alert">
+            {{error}}
+          </div>
+          <br>
+        {% endif %}
+        <p style="color: #212F3D; text-align: center; font-size: 120%">Bienvenido, para saber el estado de tú pedido ingresa el id de pedido que te fué enviado en correo electrónico.</p>
+        <br>
+        <input type="text" class="form-control" style="max-width: 25%; display: block;margin: 0 auto;" id="idField" placeholder="id de pedido">
+        <br>
+        <button class="btn" style="color:#fff; background-color: #31708F; width: 200px; display: block; margin: 0 auto;" onclick="saveIt()">Enviar</button>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+  </div>
+</div>
+{% endblock %}

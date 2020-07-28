@@ -1,0 +1,139 @@
+{# templates/store/mipedido.html.twig #}
+{% extends 'store_base.html.twig' %}
+{% block code %}
+<style type="text/css">
+  body{
+      height: 70vw; 
+  }
+</style>
+<script>
+    window.onload = function(){
+    	document.body.style.backgroundColor = "white";
+        {% if pedido %}
+            document.getElementById('card-number').innerHTML =  {{ pedido.id }};
+        {% endif %} 
+    };
+    function share(text){
+      var textArea = document.createElement("textarea");
+      textArea.value =  'https://emprendum.um.edu.mx/universitarios/' + text;
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+
+      try {
+        var successful = document.execCommand('copy');
+        var msg = successful ? 'successful' : 'unsuccessful';
+        alert('Link copiado a portapapeles');
+      } catch (err) {
+        alert('No se pudo copiar el link, por favor intentalo en otro navegador');
+      }
+
+      document.body.removeChild(textArea);
+        }
+</script>
+<div style="position: static;">
+    <div class="shop">
+        <button class="sh-back-button" style="background-image: url('{{ asset('images/Path_198.png') }}')" onclick="window.location = '{{ path('libreria') }}'">VOLVER A LIBRERÍA</button>
+        <div id="sh-content" class="sh-cart">
+            {% if pedido %}
+            <h1>PEDIDO #{{ pedido.ID }}</h1>
+            <div class="sh-scrollable" id="sh-table">
+                {% if content %}
+                {% for book in content %}
+                <div class="sh-row">
+                    <img src="{{ asset('uploads/books_imgs/'~ book.foto) }}" class="sh-table-img">
+                    <div class="sh-row-info">
+                        <h2 class="sh-row-titulo">{{ book.name }}</h2>
+                        <h3 class="sh-row-autor">{{ book.autor }}</h3>
+                        <h3 class="sh-row-precio">${{ (book.price)/100 }} mxn</h3>  
+                        <h3 class="sh-row-autor">{{ book.peso }} kg</h3>  
+                        <div class="sh-editor">
+                            <h1 id="bc-quantity">Cantidad: {{ book.quantity }}</h1>
+                        </div>
+                    </div>
+                    <div class="sh-info-total">
+                        <h3 class="sh-row-precio sh-row-total">${{ (book.total)/100 }}</h3>
+                    </div>
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+            <div class="sh-results">
+                <div class="sh-cuenta">
+                    <div class="sh-totals">
+                        <h3 >SUBTOTAL</h3>
+                        <h2 >${{ (pedido.total)/100 }}</h2>
+                    </div>
+                    <div class="sh-totals">
+                        <h3 >ENVÍO</h3>
+                        {% if pedido.tracking %}
+                        <h2>ENVIADO</h2>
+                        {% else %}
+                        <h2>PENDIENTE</h2>
+                        {% endif %}
+                    </div>
+                    <div class="sh-totals">
+                        <h3 style="color: rgba(37, 45, 82, 1);">TOTAL</h3>
+                        <h2 style="font-weight: 700;">${{ (pedido.total + pedido.deliveryPrice)/100 }} MXN</h2>
+                    </div>
+                </div>
+
+                <div class="sh-terms">
+                    <h1 style="color:rgba(37, 45, 82, 0.3); font-size: 1.1vw;">STATUS</h1>
+                    {% if pedido.tracking %}
+                    <h1 style="color:rgba(0, 215, 179, 1); font-size: 1.3vw;">ENVIADO</h1>
+                    {% else %}
+                    <h1 style="color:rgba(0, 215, 179, 1); font-size: 1.3vw;">PENDIENTE</h1>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif%}
+        </div>
+        {% if pedido %}
+        <div class="sh-card" style="height: 52.5%;">
+            {% if student %}
+            <div class="p-student">
+                <img src="{{ asset('uploads/students_imgs/'~ student.foto) }}">
+                <h1>{{ student.name }} {{ student.apellidos }}</h1>
+                <h2>{{ student.facultad }}</h2>
+            </div>
+            {% endif%}
+            <div class="p-title">
+                <h1>Hola {{ pedido.name }},</h1>
+                <h1>¡Recibimos tú pedido!</h1>
+            </div>
+            <div class="p-content">
+                <h1>GUÍA DE RASTREO<h1>
+                {% if pedido.tracking %}
+                <h3>{{ pedido.tracking }}</h3>
+                {% else %}
+                <h2>PENDIENTE</h2>
+                {% endif %}
+                <h1>DIRECCIÓN</h1>
+                <h2>{{ pedido.name }}</h2>
+                <h2>{{ pedido.street }}</h2>
+                <h2>C.P. {{ pedido.cp }}</h2>
+                <h2>{{ pedido.city }}, {{ pedido.state }}</h2>
+                <h2>{{ pedido.phone }}</h2>
+            </div>
+            <div class="p-content" style="margin-left: 2%;">
+                <h1 style=" margin-bottom: 5%;">ENVÍO ELEGIDO<h1>
+                <h2>{{ pedido.carrier }}</h2>
+                <h2>{{ pedido.deliveryService }}</h2>
+                <h2 style="font-weight: 600; margin-bottom: 5%;">${{ (pedido.deliveryPrice)/100 }}</h2>
+                <!-- REVISAR INFORMACIÓN RECIBIDA DE CONEKTA<h1 style="margin-bottom: 5%;">MÉTODO DE PAGO<h1>
+                <h2>TARJETA</h2>
+                <h2 id="card-number">**** **** **** 1234</h2>-->
+            </div>
+            <div class="p-share">
+                <h1>Link del Universitario:</h1>
+                <button class="transparent-button s-clipboard"  onclick="share('{{ pedido.studentId }}')">COPIAR LINK PARA COMPARTIR</button>
+                <h1 style="margin-left: 5%; margin-top: -1%;">compartir perfil de universitario:</h1>
+                <input type="image" src="{{ asset('images/Facebook.png') }}" onclick="window.location.href='https://www.facebook.com/sharer/sharer.php?u=http://emprendum.um.edu.mx'">   
+                <input style="margin-left: 2%;" type="image" src="{{ asset('images/Twitter.png') }}" onclick="window.location.href = 'http://twitter.com/share?text=¡Hola! ¿te gustaría apoyar a un universitario? &url=http://localhost/emprendum_admin/public/universitarios/1'">           
+            </div>
+        </div>
+        {% endif %}
+    </div>   
+</div>
+{% endblock %}

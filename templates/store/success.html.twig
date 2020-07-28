@@ -1,0 +1,40 @@
+{# templates/store/success.html.twig #}
+{% extends 'store_base.html.twig' %}
+{% block code %}
+<style type="text/css">
+  body{
+      height: 70vw; 
+  }
+</style>
+<script>
+   var pedido = null;
+    window.onload = function(){
+        document.body.style.backgroundColor = "white";
+        window.sessionStorage.setItem('cart',null);
+        window.sessionStorage.setItem('pedido',null);
+    }; 
+</script>
+<div style="position: static;">
+    <div class="sh-success">
+        <img class="scss-bg-img" src="{{ asset('uploads/students_imgs/'~ student.foto) }}">
+        <div class="scss-shadow"></div>
+        <div class="scss-content">
+            <div class="scss-student">
+                <img src="{{ asset('uploads/students_imgs/'~ student.foto) }}">
+                <h1>{{ student.name }} {{ student.apellidos }}</h1>
+                <h2>{{ student.facultad }}</h2>
+            </div>
+            <div class="scss-thanks">
+                <h3>TU NÚMERO DE PEDIDO #{{ pedido.id }}</h3>
+                <h2>Gracias por ayudarme a crecer y darme la oportunidad de prepararme para servir mejor</h2>
+                <h1>¡Gracias por tu apoyo!</h1>
+                <!--<form autocomplete="off" method="post" action="{{ path('pedidoAccess') }}">
+                    <input type="text" name="id" placeholder="Número de pedido">
+                    <button id="pedidoSubmit" type="submit"/>
+                </form>-->
+               <!-- <button class="transparent-button-white" onclick="window.location = '{{ path('pedidoAccess') }}' " style="cursor: pointer;"> VER PEDIDO </button> -->
+            </div>
+        </div>
+    </div>   
+</div>
+{% endblock %}

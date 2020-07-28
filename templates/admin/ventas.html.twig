@@ -1,0 +1,59 @@
+{# templates/admin/ventas.html.twig #}
+{% extends 'admin_base.html.twig' %}
+{% block title %}Emprendum admin{% endblock %}
+{% block body %}
+  <div class="content-wrapper">
+    <div class="container-fluid">
+      <!-- Breadcrumbs-->
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="#">Admin</a>
+        </li>
+        <li class="breadcrumb-item active">Ventas</li>
+      </ol>
+      <!-- code area-->
+       <!-- Buscador-->
+  
+      <div class="input-group mb-3" style="width: 100%;">
+        <form action="{{ path('ventas_search') }}" method="post" class="input-group-append" style="width: 100%;">
+          <input type="text" name="text" placeholder="Buscar" class="form-control" style="width: 80%;">
+          <input type="submit" value="Buscar" class="btn btn-primary" style="margin-left: 5px;">
+        </form>
+      </div>
+      {% if ventas %}
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Nombre</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for venta in ventas %}
+          <tr>
+            <td>{{ venta.id }}</td>
+            <td>{{ venta.name }} {{venta.last}}</td>
+            {% if venta.payment_id %}
+              {% if venta.tracking %}
+                <td>Enviado</td>
+              {% else %}
+                <td>Pendiente</td>
+              {% endif %}
+            {% else %}
+              <td>Por pagar</td>
+            {% endif %}
+            <td>
+              <a href="{{ path('ventas_detalle',{'id':venta.id}) }}" class="btn btn-light">Ver</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p>No hay ventas que mostrar</p>
+      {% endif %}  
+    </div>
+  </div>
+{% endblock %}

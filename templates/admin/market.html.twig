@@ -1,0 +1,111 @@
+{# templates/admin/books.html.twig #}
+{% extends 'admin_base.html.twig' %}
+{% block title %}Emprendum admin{% endblock %}
+{% block body %}
+  <div class="content-wrapper">
+    <div class="container-fluid">
+      <!-- Breadcrumbs-->
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="#">Admin</a>
+        </li>
+        <li class="breadcrumb-item active">Publicidad</li>
+      </ol>
+      <!-- code area-->
+      <div class="horizonDiv">
+        <div style="width: 80%;">
+          <br>
+          <br>
+          <div class="input-group-append">
+            <h5>Promos (1700 × 896)</h5>
+            <form enctype="multipart/form-data" action="{{ path('promo_upload') }}" method="POST">
+              <div style="margin-top: -5px; margin-bottom: 10px; left: 20px;" class="file btn btn-lg btn-primary">Agregar
+                <input class="addButton" type="file" name="foto" onchange="this.form.submit()">
+              </div>
+            </form>
+          </div>
+          {% if promos %}
+          <table class="table table-striped" style="width: 100%;">
+            <thead>
+              <tr>
+                <th>foto</th>
+                <th>Nombre</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for promo in promos %}
+              <tr>
+                <td><img src=" {{ asset('uploads/promo_imgs/'~ promo.foto)}} " alt="" height=100 width=250></img></td>
+                <td>{{ promo.name }}</td>
+                <td><a href="{{ path('delete_promo',{'id':promo.id}) }}" class="btn btn-danger delete-article" style="background-color: #FF0000;" data-id="{{ promo.id }}">Eliminar</a></td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <p>No hay promociones que mostrar</p>
+          {% endif%}
+          <br>
+          <br>
+          <div class="input-group-append">
+            <h5>Universitarios (máximo 6) (1700 × 896)</h5>
+            <form enctype="multipart/form-data" action="{{ path('indx_student_upload') }}" method="POST">
+              <div style="margin-top: -5px; margin-bottom: 10px; left: 20px;" class="file btn btn-lg btn-primary">Agregar
+                <input class="addButton" type="file" name="foto" onchange="this.form.submit()">
+              </div>
+            </form>
+          </div>
+          {% if students %}
+          <table class="table table-striped" style="width: 100%;">
+            <thead>
+              <tr>
+                <th>foto</th>
+                <th>Nombre</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for student in students %}
+              <tr>
+                <td><img src=" {{ asset('uploads/promo_imgs/'~ student.foto)}} " alt="" height=100 width=80></img></td>
+                <td>{{ student.foto }}</td>
+                <td><a href="{{ path('delete_Indx_student',{'id':student.id}) }}" class="btn btn-danger delete-article" style="background-color: #FF0000;" data-id="{{ student.id }}">Eliminar</a></td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <p>No hay universitarios que mostrar</p>
+          {% endif%}
+
+          <br>
+          <br>
+          <br>
+          <form class="form-group" action="{{ path('edit_youtube') }}" method="post" >
+            <h4 style="margin-top: 5px;">Youtube</h4>
+            <div style="margin-top: 50; margin-bottom: 50px; background-color: #F2F2F2;">
+              <div class="horizonDiv" style="margin-top: 20px; margin-bottom: 20px; margin-left: 20px;">
+                <h5 style="margin-top: 5px;">Video en home:</h5>
+                <input type="text" name="index_video" placeholder="youtube link" class="form-control emprendumField" {% if youtube %} value="{{ youtube[0].valor }}" {% endif %}>
+              </div>
+              <div class="horizonDiv" style="margin-top: 20px; margin-bottom: 20px; margin-left: 20px;">
+                <h5 style="margin-top: 5px;">Id playlist en youtube:</h5>
+                <input type="text" name = "channel_id" placeholder="playlist id" class="form-control emprendumField" {% if youtube %} value="{{ youtube[1].valor }}" {% endif %} >
+              </div>
+              <input type="submit" value="Guardar" class="btn" style="margin-top: 5px; margin-bottom: 10px; margin-left: 20px;">
+            </div>
+          </form>
+          <br>
+          <button class="btn btn-primary btn-block" style="max-width: 300px; margin-left: 20px;" onclick="window.location ='{{ path('editor', {'key':'faqs'}) }}';">Agregar preguntas frecuentes</button>
+          <br>
+          <button class="btn btn-primary btn-block" style="max-width: 300px; margin-left: 20px;" onclick="window.location ='{{ path('editor', {'key':'priv'}) }}';">Agregar aviso de privacidad</button>
+          <br>
+          <button class="btn btn-primary btn-block" style="max-width: 300px; margin-left: 20px;" onclick="window.location ='{{ path('editor', {'key':'terms'}) }}';">Agregar téminos y condiciones</button>
+          <br>
+          <br>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

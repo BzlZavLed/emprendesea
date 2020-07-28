@@ -1,0 +1,130 @@
+{# templates/admin/books.html.twig #}
+{% extends 'admin_base.html.twig' %}
+{% block title %}Emprendum admin{% endblock %}
+{% block body %}
+  <div class="content-wrapper">
+    <div class="container-fluid">
+      <!-- Breadcrumbs-->
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="#">Admin</a>
+        </li>
+        <li class="breadcrumb-item active">Configuración</li>
+      </ol>
+      <!-- code area-->
+      <div class="horizonDiv">
+        <div style="width: 80%;">
+          <br>
+          <br>
+          <div class="input-group-append">
+            <h5>Uniones</h5>
+            <a href="{{ path('new_conference') }}" class="btn btn-light" style="margin-left:auto; margin-right:0;">Agregar</a>
+          </div>
+          {% if uniones %}
+          <table class="table table-striped" id="unionesTable" style="width: 100%;">
+            <thead>
+              <tr>
+                <th>id</th>
+                <th>Nombre</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for union in uniones %}
+              <tr>
+                <td>{{ union.id }}</td>
+                <td>{{ union.name }}</td>
+                <td><a href="{{ path('delete_conference',{'id':union.id}) }}" class="btn btn-danger delete-article" style="background-color: #FF0000;" data-id="{{ union.id }}">Eliminar</a></td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <p>No hay uniones que mostrar</p>
+          {% endif%}
+          <br>
+          <div class="input-group-append">
+            <h5>Campos</h5>
+            <a href="{{ path('new_campo') }}" class="btn btn-light" style="margin-left:auto; margin-right:0;">Agregar</a>
+          </div>
+          {% if campos %}
+          <table class="table table-striped" id="camposTable">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Unión</th>
+                <th>#Cuenta</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for campo in campos %}
+              <tr>
+                <td>{{ campo.name }}</td>
+                <td>{{ campo.unionId }}</td>
+                <td>{{ campo.cuenta }}</td>
+                <td><a href="{{ path('delete_campo',{'id':campo.id}) }}" class="btn btn-danger delete-article" style="background-color: #FF0000;" data-id="{{ campo.id }}">Eliminar</a></td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <p>No hay campos que mostrar</p>
+          {% endif%}
+          <br>
+          <div class="input-group-append">
+            <h5>Escuelas</h5>
+            <a href="{{ path('new_escuela') }}" class="btn btn-light" style="margin-left:auto; margin-right:0;">Agregar</a>
+          </div>
+          {% if escuelas %}
+          <table class="table table-striped" id="camposTable">
+            <thead>
+              <tr>
+                <th>id</th>
+                <th>Nombre</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for escuela in escuelas %}
+              <tr>
+                <td>{{ escuela.id }}</td>
+                <td>{{ escuela.longName }}</td>
+                <td><a href="{{ path('delete_escuela',{'id':escuela.id}) }}" class="btn btn-danger delete-article" style="background-color: #FF0000;" data-id="{{ escuela.id }}">Eliminar</a></td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <p>No hay escuelas que mostrar</p>
+          {% endif%}
+          <br>
+          <br> 
+          <h4 class="modal-title" id="Envio" style="margin-top: 15px; align-content: left;">Temporadas</h4>
+          <script>
+            $(function() {
+              $( "#ver_ini" ).datepicker({ dateFormat: 'yy-mm-dd' });
+              $( "#ver_fin" ).datepicker({ dateFormat: 'yy-mm-dd' });
+              $( "#inv_ini" ).datepicker({ dateFormat: 'yy-mm-dd' });
+              $( "#inv_fin" ).datepicker({ dateFormat: 'yy-mm-dd' });
+            });
+          </script>
+          <form class="form-group" action="{{ path('edit_season') }}" method="post" >
+            <p>Verano</p>
+            <input type="date" id="ver_ini" name="ver_ini" placeholder="fecha inicio" style="width: auto; " {% if temporadas %} value="{{ temporadas[0].fechaInicial.format('Y-m-d') }}" {% endif %} >
+            <input type="date" id="ver_fin" name="ver_fin" placeholder="fecha fin" style="width: auto; margin-left: 20px; " {% if temporadas %} value="{{ temporadas[0].fechaFinal.format('Y-m-d') }}" {% endif %} >
+            <br>
+            <p>Invierno</p>
+            <input type="date" id="inv_ini" name="inv_ini" placeholder="fecha inicio" style="width: auto; " {% if temporadas %} value="{{ temporadas[1].fechaInicial.format('Y-m-d') }}" {% endif %} >
+            <input type="date" id="inv_fin" name="inv_fin" placeholder="fecha fin" style="width: auto; margin-left: 20px; " {% if temporadas %} value="{{ temporadas[1].fechaFinal.format('Y-m-d') }}" {% endif %} >
+            <br>
+            <br>
+            <button type="submit" class="btn btn-primary btn-block" style="max-width: 200px; margin-left: 20px; ">Guardar temporadas</button>
+          </form>
+          <br>
+          <br>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

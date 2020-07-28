@@ -1,0 +1,195 @@
+{# templates/store/universitarios.html.twig #}
+{% extends 'store_base.html.twig' %}
+
+{% block code %}
+<style type="text/css">
+  body{
+      height: 70vw; 
+  }
+</style>
+<script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<script type="text/javascript" src="{{ asset('css/slick/slick.min.js') }}"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.bc-images').slick({
+            infinite: false,
+            slidesToShow: 3,
+            slidesToScroll: 3,
+            prevArrow: $('.bc-prev'),
+            nextArrow: $('.bc-next'),
+        });
+        $(document.getElementById('l-estudiante-button')).hover(function(){
+      recortarNombre()
+      //document.getElementById("texto").innerHTML=JSON.parse(window.sessionStorage.getItem("name"));
+      //document.getElementById("textos").innerHTML=JSON.parse(window.sessionStorage.getItem("name"));
+    document.getElementById("li-seg").style.display = 'block';
+    }, function(){
+    document.getElementById("li-seg").style.display = 'none';
+  });
+    });
+
+     window.onload = function (){
+        var col = JSON.parse(window.sessionStorage.getItem("student"));
+        if(col == null){
+            document.getElementById('l-estudiante-button').style.display = 'none';
+        }else{
+            document.getElementById('l-estudiante-button').style.display = 'block';
+            foto();          
+        }
+        
+    };
+
+function foto(){
+        var prue=JSON.parse(window.sessionStorage.getItem("foto"));
+        var separado = prue.split("")
+        var reverse = separado.reverse()
+        var unir = reverse.join("")
+        var n = unir.search("/")
+        var bien = 'uploads/students_imgs/'+prue.slice(prue.length-n,prue.length)
+        document.getElementById('l-foto').src='../../'+bien;
+}
+function recortarNombre(){
+        var prue=JSON.parse(window.sessionStorage.getItem("name"));
+        var separado = prue.split(" ");
+        var name= separado[0]
+        var nombre = name.charAt(0).toUpperCase() + name.slice(1)
+        //console.log(separado.length + "solo console de prueba")
+        switch(separado.length) {
+        case 1:
+            console.log("1")
+            break;
+        case 2:
+            var name= separado[1]
+            nombre += " " +  name.charAt(0).toUpperCase() + name.slice(1)
+            console.log("2")
+            break;
+        case 3:
+            var name= separado[1]
+            nombre += " " +  name.charAt(0).toUpperCase() + name.slice(1)
+            console.log("3")
+        break;
+        case 4:
+            var name= separado[2]
+            nombre += " " +  name.charAt(0).toUpperCase() + name.slice(1)
+            console.log("4")
+        break;
+        default:
+            // code block
+        }
+        document.getElementById("textos").innerHTML=nombre
+}
+
+    function updateImg(url){
+        document.getElementById('bc-iv').src = url;
+    }
+    function addBooks(){
+        {% if book %}
+        var currents = JSON.parse(window.sessionStorage.getItem("cart"));
+        if (currents == null){
+            currents = [];
+        }
+        var canPush = true;
+        for(var i = 0; i<currents.length; i++){
+             if( {{book.disponibles}} == 0){
+                alert("Agotado por ahora, puede elegir otro libro")
+            } else{
+            if (currents[i].id == {{ book.id }}){
+                canPush = false;
+                currents[i] = {"id":{{ book.id }},"clave":{{ book.id }},"autor":"{{ book.autor }}", "cantidad":document.getElementById('bc-quantity').innerHTML,"disponibles":{{ book.disponibles }}, "titulo":"{{ book.titulo }}","peso":"{{ book.peso }}", "precio":{{ book.publico /100 }}, "imagen":"{{ asset('uploads/books_imgs/'~ book.portada) }}" };
+            }
+            }
+        }
+        if (canPush){
+            if( {{book.disponibles}} == 0){
+                alert("Agotado por ahora, puede elegir otro libro")
+            } else{
+            currents.push({"id":{{ book.id }},"clave":{{ book.id }},"autor":"{{ book.autor }}", "cantidad":document.getElementById('bc-quantity').innerHTML,"disponibles":{{ book.disponibles }}, "titulo":"{{ book.titulo }}", "peso":"{{ book.peso }}", "precio":{{ book.publico /100 }}, "imagen":"{{ asset('uploads/books_imgs/'~ book.portada) }}" });
+        }
+        }
+        console.log(currents)
+        window.sessionStorage.setItem('cart',JSON.stringify(currents));
+        //alert("¡Se ha agregado al carrito!");
+        {% endif %}
+        
+    }
+    function goToCart(){
+        if( {{book.disponibles}} == 0){
+            alert("Agotado por ahora, puede elegir otro libro")
+        }else{
+        addBooks();
+        carrito();
+        }
+    }
+    function add(){
+        {% if book %}
+        var q = parseInt(document.getElementById('bc-quantity').innerHTML);
+        if (q < {{ book.disponibles }}) {
+            document.getElementById('bc-quantity').innerHTML = q+1; 
+        }
+        {% endif %}
+    }
+    function rest(){
+        var q = parseInt(document.getElementById('bc-quantity').innerHTML);
+        if(q > 1){
+            document.getElementById('bc-quantity').innerHTML = q-1; 
+        }
+    }
+</script>
+<button class="l-student-b" id="l-estudiante-button">
+<div class="l-seg" id="li-seg">
+<p style="font-size: 1.06vw;">¡Buena elección! puedes agregar otro manual con otra temática</p>
+<p style="color: #F0C11C; font-size: 1.1vw; margin-top: -2%;">Quien tiene la información tiene el poder</p>
+<p class="l-p-name"><span id="textos"></span></p>
+</div>
+<img id="l-foto">
+</button>
+<div style="position: static;">
+    <div class="book-info">
+        {% if book %}
+        <h1 class="bi-bg-title">{{ book.titulo }}</h1>
+        <div class="bi-content">
+            <div class="bc-pics">
+                <img class="bc-main-img" id="bc-iv" src="{{ asset('uploads/books_imgs/'~ book.portada) }}">
+                <div class="bc-images">
+                    <img class="bc-image" src="{{ asset('uploads/books_imgs/'~ book.portada) }}" onclick="updateImg('{{ asset('uploads/books_imgs/'~ book.portada) }}')">
+                    {% for img in book.imagenes %}
+                    <img class="bc-image" src="{{ asset('uploads/books_imgs/'~ img) }}" onclick="updateImg('{{ asset('uploads/books_imgs/'~ img) }}')">
+                    {% endfor %}
+                </div>
+                <button type="button" class="bc-prev">
+                    <img class="bc-arrow" src="{{ asset('images/Path_2020.png') }}">
+                </button>
+                <button type="button" class="bc-next">
+                    <img class="bc-arrow" src="{{ asset('images/Path_202.png') }}">
+                </button>
+            </div>
+            <div class="bc-info">
+                <h1 class="bc-title">{{ book.titulo }}</h1>
+                <h1 class="bc-sub-title">Autor: {{ book.autor }}</h1>
+                <h1 class="bc-sub-title">Año: {{ book.year }}</h1>
+                <h1 class="bc-sub-title">Editorial: {{ book.editorial }}</h1>
+                <h1 class="bc-sub-title">Medidas: {{ book.width }}cm X {{ book.height }}cm </h1>
+                <h1 class="bc-sub-title">Peso: {{ book.peso }} Kg</h1>
+                <h1 class="bc-sub-title">Ancho: {{ book.length }}cm</h1>
+                <h1 class="bc-sub-title">Disponibles: {{ book.disponibles }} </h1>
+                <h1 class="bc-desc">DESCRIPCIÓN</h1>
+                <p>{{ book.descripcion }}</p>
+            </div>
+            <div class="bc-price">
+                <h1 class="bc-title">${{ book.publico /100}} mxn</h1>
+                <div class="bc-items">
+                    <h1 id="bc-cantidad">CANTIDAD:</h1>
+                    <button class="bc-circle" onclick="rest()"><img src="{{ asset('images/Menos@2x.png') }}"></button>
+                    <h1 id="bc-quantity">1</h1>
+                    <button class="bc-circle" style="margin-left:0; width:7%; padding-left: -10%;" onclick="add()"><img src="{{ asset('images/Mas@2x.png') }}"></button>
+                </div>
+                <button class="bc-cart" style="background-image:url({{ asset('images/Group_142.png') }})" onclick="addBooks()">AÑADIR A CARRITO</button>
+                <button class="bc-now" onclick="goToCart()">ADQUIRIR AHORA</button>
+            </div>
+        </div>
+        {% endif %}
+    </div>   
+</div> 
+
+{% endblock %}

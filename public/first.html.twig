@@ -1,0 +1,1551 @@
+{# templates/store/first.html.twig #}
+{% extends 'store_base.html.twig' %}
+{% block code %}
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.conekta.io/js/latest/conekta.js"></script>
+<style type="text/css">
+  body{
+      height: 70vw; 
+  }
+</style>
+<script>
+    var rows = null;
+    var rates = [];
+    var cData = {};
+    var cantidad = '';
+    var envio = 0;
+    var isCard = true;
+    var isOxxo = false;
+    var isMonth = false;
+    var shipStatic = 0;
+    var pedido = null;
+    var nombre="";
+    var precioParcial=0;
+    var paqueteria='';
+    var packService='';
+    var fotoAlumn='';
+    var mesesValue=0;
+    var subMeses = 0.0;
+    var donValue = 0.0;
+    var dolar= 0.0;
+    var precioDolar= 0.0;
+    var precioCan= 0.0;
+    var pesoTotal = 0.0;
+    var FedUsa = 0.0;
+    var fedex = 190;
+    var corMex = 80;
+    var extra = 0;
+    var flaggie = false;
+    window.onload = function(){
+    	document.body.style.backgroundColor = "white";
+    	onLoad();
+        // showCardForm();
+        setValidators();
+        setStudentData();
+        // document.getElementById('sh-shippment').style.zIndex ='1';
+        // document.getElementById('sh-payment').style.zIndex ='2';
+    };
+    function onLoad(){
+        recortarNombre()
+        //document.getElementById('shs-methods').style.display='none';
+        var student = window.sessionStorage.getItem("student");
+        if (student == null){
+            alert('Selecciona a un universitario primero');
+            window.location = '{{ path('universitarios') }}';
+            return;
+        }
+        rows = JSON.parse(window.sessionStorage.getItem("cart"));
+        if (rows == null){
+            alert('Agrega articulos a tú carrito');
+            window.location ='{{ path('libreria') }}';
+            return;
+        }
+        document.getElementById('sh-shop').style.background = "rgba(37, 45, 82, 0.3)";
+        document.getElementById('sh-shop').disabled = true;
+        updateTable();
+        
+        var col = JSON.parse(window.sessionStorage.getItem("student"));
+        if(col == null){
+            document.getElementById('l-estudiante-button').style.display = 'none';
+        }else{
+            document.getElementById('l-estudiante-button').style.display = 'block';
+            foto();          
+        }
+        setDonationField()
+    }
+    function entrada(){
+         $.ajax({
+            url: 'https://www.banxico.org.mx/SieAPIRest/service/v1/series/SF43718/datos/oportuno?token=6c508fd234b05b8fcc38e64209a8e9b0b8c4d80e0a980022cf03d7e9c155efc7',
+            type: 'get',
+            async: false,
+            success: function (data) {
+               dolar=parseFloat((data.bmx.series[0].datos[0].dato))
+            },
+            error: function (request, error) {
+            }
+        });        
+    }
+    function envios(){
+        fedex=190;
+        corMex=80;
+        extra = 0;
+       console.log(pesoTotal)
+        if(pesoTotal > 0 && pesoTotal <= 1.5){
+            fedUsa= 1450
+            document.getElementById("shs-dolar").innerHTML="USD $"+(fedUsa/dolar).toFixed(2)
+        } else if( pesoTotal > 1.5 && pesoTotal <= 3.0){
+            fedUsa= 1950
+            document.getElementById("shs-dolar").innerHTML="USD $"+(fedUsa/dolar).toFixed(2)
+        }else if(pesoTotal > 3.0 && pesoTotal <= 4.5){
+            fedUsa= 2250
+            document.getElementById("shs-dolar").innerHTML="USD $"+(fedUsa/dolar).toFixed(2)
+        }
+        if(pesoTotal%2 != 0){
+            extra=1
+        }
+        for (i=4; i <= pesoTotal+extra ; i++){
+           // console.log(i-.9 + " - " + i)
+           // console.log(i-(parseInt((i+i)/(i*i))/2) + " - " + i*1.5)
+           // console.log(i+.5 + " - " + (i+1.5))
+          if(pesoTotal > 4.5){
+                if(pesoTotal > i+.5  && pesoTotal <= i+1.5){
+                    fedUsa=2250
+                    fedUsa+=((i-3)*300)
+                    document.getElementById("shs-dolar").innerHTML="USD $"+(fedUsa/dolar).toFixed(2)
+                }
+           }
+           if(i>5){
+               if(pesoTotal > (i-.9) && pesoTotal <= i){
+                   fedex+=((i-5)*20)
+                   corMex+=((i-5)*15)
+                   document.getElementById("shs-mex").innerHTML="$"+(corMex).toFixed(2)
+                   document.getElementById("shs-fedex").innerHTML="$"+(fedex).toFixed(2)
+               }
+           }
+        }
+    }
+    function updateTable(){
+        entrada()
+        pesoTotal=0.0;
+        var table = document.getElementById("sh-table");
+        table.innerHTML = "";
+        var subtotal = 0.0;
+        subtotal += donValue;
+        for (var i=0; i<rows.length; ++i) { 
+            var info = rows[i];
+            pesoTotal+=parseFloat(rows[i].peso)*parseFloat(rows[i].cantidad)
+            precioDolar=(info.precio/dolar).toFixed(2);
+            precioCan=(info.precio/dolar).toFixed(2);
+            table.innerHTML += '<div class="sh-row"><img src="'+info.imagen+'" class="sh-table-img"><div class="sh-row-info"><h2 class="sh-row-titulo">'+info.titulo+'</h2><h3 class="sh-row-autor">'+info.autor+'</h3><h3 class="sh-row-precio">$'+info.precio+'mxn'+' - $'+precioDolar+'usd'+'</h3><div class="sh-editor"><h1 id="bc-quantity">cantidad: '+info.cantidad+'</h1></div></div><div class="sh-info-total"><h3 class="sh-row-precio sh-row-total">$'+(info.precio*info.cantidad).toFixed(2)+'</h3></div></div>';
+            subtotal += (info.precio*info.cantidad);
+        }
+        precioParcial = subtotal
+        document.getElementById("sh-subtotal").innerHTML = 'MX $'+subtotal.toFixed(2);
+        document.getElementById("sh-total").innerHTML = 'MX $'+subtotal.toFixed(2)+' - USD $'+(subtotal/dolar).toFixed(2);
+        document.getElementById("month-value-1").innerHTML='+MX $'+(((subtotal+envio+2.9)/(0.96636-(1.16*0.049)))-(subtotal+envio)).toFixed(2);
+        document.getElementById("month-value-2").innerHTML='+MX $'+(((subtotal+envio+2.9)/(0.96636-(1.16*0.079)))-(subtotal+envio)).toFixed(2);
+        document.getElementById("month-value-3").innerHTML='+MX $'+(((subtotal+envio+2.9)/(0.96636-(1.16*0.109)))-(subtotal+envio)).toFixed(2);
+        document.getElementById("month-value-4").innerHTML='+MX $'+(((subtotal+envio+2.9)/(0.96636-(1.16*0.139)))-(subtotal+envio)).toFixed(2);
+        if (envio != null){
+            if(!isMonth){
+                document.getElementById("sh-total").innerHTML = 'MX $'+(subtotal + envio).toFixed(2)+' - USD $'+((subtotal+envio)/dolar).toFixed(2);
+            }else{
+                document.getElementById("sh-total").innerHTML = 'MX $'+(parseFloat(subMeses) + subtotal + envio).toFixed(2)+' - USD $'+((parseFloat(subMeses) + subtotal + envio)/dolar).toFixed(2);
+            }
+            document.getElementById("sh-envio").innerHTML = 'MX $'+envio;
+        }
+        document.getElementById("shs-methods-span").innerHTML = pesoTotal+"KG";
+        envios()
+    }
+
+    $(document).ready(function(){
+    $(document.getElementById('l-estudiante-button')).hover(function(){
+        //document.getElementById("texto").innerHTML=JSON.parse(window.sessionStorage.getItem("name"));
+        //document.getElementById("textos").innerHTML=JSON.parse(window.sessionStorage.getItem("name"));
+        document.getElementById("li-seg").style.display = 'block';
+        }, function(){
+        document.getElementById("li-seg").style.display = 'none';
+    });
+    });
+
+    function add(indx){
+        var q = parseInt(rows[indx].cantidad);
+        if (q < rows[indx].disponibles) {
+            rows[indx].cantidad = q+1;
+        }
+        updateTable();
+    }
+    function rest(indx){
+        var q = parseInt(rows[indx].cantidad);
+        if(q > 0){
+            rows[indx].cantidad = q-1; 
+        }
+        updateTable();
+    }
+    function setStudentData(){
+
+        var foto = window.sessionStorage.getItem("foto").replace('"','').replace('"','');
+        var name = window.sessionStorage.getItem("name").replace('"','').replace('"','');
+        var fac = window.sessionStorage.getItem("fac").replace('"','').replace('"','');
+
+        document.getElementById('shp-student-name').innerHTML = name;
+        document.getElementById('shp-student-carrera').innerHTML = fac;
+        document.getElementById('shp-student-image').src = foto;
+    }
+    function setValidators(){
+        var firstName = document.getElementById('shs-name-field');
+        var phone = document.getElementById('shs-phone-field');
+        var email = document.getElementById('shs-email-field');
+        var address = document.getElementById('shs-address-field');
+        var streets = document.getElementById('shs-address-field');
+        var city = document.getElementById('shs-city-field');
+        var postal = document.getElementById('shs-cp-field');
+        var state = document.getElementById('shs-state-field');
+        setCalc();
+        firstName.addEventListener('keyup', function (event) {
+            setCalc();
+            if (firstName.value=="" || firstName.value==null){
+                firstName.style.borderBottom = "1px solid rgba(37, 45, 82, 0.3)";
+                document.getElementById('h-name').style.color = "rgba(37, 45, 82, 0.3)";
+            }else{
+                firstName.style.borderBottom = "1px solid #2568F5";
+                document.getElementById('h-name').style.color = "#2568F5";
+            }
+            enableCalc();
+        });
+
+        phone.addEventListener('keyup', function (event) {
+            setCalc();
+            if (phone.value.length != 10 || phone.value==null){
+                phone.style.borderBottom = "1px solid rgba(37, 45, 82, 0.3)";
+                document.getElementById('h-phone').style.color = "rgba(37, 45, 82, 0.3)";
+            }else if(!isNaN(phone.value)){
+                phone.style.borderBottom = "1px solid #2568F5";
+                document.getElementById('h-phone').style.color = "#2568F5";
+            }else{
+                phone.style.borderBottom = "1px solid red";
+                document.getElementById('h-phone').style.color = "red";
+            }
+            enableCalc();
+        });
+
+        email.addEventListener('keyup', function (event) {
+            setCalc();
+            if (email.value == "" || email.value == null){
+                email.style.borderBottom = "1px solid rgba(37, 45, 82, 0.3)";
+                document.getElementById('h-mail').style.color = "rgba(37, 45, 82, 0.3)";
+            }else if(validateEmail(email.value)){
+                email.style.borderBottom = "1px solid #2568F5";
+                document.getElementById('h-mail').style.color = "#2568F5";
+            }else{
+                email.style.borderBottom = "1px solid red";
+                document.getElementById('h-mail').style.color = "red";
+            }
+            enableCalc();
+        });
+
+        address.addEventListener('keyup', function (event) {
+            setCalc();
+            if (address.value=="" || address.value==null){
+                address.style.borderBottom = "1px solid rgba(37, 45, 82, 0.3)";
+                document.getElementById('h-address').style.color = "rgba(37, 45, 82, 0.3)";
+            }else{
+                address.style.borderBottom = "1px solid #2568F5";
+                document.getElementById('h-address').style.color = "#2568F5";
+            }
+            enableCalc();
+        });
+
+        city.addEventListener('keyup', function (event) {
+            setCalc();
+            if (city.value=="" || city.value==null){
+                city.style.borderBottom = "1px solid rgba(37, 45, 82, 0.3)";
+                document.getElementById('h-city').style.color = "rgba(37, 45, 82, 0.3)";
+            }else{
+                city.style.borderBottom = "1px solid #2568F5";
+                document.getElementById('h-city').style.color = "#2568F5";
+            }
+            enableCalc();
+        });
+
+        postal.addEventListener('keyup', function (event) {
+            setCalc();
+            if (postal.value.length != 5 || postal.value==null){
+                postal.style.borderBottom = "1px solid rgba(37, 45, 82, 0.3)";
+                document.getElementById('h-cp').style.color = "rgba(37, 45, 82, 0.3)";
+            }else if(!isNaN(postal.value)){
+                postal.style.borderBottom = "1px solid #2568F5";
+                document.getElementById('h-cp').style.color = "#2568F5";
+            }else{
+                postal.style.borderBottom = "1px solid red";
+                document.getElementById('h-cp').style.color = "red";
+            }
+            enableCalc();
+        });
+
+        state.addEventListener('keyup', function (event) {
+            setCalc();
+            if (state.value=="" || state.value==null){
+                state.style.borderBottom = "1px solid rgba(37, 45, 82, 0.3)";
+                document.getElementById('h-state').style.color = "rgba(37, 45, 82, 0.3)";
+            }else{
+                state.style.borderBottom = "1px solid #2568F5";
+                document.getElementById('h-state').style.color = "#2568F5";
+            }
+            enableCalc();
+        });
+        
+    }
+    function enableCalc(){
+        var allIsWell=true;
+        var hIds = ['h-name', 'h-phone', 'h-mail', 'h-address', 'h-city', 'h-state', 'h-cp'];
+        for(i in hIds){
+            if(document.getElementById(hIds[i]).style.color != "rgb(37, 104, 245)"){
+                allIsWell=false;
+                break;
+            }
+        }
+        if(allIsWell){
+            document.getElementById('shs-next').style.background = "#2568F5";
+            document.getElementById('shs-next').disabled = false;
+        }
+    }
+    function setCalc(){
+        document.getElementById('shs-next').style.background = "rgba(37, 45, 82, 0.3)";
+        document.getElementById('shs-next').disabled = true;
+        //document.getElementById('shs-next').innerHTML="CALCULAR ENVÍO";
+    }
+    function validateEmail(email) {
+        var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(email);
+    }
+
+    function editOrder(clave){
+        
+        var value = document.getElementById('clave'+clave).value;
+        if (value < 0){
+            document.getElementById('clave'+clave).value = 0;
+        }
+        var subtotal = 0.0;
+        for(var i = 0; i<rows.length; i++){
+            var info = rows[i];
+            if (rows[i].clave == clave){                
+                subtotal += (value*info.precio);
+                rows[i] = {"clave":clave, "cantidad":value, "titulo":info.titulo, "precio":info.precio, "imagen":info.imagen};
+            }else{
+                subtotal += (info.cantidad*info.precio);
+            }
+        }
+        document.getElementById("subtotalLabel").innerHTML = 'Subtotal: $'+subtotal.toFixed(2)+' MXN';
+        document.getElementById("totalLabel").innerHTML = '$'+subtotal.toFixed(2)+' MXN';
+        window.sessionStorage.setItem('cart',JSON.stringify(rows));
+        onload();
+    }
+	function saveShopp(){
+		window.location.href = '{{ path('second') }}';
+	}
+    function showPayments(){
+        if( shipStatic == 0){
+            alert('Elige primero costo de envio')
+            }else{
+        //if(document.getElementById('shs-next').innerHTML!="SIGUIENTE"){
+            saveShopp();
+       // }
+        document.getElementById('sh-shippment').style.zIndex ='1';
+        document.getElementById('sh-payment').style.zIndex ='2';
+        }
+    }
+
+    function saveShopp(){    
+        var student = window.sessionStorage.getItem("student");
+        if(student == null){
+            alert('no se ha seleccionado a un universitario');
+            window.location ='{{ path('universitarios') }}';
+        }
+        var rows = JSON.parse(window.sessionStorage.getItem("cart"));
+        if (rows == null || rows.length == 0){
+            alert('no hay articulos en el carrito');
+            window.location ='{{ path('libreria') }}';
+        }
+        var ids = [];
+        for(var i = 0; i<rows.length; i++){
+            ids.push({ id:rows[i]['id'], qtt:rows[i]['cantidad']});
+        }
+        var data = {};
+        data.FirstName = document.getElementById('shs-name-field').value;
+        data.LastName = document.getElementById('shs-name-field').value;
+        data.phone = document.getElementById('shs-phone-field').value;
+        data.email = document.getElementById('shs-email-field').value;
+        data.address = document.getElementById('shs-address-field').value;
+        data.streets = document.getElementById('shs-address-field').value;
+        data.city = document.getElementById('shs-city-field').value;
+        data.postal = document.getElementById('shs-cp-field').value;
+        data.state = document.getElementById('shs-state-field').value;
+        data.student_id = Number(student);
+        data.std_name = document.getElementById('uni-name').value;
+        data.std_place = document.getElementById('uni-prov').value;
+        data.std_date = document.getElementById('uni-date').value.toString();
+        data.ids = ids;
+        cData = data;
+
+        rates = [];
+        document.getElementById('shp-oxxo-msj').innerHTML = 'AL FINALIZAR LA COMPRA RECIBIRÁS UN CORREO EN '+data.email+' CON LAS INDICACIONES PARA COMPLETAR EL PAGO POR OXXO. *RECUERDA REVISAR TAMBIÉN LA BANDEJA DE SPAM';
+        document.getElementById('shp-trans-msj').innerHTML = 'AL FINALIZAR LA COMPRA RECIBIRÁS UN CORREO EN '+data.email+' CON LAS INDICACIONES PARA COMPLETAR EL PAGO POR TRANSACCIÓN ELECTRÓNICA. *RECUERDA REVISAR TAMBIÉN LA BANDEJA DE SPAM';
+        showLoader();
+        document.getElementById('shs-next').innerHTML="SIGUIENTE";
+        fillAddress();
+        $.ajax({
+            url: '{{ path('shippOps') }}',
+            type: 'post',
+            data: JSON.stringify(data),
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function (data) {
+                pedido=data
+                hideLoader();
+                //window.location ='{{ path('done') }}/'+pedido;
+            },
+            error: function (request, error) {
+                hideLoader();
+                alert("Error al procesar la solicitud: " + error);
+            }
+        });
+        /*
+        $.ajax({
+            url: '{{ path('shippOps') }}',
+            type: 'post',
+            data: JSON.stringify(data),
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function (data) {
+                hideLoader();
+                var results = JSON.parse(data);
+                if (results.length == 0){
+                    alert('no se encontró envíos disponible a esa dirección, favor de intentarlo con otra dirección o revise que los datos son correctos');
+                    return;
+                }
+                document.getElementById('shs-next').style.background = "rgba(37, 45, 82, 0.3)";
+                document.getElementById('shs-next').disabled = true;
+                document.getElementById('sh-method-table').innerHTML = '';
+                document.getElementById('shs-methods').style.display = 'block';
+                console.log(results)
+                for(i in results){
+                    var r = results[i];
+                    rates.push(r);
+                    document.getElementById('sh-method-table').innerHTML += '<div class="shs-method-row"><div class="shs-method-row-section">'+r['carrier']+'</div><div class="shs-method-row-section" style="text-align: center; font-size: 0.9vw;"> '+r['service']+'</div><div class="shs-method-row-section" style="text-align: right; font-weight: 600">$'+r['cost']+'</div><div class="shs-method-row-picker"><input type="checkbox" id="sh-check-'+r['id']+'" onclick="didSelectRate('+r['id']+')" class="sh-check sh-method-check"></div></div>';
+                    window.sessionStorage.setItem('pedido',r['pedido_id']);
+                }
+                document.getElementById('shs-next').innerHTML="SIGUIENTE";
+                fillAddress();
+            },
+            error: function (request, error) {
+                hideLoader();
+                alert("Error al procesar la solicitud: " + error);
+            }
+        });*/
+    }
+    function fillAddress(){
+        document.getElementById('shp-add-name').innerHTML = cData.FirstName.toUpperCase();
+        document.getElementById('shp-add-street').innerHTML = cData.address.toUpperCase();
+        document.getElementById('shp-add-city').innerHTML = cData.city.toUpperCase();
+        document.getElementById('shp-add-state').innerHTML = cData.state.toUpperCase();
+        document.getElementById('shp-add-cp').innerHTML = 'C.P. '+ cData.postal;
+        document.getElementById('shp-add-phone').innerHTML = cData.phone;
+        document.getElementById('shp-shipp-brand').innerHTML = paqueteria;
+        document.getElementById('shp-shipp-time').innerHTML = packService;
+        document.getElementById('shp-shipp-price').innerHTML = '$'+envio;
+
+        cantidad = "Cantidad: ";
+        /*var editButtons = document.getElementsByClassName('bc-circle');
+        for(i in editButtons){
+            editButtons[i].style.display = 'none';
+        }*/
+        updateTable();
+    }
+    function didSelectRate(id){
+        var rate = null
+        for(i in rates){
+            if(rates[i]['id'] != id){
+                document.getElementById('sh-check-'+rates[i]['id']+'').checked = false;
+            }else{
+                rate = rates[i];
+                document.getElementById('sh-check-'+id).checked = true;
+            }
+        }
+        //console.log("se selecciono: " + rate)
+        window.sessionStorage.setItem('shipp',id);
+        document.getElementById('shs-next').style.background = "#2568F5";
+        document.getElementById('shs-next').disabled = false;
+
+        document.getElementById('shp-shipp-brand').innerHTML = paqueteria;
+        document.getElementById('shp-shipp-time').innerHTML = packService;
+        document.getElementById('shp-shipp-price').innerHTML = '$'+envio;
+        envio = rate['cost'];
+        updateTable();
+        fillAddress();
+    }
+    function pay(){
+        if(isCard){
+            payWithCard();
+        }else{
+            if(isOxxo){
+                payWithCash();
+            }else{
+                payWithTrans();
+            }
+        }
+    }
+    function payWithCash(){
+       // console.log("entrando a payWitchCash"+ pedido)
+       /* var pedido = JSON.parse(window.sessionStorage.getItem("pedido"));
+        if (pedido == null || pedido.length == 0){
+            alert('no hay un id de pedidoooo00');
+            window.location ='{{ path('libreria') }}';
+        }*/
+       // var id = JSON.parse(window.sessionStorage.getItem('shipp'));
+        var data = {};
+        data.id = pedido;
+        data.shipp = shipStatic;
+        data.dona = donValue;
+        data.envio = envio;
+        data.alumId = window.sessionStorage.getItem("student");
+        data.alumPhoto = fotoAlumn;
+        data.alumName = nombre;
+        data.alumMail = window.sessionStorage.getItem("correo");
+        showLoader();
+        $.ajax({
+            url: '{{ path('paywithcash') }}',
+            type: 'post',
+            data: JSON.stringify(data),
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function (data) {
+                correoOxxoRespaldo()
+                correoOxxo(data.result.charges.data[0].payment_method.reference, data.result.charges.data[0].payment_method.reference) 
+                document.getElementById('l-estudiante-button').style.display = 'none';
+                hideLoader();
+                window.location ='{{ path('success') }}/'+pedido;
+            },
+            error: function (request, error) {
+                hideLoader();
+                alert("Error al procesar la solicitud 2: " + error);
+            }
+        });
+    }
+
+    function payWithTrans(){
+       // console.log("entrando a payWitchCash"+ pedido)
+       /* var pedido = JSON.parse(window.sessionStorage.getItem("pedido"));
+        if (pedido == null || pedido.length == 0){
+            alert('no hay un id de pedidoooo00');
+            window.location ='{{ path('libreria') }}';
+        }*/
+       // var id = JSON.parse(window.sessionStorage.getItem('shipp'));
+        var data = {};
+        data.id = pedido;
+        data.shipp = shipStatic;
+        data.dona = donValue;
+        data.envio = envio;
+        data.alumId = window.sessionStorage.getItem("student");
+        data.alumPhoto = fotoAlumn;
+        data.alumName = nombre;
+        data.alumMail = window.sessionStorage.getItem("correo");
+        showLoader();
+        $.ajax({
+            url: '{{ path('paywithtrans') }}',
+            type: 'post',
+            data: JSON.stringify(data),
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function (data) {
+               correoOxxoRespaldo()
+               correoTrans(data.result.charges.data[0].payment_method.receiving_account_number, data.result.charges.data[0].payment_method.receiving_account_number);
+               document.getElementById('l-estudiante-button').style.display = 'none';
+               hideLoader();
+               window.location ='{{ path('success') }}/'+pedido;
+            },
+            error: function (request, error) {
+                hideLoader();
+                alert("Error al procesar la solicitud (trans): " + error);
+            }
+        });
+    }
+
+    //pruebas
+   //  Conekta.setPublicKey('key_FpYZqyYxSzTh11DunqvE84A');
+
+     //produccion
+    Conekta.setPublicKey('key_bmvKBWaRtDizcVTyhCj9MKw');
+
+    var conektaSuccessResponseHandler = function(token) {
+        if (pedido == null || pedido.length == 0){
+            alert('no hay un id de pedido');
+           // window.location ='{{ path('libreria') }}';
+        }
+        payWith(token.id,pedido);
+    };
+    var conektaErrorResponseHandler = function(response) {
+        alert('ok dont stop believin'+response.message_to_purchaser);
+        document.getElementById('shs-next').disabled = false;
+    };
+
+    function payWithCard(){
+        var $form = $("#shp-visa");
+        document.getElementById('shs-next').disabled = true;
+        Conekta.Token.create($form, conektaSuccessResponseHandler, conektaErrorResponseHandler);
+        document.getElementById('l-estudiante-button').style.display = 'none';
+    }
+    //enviarCorreoVenta('edny', '$nom_estud', '$num_pedido', '$foto', '$ben_email', '$alum_email');
+    function payWith(token,id){
+        var data = {};
+        var idCorreo= id;
+        data.token = token;
+        data.id = id;
+        data.shipp = shipStatic;
+        data.meses = mesesValue;
+        data.dona = donValue;
+        data.envio = envio;
+        data.alumId = window.sessionStorage.getItem("student");
+        data.alumPhoto = fotoAlumn;
+        data.alumName = nombre;
+        data.alumMail = window.sessionStorage.getItem("correo");
+        if(isMonth){
+            showLoader();
+            $.ajax({
+                url: '{{ path('paywithcardmonth') }}',
+                type: 'post',
+                data: JSON.stringify(data),
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function (data) {
+                    hideLoader();
+                    if(data["error"] != null){
+                        alert(data["error"]);
+                        return;
+                    }else{
+                        correo(idCorreo)
+                    }
+                window.location ='{{ path('success') }}/'+id;
+                },
+                error: function (request, error) {
+                    hideLoader();
+                    alert("error con el pago, vuelva a intentarlo: " +error);
+                }
+            });
+        }else{
+            showLoader();
+            $.ajax({
+                url: '{{ path('paywithcard') }}',
+                type: 'post',
+                data: JSON.stringify(data),
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function (data) {
+                    hideLoader();
+                    if(data["error"] != null){
+                        alert(data["error"]);
+                        return;
+                    }else{
+                        correo(idCorreo)
+                    }
+                    // alert(JSON.stringify(data));
+                window.location ='{{ path('success') }}/'+id;
+                },
+                error: function (request, error) {
+                    hideLoader();
+                    alert("error con el pago, vuelva a internatlos: " +error);
+                }
+            });
+        }
+    }
+    function correo(id){
+        var data = {};
+        data.alumno = nombre; //listo
+        data.benefactor = document.getElementById('shs-name-field').value.toUpperCase(); //listo
+        data.direccion = document.getElementById('shs-address-field').value.toUpperCase(); //
+        data.codigoP = document.getElementById('shs-cp-field').value; // 
+        data.benTel = document.getElementById('shs-phone-field').value; //
+        data.city = document.getElementById('shs-city-field').value.toUpperCase(); // 
+        data.est = document.getElementById('shs-state-field').value.toUpperCase(); //
+        data.piezas = "2";
+        data.peso = "2kg"
+        data.paqueteria=paqueteria // 
+        data.precioLibro = precioParcial; //listo
+        data.precioEnvio = envio; //
+        data.precioTotal = precioParcial+envio; //
+        data.foto = 'https://emprendum.um.edu.mx/'+fotoAlumn; //
+        data.link = 'https://emprendum.um.edu.mx/universitarios/'+window.sessionStorage.getItem("student"); //
+        data.nombreLibro = 'desconocido';
+        data.numPedido = id;// listo
+        data.numGuia = 'tambien desconocido';
+        data.correoBene = document.getElementById('shs-email-field').value; //listo
+        data.correoAlum = window.sessionStorage.getItem("correo");//
+        //console.log("Texto en correo: "+JSON.stringify(data))
+        showLoader();
+        $.ajax({
+            url: '/correoventa.php',
+            type: 'post',
+            data: data,
+            dataType: 'json',
+            //contentType: 'application/json',
+            success: function (data) {
+                hideLoader();
+                if(data["error"] != null){
+                    alert(data["error"]);
+                    return;
+                }
+                // alert(JSON.stringify(data));
+             //   window.location ='{{ path('success') }}/'+id;
+            },
+            error: function (request, error) {
+                hideLoader();
+                //alert("Error al mandar correo: " +error);
+            }
+        });
+    }
+    function correoOxxoRespaldo(){
+        var data = {};
+        data.alumno = nombre; //listo
+        data.benefactor = document.getElementById('shs-name-field').value; //listo
+        data.direccion = document.getElementById('shs-address-field').value; //
+        data.codigoP = document.getElementById('shs-cp-field').value; // 
+        data.benTel = document.getElementById('shs-phone-field').value; //
+        data.city = document.getElementById('shs-city-field').value; // 
+        data.est = document.getElementById('shs-state-field').value; //
+        data.piezas = "2";
+        data.peso = "2kg"
+        data.paqueteria=paqueteria // 
+        data.precioLibro = precioParcial; //listo
+        data.precioEnvio = envio; //
+        data.precioTotal = precioParcial+envio; //
+        data.foto = 'https://emprendum.um.edu.mx/'+fotoAlumn; //
+        data.link = 'https://emprendum.um.edu.mx/universitarios/'+window.sessionStorage.getItem("student"); //
+        data.nombreLibro = 'desconocido';
+        data.numPedido = pedido;// listo
+        data.numGuia = 'tambien desconocido';
+        data.correoBene = document.getElementById('shs-email-field').value; //listo
+        data.correoAlum = window.sessionStorage.getItem("correo");//
+        showLoader();
+        $.ajax({
+            url: '/correoOxxoRespaldo.php',
+            type: 'post',
+            data: data,
+            dataType: 'json',
+            //contentType: 'application/json',
+            success: function (data) {
+                hideLoader();
+                if(data["error"] != null){
+                    alert(data["error"]);
+                    return;
+                }
+                // alert(JSON.stringify(data));
+             //   window.location ='{{ path('success') }}/'+id;
+            },
+            error: function (request, error) {
+                hideLoader();
+                //alert("Error al mandar correo: " +error);
+            }
+        });
+    }
+    function correoOxxo(refe, cod){
+        var data = {};
+        data.precioTotal = precioParcial+envio; 
+        data.correoBene = document.getElementById('shs-email-field').value; 
+        data.referencia = refe
+        data.codigo = cod
+        data.benefactor = document.getElementById('shs-name-field').value;
+        showLoader();
+        $.ajax({
+            url: '/pagoOxxo.php',
+            type: 'post',
+            data: data,
+            dataType: 'json',
+            //contentType: 'application/json',
+            success: function (data) {
+                hideLoader();
+                if(data["error"] != null){
+                    alert(data["error"]);
+                    return;
+                }
+                // alert(JSON.stringify(data));
+             //   window.location ='{{ path('success') }}/'+id;
+            },
+            error: function (request, error) {
+                hideLoader();
+                //alert("Error al mandar correo: " +error);
+            }
+        });
+    }
+    function correoTrans(refe, cod){
+        var data = {};
+        data.precioTotal = precioParcial+envio; 
+        data.correoBene = document.getElementById('shs-email-field').value; 
+        data.referencia = refe
+        data.codigo = cod
+        data.benefactor = document.getElementById('shs-name-field').value;
+        showLoader();
+        $.ajax({
+            url: '/pagoTrans.php',
+            type: 'post',
+            data: data,
+            dataType: 'json',
+            //contentType: 'application/json',
+            success: function (data) {
+                hideLoader();
+                if(data["error"] != null){
+                    alert(data["error"]);
+                    return;
+                }
+                // alert(JSON.stringify(data));
+             //   window.location ='{{ path('success') }}/'+id;
+            },
+            error: function (request, error) {
+                hideLoader();
+                //alert("Error al mandar correo: " +error);
+            }
+        });
+    }
+
+    function foto(){
+        var prue=JSON.parse(window.sessionStorage.getItem("foto"));
+        var separado = prue.split("")
+        var reverse = separado.reverse()
+        var unir = reverse.join("")
+        var n = unir.search("/")
+        var bien = 'uploads/students_imgs/'+prue.slice(prue.length-n,prue.length)
+        document.getElementById('l-foto').src='../'+bien;;
+        fotoAlumn=bien
+}
+
+
+function recortarNombre(){
+        var prue=JSON.parse(window.sessionStorage.getItem("name"));
+        var separado = prue.split(" ");
+        var name= separado[0]
+        nombre = name.charAt(0).toUpperCase() + name.slice(1)
+        switch(separado.length) {
+        case 1:
+            break;
+        case 2:
+            var name= separado[1]
+            nombre += " " +  name.charAt(0).toUpperCase() + name.slice(1)
+            break;
+        case 3:
+            var name= separado[1]
+            nombre += " " +  name.charAt(0).toUpperCase() + name.slice(1)
+        break;
+        case 4:
+            var name= separado[2]
+            nombre += " " +  name.charAt(0).toUpperCase() + name.slice(1)
+        break;
+        default:
+            // code block
+        }
+        document.getElementById("textos").innerHTML=nombre
+};
+function selectMonth(val,meses){
+    mesesValue = meses
+    var idc=val
+    for (i = 1; i < 5; i++){
+        if(i != idc){
+            document.getElementById('month-check-'+i).checked = false;
+        }else{
+            document.getElementById('month-check-'+i).checked = true;
+        }
+    }
+    switch (mesesValue){
+        case 3:
+          subMeses = (((precioParcial+envio+2.9)/(0.96636-(1.16*0.049)))-(precioParcial+envio)).toFixed(2);
+          document.getElementById('sh-content').style.zIndex ='3';
+          updateTable()
+        break;
+        case 6:
+          subMeses = (((precioParcial+envio+2.9)/(0.96636-(1.16*0.079)))-(precioParcial+envio)).toFixed(2);
+          document.getElementById('sh-content').style.zIndex ='3';
+          updateTable()
+        break;
+        case 9:
+          subMeses = (((precioParcial+envio+2.9)/(0.96636-(1.16*0.109)))-(precioParcial+envio)).toFixed(2);
+          document.getElementById('sh-content').style.zIndex ='3';
+          updateTable()
+        break;
+        case 12:
+          subMeses = (((precioParcial+envio+2.9)/(0.96636-(1.16*0.139)))-(precioParcial+envio)).toFixed(2);
+          document.getElementById('sh-content').style.zIndex ='3';
+          updateTable()
+        break;
+      }
+      document.getElementById('sh-meses').style.display='block';
+      document.getElementById('sh-meses-txt').innerHTML = 'MX $'+subMeses;
+      document.getElementById('sh-info-txt').style.display='block';
+      document.getElementById('sh-info-txt').innerHTML = 'El costo de MX $'+ subMeses +' será cobrado por el banco por mes a MX $'+(subMeses/mesesValue).toFixed(2);
+};
+function selectBox(id){
+    var idc=id
+    shipStatic=idc
+        switch(idc) {
+  case 1:
+    envio=0;
+    paqueteria = 'FÍsico';
+    packService= 'Entregado por Universitario'
+    updateTable()
+  break;
+  case 2:
+    envio = corMex;
+    paqueteria = 'Correos de Mexico';
+    packService= '15 dias'
+    if(pesoTotal>=2){
+        alert("El paquete debera ser recogido en las oficinas de correo mas cercana")
+    }
+    updateTable()
+  break;
+  case 3:
+    envio=fedex;
+    paqueteria = 'FedEx';
+    packService= '3-5 dias'
+    updateTable()
+    
+  break;
+  case 4:
+    envio=fedUsa;
+    paqueteria = 'FedEx USA';
+    packService= '3-5 dias'
+    updateTable()
+  break;
+  case 5:
+    envio=144;
+    paqueteria = 'DHL';
+    packService= '3-5 dias'
+    updateTable()
+  break;
+  default:
+    envio=0;
+    paqueteria = 'Universitario';
+    updateTable()
+}
+for (i = 1; i < 5; i++){
+        if(i != idc){
+            document.getElementById('sh-check-'+i).checked = false;
+        }else{
+            document.getElementById('sh-check-'+i).checked = true;
+            if(idc==1){
+                document.getElementById('info-uni-book').style.display = 'block';
+            }else{
+                document.getElementById('info-uni-book').style.display = 'none';
+            }
+        }
+    }
+};
+
+function seguir() {
+    var alerta = document.getElementById('alerta-negra').style;
+  alerta.top = parseInt(window.event.pageY-200) + "px";
+  alerta.left = parseInt(window.event.pageX-200) + "px";
+}
+
+function volver(){
+    window.location ='{{ path('libreria') }}';
+}
+</script>
+
+<button class="l-student-b" id="l-estudiante-button">
+<div class="l-seg" id="li-seg">
+<p style="font-size: 1.4vw;">Gracias por continuar, esta acción tiene un eco</p>
+<p style="color: #F0C11C; font-size: 1.5vw; margin-top:-1%">EN LA ETERNIDAD</p>
+<p class="l-p-name" style="margin-top: 6%;"><span id="textos"></span></p>
+</div>
+<img id="l-foto">
+</button>
+
+<div style="position: static;">
+    <div class="shop">
+        <button class="sh-back-button" style="background-image: url('{{ asset('images/Path_197.png') }}')" onclick="volver()">VOLVER A LIBRERÍA</button>
+        <div id="sh-content" class="sh-cart">
+            <h1>RESUMEN DE COMPRA</h1>
+            <div class="sh-scrollable" id="sh-table">
+                <!--<div class="sh-row">
+                    <img src="{{ asset('images/Group_128.jpg') }}" class="sh-table-img">
+                    <div class="sh-row-info">
+                        <h2 class="sh-row-titulo">'+info.titulo+'</h2>
+                        <h3 class="sh-row-autor">'+info.autor+'</h3>
+                        <h3 class="sh-row-precio">$100.00 mxn</h3>    
+                        <div class="sh-editor">
+                            <button class="bc-circle" onclick="rest()">-</button>
+                            <h1 id="bc-quantity">1</h1>
+                            <button class="bc-circle" style="margin-left:0; width:8%; padding-left: -10%;" onclick="add()">+</button>
+                        </div>
+                    </div>
+                    <div class="sh-info-total">
+                        <h3 class="sh-row-precio sh-row-total">100</h3>
+                    </div>
+                </div>-->
+            </div>
+            <div class="sh-results">
+                <div class="sh-cuenta">
+                <div class="sh-totals" id="sh-meses" style="display:none">
+                        <h3 >COMISIÓN</h3>
+                        <h2 id="sh-meses-txt">$1,000.00</h2>
+                    </div>
+                    <div class="sh-totals">
+                        <h3 >SUBTOTAL</h3>
+                        <h2 id="sh-subtotal">$1,000.00</h2>
+                    </div>
+                    <div class="sh-totals">
+                        <h3 >ENVÍO</h3>
+                        <h2 id="sh-envio">PENDIENTE</h2>
+                    </div>
+                    <div class="sh-totals">
+                        <h3 style="color: rgba(37, 45, 82, 1);">TOTAL</h3>
+                        <h2 style="font-weight: 700;" id="sh-total">$1,000.00MXN</h2>
+                    </div>
+                </div>
+
+                <div class="sh-terms">
+                    <button type="button" class="sh-next-button" id="sh-shop" onclick="pay()">Finalizar compra</button>
+                    <div class="sh-totals-info" id="sh-info-txt">
+                        El costo de $# será cobrado por el banco a $# x mes
+                    </div>
+                    <div class="sh-totals" style="width: 100%;">
+                        <input type="checkbox" class="sh-check" id="sh-privs" onclick="validateCardFields()">
+                        <h4 onclick="showPrivacy()">Acepto aviso de privacidad</h4>
+                    </div>
+                    <div class="sh-totals" style="width: 100%;">
+                        <input type="checkbox" class="sh-check" id="sh-terms" onclick="validateCardFields()">
+                        <h4 onclick="showTerms()">Acepto términos y condiciones</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="sh-shippment" class="sh-card">
+            <div class="shs-header" >
+                <h1>DATOS DE ENTREGA</h1>
+                <div></div>
+            </div>
+            <div class="sh-header">
+                <h1>MÉTODO DE PAGO</h1>
+                <div></div>
+            </div>
+            <div class="shs-fields">
+                <div class="shs-field" id="shs-name" >
+                    <input type="text" id="shs-name-field">
+                    <h5 id="h-name">NOMBRE</h5>
+                </div>
+                <div class="shs-field" id="shs-address">
+                    <input type="text" id="shs-address-field">
+                    <h5 id="h-address">COL, CALLE Y NUM EXT/INT</h5>
+                </div>
+                <div class="shs-field" id="shs-cp">
+                    <input type="text" id="shs-cp-field">
+                    <h5 id="h-cp">C.P.</h5>
+                </div>
+                <div class="shs-field" id="shs-state">
+                    <input type="text" id="shs-state-field">
+                    <h5 id="h-state">ESTADO</h5>
+                </div>
+                <div class="shs-field" id="shs-city">
+                    <input type="text" id="shs-city-field">
+                    <h5 id="h-city">CIUDAD</h5>
+                </div>
+                <div class="shs-field" id="shs-phone">
+                    <input type="text" id="shs-phone-field" >
+                    <h5 id="h-phone">TELÉFONO/CEL</h5>
+                </div>
+                <div class="shs-field" id="shs-email">
+                    <input type="text" id="shs-email-field" style="text-transform: none;">
+                    <h5 id="h-mail">E-MAIL</h5>
+                </div>
+            </div>
+            <div class="shs-methods" id="shs-methods" >
+                <h1>MÉTODO DE ENVÍO</h1>
+                <!-- id="shs-methods" id="sh-method-table" -->
+                <div class="shs-method-scrollable">
+
+                <div class="shs-method-row">
+                    <div class="shs-method-row-section">Físico</div>
+                    <div class="shs-method-row-section" style="text-align: center; font-size: 0.9vw;">Entregado por Universitario</div>
+                    <div class="shs-method-row-section" style="text-align: right; font-weight: 600">$0.00</div>
+                    <div class="shs-method-row-picker">
+                        <input type="checkbox" id="sh-check-1" onclick="selectBox(1)" class="sh-check sh-method-check">
+                    </div>
+                </div>
+                <div id="info-uni-book" style="display:none; text-align: right;">
+                    <div id="uni-name-div" class="uni-div">
+                        <label class="uni-text">¿QUÍEN LE ENTREGO EL LIBRO?</label>
+                        <input type="text" id="uni-name" class="uni-inp">
+                    </div>
+                    <div id="uni-prov-div" class="uni-div">
+                        <label class="uni-text">CONSEGUIDO DE TIENDA FISICA EN:</label>
+                        <select id="uni-prov" class="uni-inp">
+                            <option value="DONATIVO">DONATIVO</option>
+                            <option value="CANCÚN">CANCÚN</option>
+                            <option value="CÁRDENAS">CÁRDENAS</option>
+                            <option value="CATEMACO">CATEMACO</option>
+                            <option value="CHILPANCINGO">CHILPANCINGO</option>
+                            <option value="CIUDAD DEL CARMEN">CIUDAD DEL CARMEN</option>
+                            <option value="CIUDAD JUÁREZ">CIUDAD JUÁREZ</option>
+                            <option value="CUAUTLA">CUAUTLA</option>
+                            <option value="CULIACÁN">CULIACÁN</option>
+                            <option value="CHETUMAL">CHETUMAL</option>
+                            <option value="CHIHUAHUA">CHIHUAHUA</option>
+                            <option value="ESPINAL">ESPINAL</option>
+                            <option value="EMILIANO ZAPATA">EMILIANO ZAPATA</option>
+                            <option value="ESCARCEGA">ESCARCEGA</option>
+                            <option value="GUADALAJARA">GUADALAJARA</option>
+                            <option value="HERMOSILLO">HERMOSILLO</option>                            
+                            <option value="IMURIS">IMURIS</option>
+                            <option value="LA PAZ">LA PAZ</option>
+                            <option value="LEÓN">LEÓN</option>
+                            <option value="LINDA VISTA">LINDA VISTA</option>
+                            <option value="LOS MOCHIS">LOS MOCHIS</option>
+                            <option value="MATRIZ">MATRIZ</option>
+                            <option value="MÉRIDA">MÉRIDA</option>
+                            <option value="MEXICALI">MEXICALI</option>
+                            <option value="MINATITLÁN">MINATITLÁN</option>
+                            <option value="MONTEMORELOS">MONTEMORELOS</option>
+                            <option value="MONTERREY">MONTERREY</option>
+                            <option value="NUEVO LAREDO">NUEVO LAREDO</option>
+                            <option value="OAXACA">OAXACA</option>
+                            <option value="OBREGÓN">OBREGÓN</option>
+                            <option value="PICHUCALCO">PICHUCALCO</option>
+                            <option value="POZA RICA">POZA RICA</option>
+                            <option value="PUEBLA">PUEBLA</option>
+                            <option value="REYNOSA">REYNOSA</option>
+                            <option value="SAN CRISTÓBAL">SAN CRISTÓBAL</option>
+                            <option value="SAN LUIS POTOSÍ">SAN LUIS POTOSÍ</option>
+                            <option value="PACHUCA">PACHUCA</option>
+                            <option value="PLAYA DEL CARMEN">PLAYA DEL CARMEN</option>
+                            <option value="TAMPICO">TAMPICO</option>
+                            <option value="TAPACHULA">TAPACHULA</option>
+                            <option value="TEPIC">TEPIC</option>
+                            <option value="TIJUANA">TIJUANA</option>
+                            <option value="TOLUCA">TOLUCA</option>
+                            <option value="TORREÓN">TORREÓN</option>
+                            <option value="TUXTLA GUTIERREZ">TUXTLA GUTIERREZ</option>
+                            <option value="VERACRUZ">VERACRUZ</option>
+                            <option value="VILLAHERMOSA">VILLAHERMOSA</option>
+                        </select>  
+                    </div>
+                    <div id="uni-date-div" class="uni-div">
+                        <label class="uni-text">FECHA QUE FUE ENTREGADO</label>
+                        <input type="date" id="uni-date" class="uni-inp">
+                    </div>
+                </div>
+                <div class="shs-method-row">
+                    <div class="shs-method-row-section">Correos de México</div>
+                    <div class="shs-method-row-section" style="text-align: center; font-size: 0.9vw;"> Entrega en 15 días</div>
+                    <div class="shs-method-row-section" style="text-align: right; font-weight: 600" id="shs-mex">$80.00</div>
+                    <div class="shs-method-row-picker">
+                        <input type="checkbox" id="sh-check-2" onclick="selectBox(2)" class="sh-check sh-method-check">
+                    </div>
+                </div> 
+                <div class="shs-method-row">
+                    <div class="shs-method-row-section">FedEx</div>
+                    <div class="shs-method-row-section" style="text-align: center; font-size: 0.9vw;"> Entrega en 3-5 días</div>
+                    <div class="shs-method-row-section" style="text-align: right; font-weight: 600" id="shs-fedex">$190.00</div>
+                    <div class="shs-method-row-picker">
+                        <input type="checkbox" id="sh-check-3" onclick="selectBox(3)" class="sh-check sh-method-check">
+                    </div>
+                </div>
+                 <div class="shs-method-row">
+                    <div class="shs-method-row-section">FedEx USA</div>
+                    <div class="shs-method-row-section" style="text-align: center; font-size: 0.9vw;"> Entrega en 3-5 días</div>
+                    <div class="shs-method-row-section" style="text-align: right; font-weight: 600" id="shs-dolar">PEDIDO EXTRA</div>
+                    <div class="shs-method-row-picker">
+                        <input type="checkbox" id="sh-check-4" onclick="selectBox(4)" class="sh-check sh-method-check">
+                    </div>
+                </div><!--
+                <div class="shs-method-row">
+                    <div class="shs-method-row-section">Estafeta</div>
+                    <div class="shs-method-row-section" style="text-align: center; font-size: 0.9vw;"> Entrega en 3-5 días</div>
+                    <div class="shs-method-row-section" style="text-align: right; font-weight: 600">$162.00</div>
+                    <div class="shs-method-row-picker">
+                        <input type="checkbox" id="sh-check-4" onclick="selectBox(4)" class="sh-check sh-method-check">
+                    </div>
+                </div> 
+                <div class="shs-method-row">
+                    <div class="shs-method-row-section">DHL</div>
+                    <div class="shs-method-row-section" style="text-align: center; font-size: 0.9vw;"> Entrega en 3-5 días</div>
+                    <div class="shs-method-row-section" style="text-align: right; font-weight: 600">$144.00</div>
+                    <div class="shs-method-row-picker">
+                        <input type="checkbox" id="sh-check-5" onclick="selectBox(5)" class="sh-check sh-method-check">
+                    </div>
+                </div>-->
+                    <!--<div class="shs-method-row">
+                        <div class="shs-method-row-section">DHL</div>
+                        <div class="shs-method-row-section" style="text-align: center;">2 DÍAS</div>
+                        <div class="shs-method-row-section" style="text-align: right; font-weight: 600">$200.00</div>
+                        <div class="shs-method-row-picker">
+                            <input type="checkbox" class="sh-check sh-method-check">
+                        </div>
+                    </div>-->
+                   
+                </div>
+            </div>
+            <button class="shs-next" id="shs-next" onclick="showPayments()">CONTINUAR CON EL PAGO</button>
+        </div>
+        <div id="sh-payment" class="sh-card">
+            <div class="sh-header">
+                <h1 onclick="backDatos()" style="cursor:pointer;">DATOS DE ENTREGA</h1>
+                <div></div>
+            </div>
+            <div class="shs-header">
+                <h1>MÉTODO DE PAGO</h1>
+                <div></div>
+            </div>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+            <script src="{{ asset('datepicker/js/moment.min.js') }}"></script>
+            <script src="{{ asset('datepicker/js/bootstrap-datetimepicker.min.js') }}"></script>
+            <script src="{{ asset('datepicker/js/bootstrap-datetimepicker.es.js') }}"></script>
+
+            <script type="text/javascript">
+                var expLength = 0;
+
+                function backDatos(){
+                    console.log("entrando a backdatos")
+                    document.getElementById('sh-shippment').style.zIndex ='2';
+                    document.getElementById('sh-payment').style.zIndex ='1';
+                }
+
+                function showCardForm(){
+                    isCard = true;
+                    isMonth = false;
+                    isOxxo = false;
+                    document.getElementById('shp-options').style.display = 'none'; 
+                    document.getElementById('shp-visa').style.display = 'block'; 
+                    document.getElementById('shp-visa').style.marginTop = '7%';
+                    document.getElementById('shp-visa').style.marginLeft = '5%';
+                    document.getElementById('shp-title').style.display = 'none';
+                    document.getElementById('shp-month').style.display = 'none'; 
+                    document.getElementById('shp-debit').style.display = 'block';
+                    document.getElementById('shp-trans').style.display = 'none';
+                    setCardFields();
+                }
+                function showOxxoForm(){
+                    isCard = false;
+                    isMonth = false;
+                    isOxxo = true;
+                    document.getElementById('shp-options').style.display = 'none'; 
+                    document.getElementById('shp-trans').style.display = 'none';
+                    document.getElementById('shp-oxxo').style.display = 'block'; 
+                    document.getElementById('shp-oxxo').style.marginTop = '7%';
+                    document.getElementById('shp-title').style.display = 'none';
+                    document.getElementById('sh-content').style.zIndex ='3';
+                    validateCardFields();
+                }
+                function showTransForm(){
+                    isCard = false;
+                    isMonth = false;
+                    isOxxo = false;
+                    document.getElementById('shp-options').style.display = 'none'; 
+                    document.getElementById('shp-trans').style.display = 'block'; 
+                    document.getElementById('shp-trans').style.marginTop = '7%';
+                    document.getElementById('shp-title').style.display = 'none';
+                    document.getElementById('sh-content').style.zIndex ='3';
+                    validateCardFields();
+                }
+                function showMesesForm(){
+                    isCard = true;
+                    isMonth = true;
+                    isOxxo = false;
+                    document.getElementById('shp-options').style.display = 'none'; 
+                    document.getElementById('shp-trans').style.display = 'none';
+                    document.getElementById('shp-visa').style.display = 'block'; 
+                    document.getElementById('shp-visa').style.marginTop = '7%';
+                    document.getElementById('shp-visa').style.marginLeft = '5%';
+                    document.getElementById('shp-title').style.display = 'none';
+                    document.getElementById('shp-debit').style.display = 'none'; 
+                    document.getElementById('shp-month').style.display = 'block';
+                    setCardFields();
+                }
+                function setCardFields(){
+                    var number = document.getElementById('shp-numero-field');
+                    var name = document.getElementById('shp-name-field');
+                    var cvc = document.getElementById('shp-cvc-field');
+                    var month = document.getElementById('shp-month-field');
+                    var year = document.getElementById('shp-year-field');
+
+                    number.addEventListener('keyup', function (event) {
+                        if (number.value.length < 16 || number.value==null){
+                            number.style.borderBottom = "1px solid rgba(37, 45, 82, 0.3)";
+                            document.getElementById('shc-number').style.color = "rgba(37, 45, 82, 0.3)";
+                        }else if(!isNaN(number.value) && number.value.length == 16){
+                            number.style.borderBottom = "1px solid #2568F5";
+                            document.getElementById('shc-number').style.color = "#2568F5";
+                        }else if(number.value.length > 16 || isNaN(number.value)){
+                            number.style.borderBottom = "1px solid red";
+                            document.getElementById('shc-number').style.color = "red";
+                        }
+                        validateCardFields();
+                    });
+                    name.addEventListener('keyup', function (event) {
+                        if (name.value=="" || name.value==null){
+                            name.style.borderBottom = "1px solid rgba(37, 45, 82, 0.3)";
+                            document.getElementById('shc-name').style.color = "rgba(37, 45, 82, 0.3)";
+                        }else{
+                            name.style.borderBottom = "1px solid #2568F5";
+                            document.getElementById('shc-name').style.color = "#2568F5";
+                        }
+                        validateCardFields();
+                    });
+                    cvc.addEventListener('keyup', function (event) {
+                        if (cvc.value.length < 3 || cvc.value==null){
+                            cvc.style.borderBottom = "1px solid rgba(37, 45, 82, 0.3)";
+                            document.getElementById('shc-cvc').style.color = "rgba(37, 45, 82, 0.3)";
+                            document.getElementById('sh-content').style.zIndex ='0';
+                        }else if(!isNaN(cvc.value) && cvc.value.length == 3){
+                            cvc.style.borderBottom = "1px solid #2568F5";
+                            document.getElementById('shc-cvc').style.color = "#2568F5";
+                            document.getElementById('sh-content').style.zIndex ='3';
+                        }else if(cvc.value.length > 3 || isNaN(cvc.value)){
+                            cvc.style.borderBottom = "1px solid red";
+                            document.getElementById('shc-cvc').style.color = "red";
+                            document.getElementById('sh-content').style.zIndex ='0';
+                        }
+                        validateCardFields();
+                    });
+                    
+                    month.addEventListener('keyup', function (event) {
+                        var date = month.value+'/'+year.value;
+                        if (isValidDate(date)){
+                            month.style.borderBottom = "1px solid #2568F5";
+                            year.style.borderBottom = "1px solid #2568F5";
+                            document.getElementById('shc-exp').style.color = "#2568F5";
+                        }else{
+                            month.style.borderBottom = "1px solid red";
+                            year.style.borderBottom = "1px solid red";
+                            document.getElementById('shc-exp').style.color = "red";
+                        }     
+                    });
+
+                    year.addEventListener('keyup', function (event) {
+
+                        var date = month.value+'/'+year.value;
+                        if (isValidDate(date)){
+                            month.style.borderBottom = "1px solid #2568F5";
+                            year.style.borderBottom = "1px solid #2568F5";
+                            document.getElementById('shc-exp').style.color = "#2568F5";
+                        }else{
+                            month.style.borderBottom = "1px solid red";
+                            year.style.borderBottom = "1px solid red";
+                            document.getElementById('shc-exp').style.color = "red";
+                        } 
+                        validateCardFields();      
+                    });
+                }
+                function validateCardFields(){
+                    var texts = ['shc-number', 'shc-name', 'shc-exp', 'shc-cvc'];
+                    var allIsWell=true;
+                    for(i in texts){
+                        if(document.getElementById(texts[i]).style.color != "rgb(37, 104, 245)"){
+                            allIsWell=false;
+                            break;
+                        }
+                    }
+                    let terms = document.getElementById('sh-terms').checked;
+                    let privs = document.getElementById('sh-privs').checked;
+                    if((allIsWell && terms && privs && isCard) || (terms && privs && !isCard)){
+                        document.getElementById('sh-shop').style.background = "#2568F5";
+                        document.getElementById('sh-shop').disabled = false;
+                    }
+                }
+                function isValidDate(dateString){
+                    // First check for the pattern
+                    if(!/^\d{2}\/\d{4}$/.test(dateString))
+                    return false;
+
+                     // Parse the date parts to integers
+                    var parts = dateString.split("/");
+                    var month = parseInt(parts[0], 10);
+                    var year = parseInt(parts[1], 10);
+                    
+                    var cYear = new Date().getFullYear();
+                    var cMonth = new Date().getMonth();
+                    // Check the ranges of month and year
+                    if(year < cYear || year > 2119 || month == 0 || month > 12)
+                        return false;
+
+                    if(year==cYear && month<cMonth+1)
+                        return false;
+                    return true;
+                };
+
+                function donacion(){
+                    donValue=parseInt(document.getElementById('don-value').value);
+                    updateTable()
+                };
+                function setDonationField(){            
+                    var donation = document.getElementById('don-value');
+                    setBlockDonation()
+                    donation.addEventListener('keyup', function (event) {
+                    setBlockDonation()
+                        if (donation.value.length < 1 || donation.value==null){
+                            donation.style.borderBottom = "1px solid rgba(37, 45, 82, 0.3)";
+                            document.getElementById('don-span').style.color = "rgba(37, 45, 82, 0.3)";
+                        }else {
+                            donation.style.borderBottom = "1px solid #2568F5";
+                            document.getElementById('don-span').style.color = "rgb(37, 104, 245)";
+                        }
+                        validateDonation();
+                    });
+                }
+                function validateDonation(){
+                    var allIsWell=true;
+                        if(document.getElementById('don-span').style.color != "rgb(37, 104, 245)"){
+                            allIsWell=false;
+                            //console.log("es falso")
+                        }
+                    if((allIsWell)){
+                        //console.log("ultimo if")
+                        document.getElementById('don-boton').style.background = "#2568F5";
+                        document.getElementById('don-boton').disabled = false;
+                    }
+                }
+                function setBlockDonation(){
+                    document.getElementById('don-boton').style.background = "rgba(37, 45, 82, 0.3)";
+                    document.getElementById('don-boton').disabled = true;
+                    //document.getElementById('shs-next').innerHTML="CALCULAR ENVÍO";
+                }
+
+                function verInfo(){
+                    console.log("entrando a ver info")
+                    if(flaggie){
+                        document.getElementById('shp-cvc-field').type = "password";
+                        flaggie=false;
+                    }else{
+                        document.getElementById('shp-cvc-field').type = "text";
+                        flaggie=true;
+                    }
+                    
+                }
+            </script>
+
+            <h1 class="shp-title" id="shp-title">POR FAVOR ELIGE UN MÉTODO DE PAGO:</h1>
+            <div class="shp-container">
+                <div class="shp-card" id="shp-options">
+                    <div class="shp-option">
+                        <img src="{{ asset('images/Group_225.png')}}" onclick="showCardForm()">
+                    </div>
+                    <div class="shp-option" style="padding-top: 5%;" onclick="showOxxoForm()">
+                        <img src="{{ asset('images/OXXO.png')}}">
+                    </div>
+                    <div class="shp-option" style="padding-top: 3%;" onclick="showTransForm()">
+                    <p style="font-size: .9vw; margin-top: 0; margin-bottom:0;"><strong>TRANFERENCIA ELECTRÓNICA</strong></p>
+                        <img src="{{ asset('images/spei.png')}}">
+                    </div>
+                   <div class="shp-option" style="padding-top: 5%;" onclick="showMesesForm()">
+                        <p style="font-size: .9vw; margin-top: 0;"><strong>PAGO A MESES</strong></p>
+                        <img src="{{ asset('images/Group_225.png')}}">
+                        
+                    </div> 
+                </div>
+                <div class="shp-card" id="shp-oxxo">
+                    <img src="{{ asset('images/OXXO.png')}}" class="shp-oxxo-img">
+                    <p class="shp-oxxo-p" id="shp-oxxo-msj">AL FINALIZAR LA COMPRA RECIBIRÁS UN CORREO EN error@error.com CON LAS INDICACIONES PARA COMPLETAR EL PAGO POR OXXO.</p>
+                </div>
+                <div class="shp-card" id="shp-trans">
+                    <img src="{{ asset('images/spei.png')}}" class="shp-oxxo-img">
+                    <p class="shp-oxxo-p" id="shp-trans-msj">AL FINALIZAR LA COMPRA RECIBIRÁS UN CORREO EN error@error.com CON LAS INDICACIONES PARA COMPLETAR EL PAGO TRANSACCIÓN ELECTRÓNICA.</p>
+                </div>
+                <form class="shp-card" id="shp-visa">
+                    <div class="shs-field" id="shp-numero">
+                        <input type="text" id="shp-numero-field" data-conekta="card[number]">
+                        <h5 id="shc-number">NUMERO DE TARJETA</h5>
+                    </div>
+                    <div class="shs-field" id="shp-name">
+                        <input type="text" id="shp-name-field" data-conekta="card[name]">
+                        <h5 id="shc-name">NOMBRE EN TARJETA</h5>
+                    </div>
+                    <div class="shs-field-exp" id="shp-vencimiento">
+                        <!--<input type="text" id="shp-vencimiento-field" maxlength="7" data-conekta="card[cvc]">-->
+                        <input type="text" id="shp-month-field" maxlength="2" style="width: 25%;" data-conekta="card[exp_month]" placeholder="MM">
+                        <span>/</span>
+                        <input type="text" id="shp-year-field" maxlength="4" style="width: 40%;" data-conekta="card[exp_year]" placeholder="AAAA">
+                        <h5 id="shc-exp">VENCIMIENTO</h5>
+                    </div>
+                    <div class="shs-field" id="shp-cvc">
+                        <input type="password" id="shp-cvc-field" data-conekta="card[cvc]">
+                        <h5 id="shc-cvc">CVC</h5>
+                    </div>
+                    <div class="shs-field" id="shp-eye">
+                        <img id="shp-eye-img" src="{{ asset('images/eye.png')}}" style="width: 40%; height: 50%; cursor: pointer;" onclick="verInfo()">
+                    </div>
+                    <div id="shp-debit">
+                    <img src="{{ asset('images/Group_225.png')}}" id="shp-visa-img">
+                 </div>
+                 <div id="alerta-negra"></div>
+                 <div id="shp-month">
+                    <div class="month-value" style="left: 39%;">
+                        <div 
+                            class="month-text"
+                            onmousemove="seguir()">
+                            3 Meses
+                        </div>
+                        <div class="month-text" id="month-value-1">$200.00</div>
+                        <input type="checkbox" id="month-check-1" onclick="selectMonth(1,3)"/>
+                    </div> 
+                    <div class="month-value" style="left: 53%;">
+                        <div 
+                            class="month-text"
+                            onmousemove="seguir()">
+                            6 Meses
+                        </div>
+                        <div class="month-text" id="month-value-2">$200.00</div>
+                        <input type="checkbox" id="month-check-2" onclick="selectMonth(2,6)"/>
+                    </div> 
+                    <div class="month-value" style="left: 67%;">
+                        <div 
+                            class="month-text"
+                            onmousemove="seguir()">
+                            9 Meses
+                        </div>
+                        <div class="month-text" id="month-value-3">$200.00</div>
+                        <input type="checkbox" id="month-check-3" onclick="selectMonth(3,9)"/>
+                    </div> 
+                     <div class="month-value" style="left: 81%;">
+                        <div 
+                            class="month-text"
+                            onmousemove="seguir()">
+                            12 Meses
+                        </div>
+                        <div class="month-text" id="month-value-4">$200.00</div>
+                        <input type="checkbox" id="month-check-4" onclick="selectMonth(4,12)"/>
+                    </div> 
+                    </div>
+                </form>
+                <div class="shp-card" id="shp-paypal"></div>
+            </div>
+            <div id="shp-student-container">
+                <h1 id="shp-student-title">UNIVERSITARIO ELEGIDO</h1>
+                <img src="{{ asset('images/Group_214.jpeg') }}" id="shp-student-image">
+                <div id="shp-student-info">
+                    <h1 id="shp-student-name">Nombre Apellido</h1>
+                    <h1 id="shp-student-carrera">CARRERA</h1>
+                </div>
+            </div>
+            <div id="shp-shipp-container">
+                <h1 class="shp-shipp-title">DIRECCIÓN</h1>
+                <h1 class="shp-shipp-text" id="shp-add-name">Nombre apellido</h1>
+                <h1 class="shp-shipp-text" id="shp-add-street">Calle lugar #149</h1>
+                <h1 class="shp-shipp-text" id="shp-add-city">Ciudad</h1>
+                <h1 class="shp-shipp-text" id="shp-add-state">Estado</h1>
+                <h1 class="shp-shipp-text" id="shp-add-cp">C.P. 67530</h1>
+                <h1 class="shp-shipp-text" id="shp-add-phone">(826) 123 4567</h1>
+                
+                <h1 class="shp-shipp-title" style="margin-top: 2.5%;">ENVÍO ELEGIDO</h1>
+                <h1 class="shp-shipp-text" id="shp-shipp-brand">DHL</h1>
+                <h1 class="shp-shipp-text" id="shp-shipp-time">2 DÍAS</h1>
+                <h1 class="shp-shipp-text" id="shp-shipp-price" style="font-weight: 600">$120.00</h1>
+            </div>
+        </div>
+<!--<p id="debugtext" style="position: absolute; width: 100%; left: 0; bottom:0;">libdjsfkawnsfñlkasnÑDFLKNñswklndñlewkndñklwejnDÑKJNwsjkfcnasdlkjbffglihebrflbewfljkbwaefkjbnwelkjfbwekjbf</p>-->
+        <div class="lb-donacion">
+         <label class="frm-donacion">QUIERO DONAR</label>
+        <span style="float:left; position: absolute; margin-top:1%" id="don-span">$</span><input class="inp-donacion" id="don-value" type="number" placeholder="DONACIÓN"></input>
+        <button class="btn-donacion" onclick="donacion()" id="don-boton">Aceptar</button>
+        </div>
+        <div style="position: absolute;text-align: center;top: 85%;size: 7vw;width: 100%;">
+            <h3 style="font-size: 1.5vw;">Tus compras están protegidas por medio de <img style="width:8%;" src="{{ asset('images/conekta.svg') }}">, podrás obtener mas información <a href="https://conekta.com/legal/tos">aquí<a></h3>
+        </div>
+    </div>   
+</div>
+{% endblock %}

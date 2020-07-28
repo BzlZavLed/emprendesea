@@ -1,0 +1,45 @@
+{# templates/store/done.html.twig #}
+{% extends 'store_base.html.twig' %}
+{% block code %}
+<script>
+    var pedido = null;
+    window.onload = function(){
+    	document.body.style.backgroundColor = "white";
+        window.sessionStorage.setItem('cart',null);
+        window.sessionStorage.setItem('pedido',null);
+    }; 
+</script>
+<div class="w3aitssinglewthree" style="background-color: #D6D9DB;">
+    <div class="horizonDiv" style="background-color: #FFF; height:50px;width: 70%; border: 5px; border-color: #5B6770; border-style: solid; margin: auto;">
+        <div class="divStep">
+            <span style="color: #5B6770; font-size:1.5vw;">Articulos</span>
+        </div>
+        <div class="divStep">
+            <span style="color: #5B6770; font-size:1.5vw;">Envío</span>
+        </div>
+        <div class="divStep">
+            <span style="color: #5B6770; font-size:1.5vw;">Resumen</span>
+        </div>
+        <div class="divStep">
+            <span style="color:#5B6770; font-size:1.5vw;">Pago</span>
+        </div>
+        <div class="selectedDivStep">
+            <span style="color: #fff; font-size:1.5vw;">Terminar</span>
+        </div>
+    </div>
+    <br>
+    <div style="height: 600px; width: 80%; margin: auto; background-color: #fff; text-align: center;">
+        <br>
+        <br>
+        <br>
+        <h2 style="color: #5B6770; margin: auto; text-align: center; padding: 15px;" >¡Gracias por su compra!</h2>
+        <br>
+        <h4 style="color: #5B6770; margin: auto; text-align: center; padding: 15px; max-width: 700px;" >La transacción ha sido exitosa, en este momento te estamos enviando un correo con los detallles de tu compra, deseas saber el estado de tú pedido puedes revisar la sección "Mi pedido" con el id de pedido "{{ pedido }}" para obtener más detalles</h4>
+        <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 2rem;">
+          <button onclick="window.location = '{{ path('index') }}'" class="btn" style="color:#fff; background-color: #31B404; width: 200px;">Terminar</button>
+        </div>
+        <br>
+        <br>
+  </div>
+</div>
+{% endblock %}
