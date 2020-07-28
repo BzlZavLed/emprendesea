@@ -383,102 +383,7 @@ shuffle($books);
         $entityManager->persist($content);
         $entityManager->flush();
       }
-      /*
-
-      $post = [
-        "enviaya_account" => "VG569PVZ",
-        "carrier_account" => null,
-        "api_key" => "f051304371c30ee186fc69804ccd78a2",
-        "shipment" => [
-              "shipment_type" => "Package",
-              "parcels" => [array(
-                "quantity" => "1",
-                "weight" => $weight,
-                "weight_unit" => "kg",
-                "length" => $length,
-                "height" => $height,
-                "width" => $width,
-                "dimension_unit" => "cm"
-              )
-            ]
-          ],
-        "origin_direction" => [
-          "country_code" => "MX",
-          "postal_code" => "67530"
-        ],
-        "destination_direction" => [
-          "country_code" => "MX",
-          "postal_code" => $data["postal"]
-        ],
-        "insured_value" => $mount,
-        "insured_value_currency" => "MXN",
-        "order_total_amount" => $mount,
-        "currency" => "MXN"
-      ];
-
-      $url = 'https://enviaya.com.mx/api/v1/rates';
- 
-      $ch=curl_init($url);
-      $payload = json_encode( $post );
-      curl_setopt( $ch, CURLOPT_POSTFIELDS, $payload );
-      curl_setopt( $ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-      curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-      # Send request.
-      $decodedText = html_entity_decode(curl_exec($ch));
-      $result = json_decode($decodedText, true);
-      curl_close($ch);
-      $cariers = array_keys($result);
-        
-      for($i=1;$i<(sizeof($cariers)-1);$i++){
-        foreach(($result[$cariers[$i]]) as $rate){
-          $sop = new DeliveryRate();
-          $sop->setPedidoId($pedido->getId());
-          $sop->setCarrier($cariers[$i]);
-          if(array_key_exists('rate_id', $rate)){
-            $sop->setRateId($rate['rate_id'] === null ? '':$rate['rate_id']);
-            $sop->setCost($rate['net_total_amount'] === null ? '':$rate['net_total_amount']);
-            $sop->setLogo($rate['carrier_logo_url'] === null ? '':$rate['carrier_logo_url']);
-            $sop->setService($rate['dynamic_service_name'] === null ? '':$rate['dynamic_service_name']);
-            $fecha = new \DateTime($rate['estimated_delivery'] === null ? '':$rate['estimated_delivery']);
-            $sop->setDelivery($fecha);
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($sop);
-            $entityManager->flush();
-          }
-          
-        }
-      }
-      //
-      $shippsRepo = $this->getDoctrine()->getRepository(DeliveryRate::class);
-      $shipps = $shippsRepo->findBy([
-        'pedido_id' => $pedido->getId()
-      ]);
-      $rates = array();
-      
-      foreach($shipps as $shipp){
-        $obj = array(
-          "id"=>$shipp->getRateId(),
-          "cost"=>$shipp->getCost(),
-          "service"=>$shipp->getService(),
-          "delivery"=>$shipp->getDelivery(),
-          "carrier"=>$shipp->getCarrier(),
-          "pedido_id"=>$shipp->getPedidoId()
-        );
-        $PedidoId = $shipp->getPedidoId();
-        array_push($rates, $obj);
-      }
-      //Agergamos un Tipo de Entrega (fisica) antes de las que consultamos 
-      /*$objCero=array(
-        "id"=>"99999",
-        "cost"=>0,
-        "service"=>"Fisico",
-        "delivery"=>"Inmediato",
-        "carrier"=>"Libreria UM",
-        "pedido_id"=>$PedidoId
-      );
-      array_push($rates, $objCero);*/
-      //return new JsonResponse(json_encode($rates));
+     
       return new JsonResponse($pedido->getId());
 
     }
@@ -1275,10 +1180,12 @@ shuffle($books);
     public function logout(){
     }
  		/**
-		* @Route("/admin")
+		* @Route("/admin",name="resumen")
 		*/
 		public function showDashboard(){
-			return $this->render('admin/dashboard.html.twig');
+       $ventas = $this->getDoctrine()->getRepository(Pedido::class)->getConcentrado();
+      
+			return $this->render('admin/dashboard.html.twig', array('ventas' => $ventas));
 		}
 
     	/**

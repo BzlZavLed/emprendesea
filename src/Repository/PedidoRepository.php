@@ -14,7 +14,7 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class PedidoRepository extends ServiceEntityRepository
 {
-    public function __construct(RegistryInterface $registry)
+    public function __construct(RegistryInterface $registry) 
     {
         parent::__construct($registry, Pedido::class);
     }
@@ -22,6 +22,14 @@ class PedidoRepository extends ServiceEntityRepository
         $conn = $this->getEntityManager()->getConnection();
 
         $sql = 'SELECT name, last, tracking, id, payment_id FROM pedido ORDER BY id DESC';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+    public function getConcentrado(): array{
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = 'SELECT e.id,concat(e.name," ",e.last)as name, e.request_date, e.payment_id,e.carrier,e.tracking,e.delivery_service,e.delivery_price,e.total,e.email,concat(f.name," ",f.apellidos) as student, g.name as colegio FROM pedido e INNER JOIN students f ON e.student_id = f.id INNER JOIN campos g ON e.campo_id = g.id ORDER BY id DESC';
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll();

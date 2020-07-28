@@ -9,17 +9,21 @@
     <link href="{{ asset('adminResources/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('adminResources/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('adminResources/datatables/dataTables.bootstrap4.css') }}"  rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('adminResources/Trumbowyg/dist/ui/trumbowyg.min.css') }}" type="text/css" media="all">
-    <link rel="stylesheet" href="{{ asset('adminResources/Trumbowyg/dist/plugins/colors/ui/trumbowyg.colors.css') }}">
-    <link href="{{ asset('css/sb-admin.css') }}" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="{{ asset('emprendumStyle.css') }}">
+    <!--<link rel="stylesheet" href="{{ asset('adminResources/Trumbowyg/dist/ui/trumbowyg.min.css') }}" type="text/css" media="all">
+     <link rel="stylesheet" href="{{ asset('adminResources/Trumbowyg/dist/plugins/colors/ui/trumbowyg.colors.css') }}">
+   
+    <link rel="stylesheet" type="text/css" href="{{ asset('emprendumStyle.css') }}">  -->
 
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-
-    <link rel="stylesheet" href="/resources/demos/style.css">
+    <link href="{{ asset('css/sb-admin.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
+    <style type="text/css">
+           tfoot input {
+             width: 100%;
+           }
+    </style>
     <title>{% block title %}emprendum Admin{% endblock %}</title>
     {% block stylesheets %}{% endblock %}
     </head>
@@ -34,7 +38,7 @@
             <div class="collapse navbar-collapse" id="navbarResponsive">
               <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
                 <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Libros">
-                    <a class="nav-link" href="{{ path('books_list') }}">
+                    <a class="nav-link" href="{{ path('resumen') }}">
                         <span class="nav-link-text">Resumen</span>
                     </a>
                 </li>
@@ -114,14 +118,23 @@
         <script src="{{ asset('adminResources/datatables/jquery.dataTables.js') }}"></script>
         <script src="{{ asset('adminResources/datatables/dataTables.bootstrap4.js') }}"></script>
         <!-- Custom scripts for all pages-->
-        <script src="{{ asset('js/sb-admin.min.js') }}"></script>
+       <!--  <script src="{{ asset('js/sb-admin.min.js') }}"></script> -->
         <!-- Custom scripts for this page-->
-        <script src="{{ asset('js/sb-admin-datatables.min.js') }}"></script>
-        <script src="{{ asset('js/sb-admin-charts.min.js') }}"></script>
+        <!-- <script src="{{ asset('js/sb-admin-datatables.min.js') }}"></script>
+        <script src="{{ asset('js/sb-admin-charts.min.js') }}"></script> -->
         {% endblock %}
         <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-3.2.1.min.js"><\/script>')</script>
-        <script src="{{ asset('adminResources/Trumbowyg/dist/trumbowyg.min.js') }}"></script>
-        <script src="{{ asset('adminResources/Trumbowyg/dist/plugins/colors/trumbowyg.colors.js') }}"></script>
+        <!-- <script src="{{ asset('adminResources/Trumbowyg/dist/trumbowyg.min.js') }}"></script> -->
+        <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.5.4/js/dataTables.buttons.min.js"></script>
+        <script type="text/javascript" charset="utf8" src=" https://cdn.datatables.net/buttons/1.5.4/js/buttons.flash.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.5.4/js/buttons.html5.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.5.4/js/buttons.print.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/fixedcolumns/3.2.6/js/dataTables.fixedColumns.min.js"></script>
     </body>
 </html>
